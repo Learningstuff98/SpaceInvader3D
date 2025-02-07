@@ -28,6 +28,7 @@ private:
 
 	// Callbacks for input
 	void Look(const FInputActionValue& Value);
+	void Accelerate(const FInputActionValue& Value);
 
 	// Helpers
 	void SetupMappingContext();
@@ -49,6 +50,10 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UCameraComponent> Camera;
 
+	// https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/GameFramework/UFloatingPawnMovement
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UFloatingPawnMovement> Movement;
+
 	// Enhanced Input Varaibles
 
 	UPROPERTY(EditAnywhere, Category = Input)
@@ -56,4 +61,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<class UInputAction> LookAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<class UInputAction> AccelerateAction;
 };
