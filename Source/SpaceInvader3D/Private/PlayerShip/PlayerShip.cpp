@@ -24,11 +24,9 @@ APlayerShip::APlayerShip() {
 	SpringArm->bUsePawnControlRotation = true;
 	SpringArm->TargetArmLength = 1600.f;
 	SpringArm->TargetOffset = FVector(0.0f, 0.0f, 260.0f);
-	SpringArm->SocketOffset = FVector(3600.0f, 0.0f, 0.0f);
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
-	Camera->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
 
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 }
@@ -48,7 +46,6 @@ void APlayerShip::SetupMappingContext() {
 
 void APlayerShip::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
-	this->AddActorWorldOffset(FVector(10.0f, 0.0f, 0.0f));
 }
 
 void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
@@ -68,7 +65,12 @@ void APlayerShip::Look(const FInputActionValue& Value) {
 }
 
 void APlayerShip::Accelerate(const FInputActionValue& Value) {
-	LogMessage("Accelerate was called");
+	const float DirectionValue = Value.Get<float>();
+	if (Controller && (DirectionValue != 0.f))
+	{
+		FVector Forward = GetActorForwardVector();
+		AddMovementInput(Forward, DirectionValue);
+	}
 }
 
 void APlayerShip::LogMessage(const FString& Message) {
