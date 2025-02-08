@@ -33,7 +33,7 @@ APlayerShip::APlayerShip() {
 	Camera->SetupAttachment(SpringArm);
 
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
-	Movement->MaxSpeed = 4000.0f;
+	Movement->MaxSpeed = 5500.0f;
 }
 
 void APlayerShip::BeginPlay() {
@@ -58,6 +58,8 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	if (TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerShip::Look);
+		EnhancedInputComponent->BindAction(AccelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Accelerate);
+		EnhancedInputComponent->BindAction(DecelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Decelerate);
 	}
 }
 
@@ -66,6 +68,22 @@ void APlayerShip::Look(const FInputActionValue& Value) {
 	if (GetController()) {
 		AddControllerYawInput(LookAxisValue.X);
 		AddControllerPitchInput(LookAxisValue.Y);
+	}
+}
+
+void APlayerShip::Accelerate(const FInputActionValue& Value) {
+	if (Movement) {
+		if (Movement->MaxSpeed == 2000.0f) {
+			Movement->MaxSpeed = 5500.0f;
+		}
+	}
+}
+
+void APlayerShip::Decelerate(const FInputActionValue& Value) {
+	if (Movement) {
+		if(Movement->MaxSpeed == 5500.0f) {
+			Movement->MaxSpeed = 2000.0f;
+		}
 	}
 }
 
