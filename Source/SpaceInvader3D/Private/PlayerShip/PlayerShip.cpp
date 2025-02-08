@@ -10,8 +10,8 @@
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
 
-	bUseControllerRotationPitch = false;
-	bUseControllerRotationRoll = false;
+	bUseControllerRotationPitch = true;
+	bUseControllerRotationYaw = true;
 
 	ShipCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("ShipCapsule"));
 	SetRootComponent(ShipCapsule);
