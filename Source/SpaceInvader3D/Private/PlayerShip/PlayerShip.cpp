@@ -54,7 +54,6 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	if (TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerShip::Look);
-		EnhancedInputComponent->BindAction(AccelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Accelerate);
 	}
 }
 
@@ -63,15 +62,6 @@ void APlayerShip::Look(const FInputActionValue& Value) {
 	if (GetController()) {
 		AddControllerYawInput(LookAxisValue.X);
 		AddControllerPitchInput(LookAxisValue.Y);
-	}
-}
-
-void APlayerShip::Accelerate(const FInputActionValue& Value) {
-	const float DirectionValue = Value.Get<float>();
-	if (Controller && (DirectionValue != 0.f))
-	{
-		FVector Forward = GetActorForwardVector();
-		AddMovementInput(Forward, DirectionValue);
 	}
 }
 
