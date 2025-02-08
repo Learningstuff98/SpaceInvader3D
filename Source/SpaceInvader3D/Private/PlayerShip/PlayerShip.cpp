@@ -23,7 +23,9 @@ APlayerShip::APlayerShip() {
 	SpringArm->SetupAttachment(GetRootComponent());
 	SpringArm->bUsePawnControlRotation = true;
 	SpringArm->TargetArmLength = 1600.f;
-	SpringArm->TargetOffset = FVector(0.0f, 0.0f, 260.0f);
+	SpringArm->TargetOffset = FVector(0.0f, 0.0f, 450.0f);
+	SpringArm->bEnableCameraRotationLag = true;
+	SpringArm->CameraRotationLagSpeed = 6.0f;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
