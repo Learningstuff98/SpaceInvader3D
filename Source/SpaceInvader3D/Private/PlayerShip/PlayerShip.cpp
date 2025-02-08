@@ -29,6 +29,7 @@ APlayerShip::APlayerShip() {
 	Camera->SetupAttachment(SpringArm);
 
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
+	Movement->MaxSpeed = 4000.0f;
 }
 
 void APlayerShip::BeginPlay() {
@@ -46,6 +47,7 @@ void APlayerShip::SetupMappingContext() {
 
 void APlayerShip::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+	AddMovementInput(GetActorForwardVector(), 1.0f);
 }
 
 void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
