@@ -5,12 +5,13 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "GameFramework/FloatingPawnMovement.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
 
-	bUseControllerRotationPitch = false;
-	bUseControllerRotationRoll = false;
+	bUseControllerRotationPitch = true;
+	bUseControllerRotationYaw = true;
 
 	ShipCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("ShipCapsule"));
 	SetRootComponent(ShipCapsule);
@@ -22,15 +23,27 @@ APlayerShip::APlayerShip() {
 	SpringArm->SetupAttachment(GetRootComponent());
 	SpringArm->bUsePawnControlRotation = true;
 	SpringArm->TargetArmLength = 1600.f;
-	SpringArm->TargetOffset = FVector(0.0f, 0.0f, 260.0f);
+	SpringArm->TargetOffset = FVector(0.0f, 0.0f, 450.0f);
+	SpringArm->bEnableCameraRotationLag = true;
+	SpringArm->CameraRotationLagSpeed = 6.0f;
+	SpringArm->bEnableCameraLag = true;
+	SpringArm->CameraLagSpeed = 12.0f;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
+
+	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
+	Movement->MaxSpeed = 4000.0f;
 }
 
 void APlayerShip::BeginPlay() {
 	Super::BeginPlay();
 	SetupMappingContext();
+}
+
+void APlayerShip::Tick(float DeltaTime) {
+	Super::Tick(DeltaTime);
+	AddMovementInput(GetActorForwardVector(), 1.0f);
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -39,10 +52,6 @@ void APlayerShip::SetupMappingContext() {
 			Subsystem->AddMappingContext(MappingContext, 0);
 		}
 	}
-}
-
-void APlayerShip::Tick(float DeltaTime) {
-	Super::Tick(DeltaTime);
 }
 
 void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {

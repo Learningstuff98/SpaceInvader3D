@@ -49,6 +49,10 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UCameraComponent> Camera;
 
+	// https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/GameFramework/UFloatingPawnMovement
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UFloatingPawnMovement> Movement;
+
 	// Enhanced Input Varaibles
 
 	UPROPERTY(EditAnywhere, Category = Input)
