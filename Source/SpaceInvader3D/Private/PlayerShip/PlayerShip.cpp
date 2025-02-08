@@ -26,6 +26,8 @@ APlayerShip::APlayerShip() {
 	SpringArm->TargetOffset = FVector(0.0f, 0.0f, 450.0f);
 	SpringArm->bEnableCameraRotationLag = true;
 	SpringArm->CameraRotationLagSpeed = 6.0f;
+	SpringArm->bEnableCameraLag = true;
+	SpringArm->CameraLagSpeed = 12.0f;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
@@ -39,17 +41,17 @@ void APlayerShip::BeginPlay() {
 	SetupMappingContext();
 }
 
+void APlayerShip::Tick(float DeltaTime) {
+	Super::Tick(DeltaTime);
+	AddMovementInput(GetActorForwardVector(), 1.0f);
+}
+
 void APlayerShip::SetupMappingContext() {
 	if (TObjectPtr<APlayerController> PlayerController = Cast<APlayerController>(GetController())) {
 		if (TObjectPtr<UEnhancedInputLocalPlayerSubsystem> Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer())) {
 			Subsystem->AddMappingContext(MappingContext, 0);
 		}
 	}
-}
-
-void APlayerShip::Tick(float DeltaTime) {
-	Super::Tick(DeltaTime);
-	AddMovementInput(GetActorForwardVector(), 1.0f);
 }
 
 void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
