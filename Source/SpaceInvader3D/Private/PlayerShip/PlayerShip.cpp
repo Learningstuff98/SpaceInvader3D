@@ -18,7 +18,7 @@ APlayerShip::APlayerShip() {
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	ShipMesh->SetupAttachment(GetRootComponent());
-
+	
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(GetRootComponent());
 	SpringArm->bUsePawnControlRotation = true;
@@ -33,7 +33,10 @@ APlayerShip::APlayerShip() {
 	Camera->SetupAttachment(SpringArm);
 
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
-	Movement->MaxSpeed = 5500.0f;
+
+	MaxSpeed = 4000.0f;
+	MinSpeed = 2000.0f;
+	Movement->MaxSpeed = MaxSpeed;
 }
 
 void APlayerShip::BeginPlay() {
@@ -71,19 +74,15 @@ void APlayerShip::Look(const FInputActionValue& Value) {
 	}
 }
 
-void APlayerShip::Accelerate(const FInputActionValue& Value) {
-	if (Movement) {
-		if (Movement->MaxSpeed == 2000.0f) {
-			Movement->MaxSpeed = 5500.0f;
-		}
+void APlayerShip::Accelerate() {
+	if (Movement && Movement->MaxSpeed == MinSpeed) {
+		Movement->MaxSpeed = MaxSpeed;
 	}
 }
 
-void APlayerShip::Decelerate(const FInputActionValue& Value) {
-	if (Movement) {
-		if(Movement->MaxSpeed == 5500.0f) {
-			Movement->MaxSpeed = 2000.0f;
-		}
+void APlayerShip::Decelerate() {
+	if (Movement && Movement->MaxSpeed == MaxSpeed) {
+		Movement->MaxSpeed = MinSpeed;
 	}
 }
 
