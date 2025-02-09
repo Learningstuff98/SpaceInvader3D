@@ -34,9 +34,9 @@ APlayerShip::APlayerShip() {
 
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 
-	MaxSpeed = 4000.0f;
+	MaxSpeed = 6000.0f;
 	MinSpeed = 2000.0f;
-	Movement->MaxSpeed = MaxSpeed;
+	Movement->MaxSpeed = 4000.0f;
 }
 
 void APlayerShip::BeginPlay() {
@@ -75,14 +75,14 @@ void APlayerShip::Look(const FInputActionValue& Value) {
 }
 
 void APlayerShip::Accelerate() {
-	if (Movement && Movement->MaxSpeed == MinSpeed) {
-		Movement->MaxSpeed = MaxSpeed;
+	if (Movement && Movement->MaxSpeed < MaxSpeed) {
+		Movement->MaxSpeed += 50.0f;
 	}
 }
 
 void APlayerShip::Decelerate() {
-	if (Movement && Movement->MaxSpeed == MaxSpeed) {
-		Movement->MaxSpeed = MinSpeed;
+	if (Movement && Movement->MaxSpeed > MinSpeed) {
+		Movement->MaxSpeed -= 50.0f;
 	}
 }
 
