@@ -6,6 +6,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
+#include "NiagaraComponent.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -37,6 +38,9 @@ APlayerShip::APlayerShip() {
 	MaxSpeed = 6000.0f;
 	MinSpeed = 2000.0f;
 	Movement->MaxSpeed = 4000.0f;
+
+	EngineThrusterEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect"));
+	EngineThrusterEffect->SetupAttachment(GetRootComponent());
 }
 
 void APlayerShip::BeginPlay() {

@@ -55,6 +55,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UFloatingPawnMovement> Movement;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect;
+
 	// Enhanced Input Varaibles
 
 	UPROPERTY(EditAnywhere, Category = Input)
