@@ -28,6 +28,8 @@ private:
 
 	// Callbacks for input
 	void Look(const FInputActionValue& Value);
+	void Accelerate();
+	void Decelerate();
 
 	// Helpers
 	void SetupMappingContext();
@@ -60,4 +62,18 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<class UInputAction> LookAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<class UInputAction> AccelerateAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<class UInputAction> DecelerateAction;
+
+	// Other Variables
+
+	UPROPERTY()
+	float MaxSpeed;
+
+	UPROPERTY()
+	float MinSpeed;
 };

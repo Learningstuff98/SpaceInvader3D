@@ -18,7 +18,7 @@ APlayerShip::APlayerShip() {
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	ShipMesh->SetupAttachment(GetRootComponent());
-
+	
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(GetRootComponent());
 	SpringArm->bUsePawnControlRotation = true;
@@ -33,6 +33,9 @@ APlayerShip::APlayerShip() {
 	Camera->SetupAttachment(SpringArm);
 
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
+
+	MaxSpeed = 6000.0f;
+	MinSpeed = 2000.0f;
 	Movement->MaxSpeed = 4000.0f;
 }
 
@@ -58,6 +61,8 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	if (TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerShip::Look);
+		EnhancedInputComponent->BindAction(AccelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Accelerate);
+		EnhancedInputComponent->BindAction(DecelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Decelerate);
 	}
 }
 
@@ -66,6 +71,18 @@ void APlayerShip::Look(const FInputActionValue& Value) {
 	if (GetController()) {
 		AddControllerYawInput(LookAxisValue.X);
 		AddControllerPitchInput(LookAxisValue.Y);
+	}
+}
+
+void APlayerShip::Accelerate() {
+	if (Movement && Movement->MaxSpeed < MaxSpeed) {
+		Movement->MaxSpeed += 20.0f;
+	}
+}
+
+void APlayerShip::Decelerate() {
+	if (Movement && Movement->MaxSpeed > MinSpeed) {
+		Movement->MaxSpeed -= 20.0f;
 	}
 }
 
