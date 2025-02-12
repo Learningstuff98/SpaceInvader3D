@@ -6,6 +6,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
+#include "NiagaraComponent.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -21,7 +22,6 @@ APlayerShip::APlayerShip() {
 	
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(GetRootComponent());
-	SpringArm->bUsePawnControlRotation = true;
 	SpringArm->TargetArmLength = 1600.f;
 	SpringArm->TargetOffset = FVector(0.0f, 0.0f, 450.0f);
 	SpringArm->bEnableCameraRotationLag = true;
@@ -37,6 +37,18 @@ APlayerShip::APlayerShip() {
 	MaxSpeed = 6000.0f;
 	MinSpeed = 2000.0f;
 	Movement->MaxSpeed = 4000.0f;
+
+	EngineThrusterEffect1 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 1"));
+	EngineThrusterEffect1->SetupAttachment(GetRootComponent());
+
+	EngineThrusterEffect2 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 2"));
+	EngineThrusterEffect2->SetupAttachment(GetRootComponent());
+
+	EngineThrusterEffect3 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 3"));
+	EngineThrusterEffect3->SetupAttachment(GetRootComponent());
+
+	EngineThrusterEffect4 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 4"));
+	EngineThrusterEffect4->SetupAttachment(GetRootComponent());
 }
 
 void APlayerShip::BeginPlay() {
