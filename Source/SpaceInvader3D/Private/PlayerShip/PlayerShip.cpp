@@ -38,8 +38,17 @@ APlayerShip::APlayerShip() {
 	MinSpeed = 2000.0f;
 	Movement->MaxSpeed = 4000.0f;
 
-	EngineThrusterEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect"));
-	EngineThrusterEffect->SetupAttachment(GetRootComponent());
+	EngineThrusterEffect1 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 1"));
+	EngineThrusterEffect1->SetupAttachment(GetRootComponent());
+
+	EngineThrusterEffect2 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 2"));
+	EngineThrusterEffect2->SetupAttachment(GetRootComponent());
+
+	EngineThrusterEffect3 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 3"));
+	EngineThrusterEffect3->SetupAttachment(GetRootComponent());
+
+	EngineThrusterEffect4 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 4"));
+	EngineThrusterEffect4->SetupAttachment(GetRootComponent());
 }
 
 void APlayerShip::BeginPlay() {

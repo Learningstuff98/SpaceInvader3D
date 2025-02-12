@@ -56,7 +56,16 @@ private:
 	TObjectPtr<class UFloatingPawnMovement> Movement;
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect;
+	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect1;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect2;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect3;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect4;
 
 	// Enhanced Input Varaibles
 
