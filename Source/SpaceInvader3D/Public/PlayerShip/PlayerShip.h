@@ -30,6 +30,7 @@ private:
 	void Look(const FInputActionValue& Value);
 	void Accelerate();
 	void Decelerate();
+	void ToggleViewMode();
 
 	// Helpers
 	void SetupMappingContext();
@@ -67,6 +68,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect4;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UArrowComponent> CameraResetTarget;
+
 	// Enhanced Input Varaibles
 
 	UPROPERTY(EditAnywhere, Category = Input)
@@ -80,6 +84,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<class UInputAction> DecelerateAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<class UInputAction> ToggleViewModeAction;
 
 	// Other Variables
 

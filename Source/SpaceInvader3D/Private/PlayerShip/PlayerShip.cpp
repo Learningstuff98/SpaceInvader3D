@@ -7,6 +7,7 @@
 #include "EnhancedInputComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "NiagaraComponent.h"
+#include "Components/ArrowComponent.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -22,6 +23,7 @@ APlayerShip::APlayerShip() {
 	
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(GetRootComponent());
+	SpringArm->bUsePawnControlRotation = true;
 	SpringArm->TargetArmLength = 1600.f;
 	SpringArm->TargetOffset = FVector(0.0f, 0.0f, 450.0f);
 	SpringArm->bEnableCameraRotationLag = true;
@@ -31,6 +33,10 @@ APlayerShip::APlayerShip() {
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
+
+	CameraResetTarget = CreateDefaultSubobject<UArrowComponent>(TEXT("Camera Reset Target"));
+	CameraResetTarget->SetupAttachment(GetRootComponent());
+	CameraResetTarget->SetRelativeLocation(FVector(-1600.0f, 0.0f, 450.0f));
 
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 
@@ -75,6 +81,7 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerShip::Look);
 		EnhancedInputComponent->BindAction(AccelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Accelerate);
 		EnhancedInputComponent->BindAction(DecelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Decelerate);
+		EnhancedInputComponent->BindAction(ToggleViewModeAction, ETriggerEvent::Triggered, this, &APlayerShip::ToggleViewMode);
 	}
 }
 
@@ -95,6 +102,14 @@ void APlayerShip::Accelerate() {
 void APlayerShip::Decelerate() {
 	if (Movement && Movement->MaxSpeed > MinSpeed) {
 		Movement->MaxSpeed = MinSpeed;
+	}
+}
+
+void APlayerShip::ToggleViewMode() {
+	if (GetController() && CameraResetTarget) {
+		GetController()->SetControlRotation(CameraResetTarget->GetComponentRotation());
+		bUseControllerRotationPitch = ~bUseControllerRotationPitch;
+		bUseControllerRotationYaw = ~bUseControllerRotationYaw;
 	}
 }
 
