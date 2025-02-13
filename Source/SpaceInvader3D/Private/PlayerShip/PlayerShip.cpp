@@ -82,6 +82,7 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(AccelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Accelerate);
 		EnhancedInputComponent->BindAction(DecelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Decelerate);
 		EnhancedInputComponent->BindAction(ToggleViewModeAction, ETriggerEvent::Triggered, this, &APlayerShip::ToggleViewMode);
+		EnhancedInputComponent->BindAction(ScrollCameraAction, ETriggerEvent::Triggered, this, &APlayerShip::ScrollCamera);
 	}
 }
 
@@ -111,6 +112,30 @@ void APlayerShip::ToggleViewMode() {
 		bUseControllerRotationPitch = ~bUseControllerRotationPitch;
 		bUseControllerRotationYaw = ~bUseControllerRotationYaw;
 	}
+}
+
+void APlayerShip::ScrollCamera(const FInputActionValue& Value) {
+	const float ScrollValue = Value.Get<float>();
+	if (SpringArm) {
+		if (ScrollValue == 1.f && SpringArm->TargetArmLength > 1100.f) {
+			SpringArm->TargetArmLength -= 100.f;
+			//SpringArm->TargetArmLength = ScrollIn();
+		}
+		else if(ScrollValue == -1.f && SpringArm->TargetArmLength < 2600.f) {
+			SpringArm->TargetArmLength += 100.f;
+		}
+	}
+}
+
+float APlayerShip::ScrollIn()
+{
+	// still trying to figure this out
+	return FMath::FInterpTo(
+		SpringArm->TargetArmLength,
+		SpringArm->TargetArmLength - 100.f,
+		GetWorld()->DeltaTimeSeconds,
+		1
+	);
 }
 
 void APlayerShip::LogMessage(const FString& Message) {

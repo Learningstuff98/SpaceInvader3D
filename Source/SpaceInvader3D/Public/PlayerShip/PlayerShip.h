@@ -31,9 +31,11 @@ private:
 	void Accelerate();
 	void Decelerate();
 	void ToggleViewMode();
+	void ScrollCamera(const FInputActionValue& Value);
 
 	// Helpers
 	void SetupMappingContext();
+	float ScrollIn();
 
 	// Development
 	void LogMessage(const FString& Message);
@@ -87,6 +89,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<class UInputAction> ToggleViewModeAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<class UInputAction> ScrollCameraAction;
 
 	// Other Variables
 
