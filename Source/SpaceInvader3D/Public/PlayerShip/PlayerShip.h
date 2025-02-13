@@ -35,7 +35,6 @@ private:
 
 	// Helpers
 	void SetupMappingContext();
-	float ScrollIn();
 
 	// Development
 	void LogMessage(const FString& Message);

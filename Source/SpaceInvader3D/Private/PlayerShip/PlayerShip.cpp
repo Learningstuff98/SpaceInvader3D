@@ -118,24 +118,12 @@ void APlayerShip::ScrollCamera(const FInputActionValue& Value) {
 	const float ScrollValue = Value.Get<float>();
 	if (SpringArm) {
 		if (ScrollValue == 1.f && SpringArm->TargetArmLength > 1100.f) {
-			SpringArm->TargetArmLength -= 100.f;
-			//SpringArm->TargetArmLength = ScrollIn();
+			SpringArm->TargetArmLength -= 50.f;
 		}
 		else if(ScrollValue == -1.f && SpringArm->TargetArmLength < 2600.f) {
-			SpringArm->TargetArmLength += 100.f;
+			SpringArm->TargetArmLength += 50.f;
 		}
 	}
-}
-
-float APlayerShip::ScrollIn()
-{
-	// still trying to figure this out
-	return FMath::FInterpTo(
-		SpringArm->TargetArmLength,
-		SpringArm->TargetArmLength - 100.f,
-		GetWorld()->DeltaTimeSeconds,
-		1
-	);
 }
 
 void APlayerShip::LogMessage(const FString& Message) {
