@@ -36,6 +36,7 @@ APlayerShip::APlayerShip() {
 
 	CameraResetTarget = CreateDefaultSubobject<UArrowComponent>(TEXT("Camera Reset Target"));
 	CameraResetTarget->SetupAttachment(GetRootComponent());
+	CameraResetTarget->SetRelativeLocation(FVector(-1600.0f, 0.0f, 450.0f));
 
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 
