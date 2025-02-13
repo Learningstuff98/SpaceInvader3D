@@ -88,13 +88,13 @@ void APlayerShip::Look(const FInputActionValue& Value) {
 
 void APlayerShip::Accelerate() {
 	if (Movement && Movement->MaxSpeed < MaxSpeed) {
-		Movement->MaxSpeed += 20.0f;
+		Movement->MaxSpeed = MaxSpeed;
 	}
 }
 
 void APlayerShip::Decelerate() {
 	if (Movement && Movement->MaxSpeed > MinSpeed) {
-		Movement->MaxSpeed -= 20.0f;
+		Movement->MaxSpeed = MinSpeed;
 	}
 }
 
