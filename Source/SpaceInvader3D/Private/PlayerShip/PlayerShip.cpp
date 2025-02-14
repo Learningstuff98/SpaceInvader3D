@@ -110,6 +110,12 @@ void APlayerShip::ToggleViewMode() {
 		GetController()->SetControlRotation(CameraResetTarget->GetComponentRotation());
 		bUseControllerRotationPitch = ~bUseControllerRotationPitch;
 		bUseControllerRotationYaw = ~bUseControllerRotationYaw;
+		if (bUseControllerRotationPitch && bUseControllerRotationYaw) {
+			SpringArm->TargetOffset = FVector(0.0f, 0.0f, 450.0f);
+		}
+		else {
+			SpringArm->TargetOffset = FVector(0.0f, 0.0f, 350.0f);
+		}
 	}
 }
 
