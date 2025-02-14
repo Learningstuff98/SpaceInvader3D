@@ -8,6 +8,8 @@
 #include "GameFramework/FloatingPawnMovement.h"
 #include "NiagaraComponent.h"
 #include "Components/ArrowComponent.h"
+#include "Components/AudioComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -40,7 +42,7 @@ APlayerShip::APlayerShip() {
 
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 
-	MaxSpeed = 6000.0f;
+	MaxSpeed = 7500.0f;
 	MinSpeed = 2000.0f;
 	Movement->MaxSpeed = 4000.0f;
 
@@ -55,6 +57,8 @@ APlayerShip::APlayerShip() {
 
 	EngineThrusterEffect4 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 4"));
 	EngineThrusterEffect4->SetupAttachment(GetRootComponent());
+
+	ThrusterSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Thruster Sound"));
 }
 
 void APlayerShip::BeginPlay() {
@@ -96,7 +100,16 @@ void APlayerShip::Look(const FInputActionValue& Value) {
 void APlayerShip::Accelerate() {
 	if (Movement && Movement->MaxSpeed < MaxSpeed) {
 		Movement->MaxSpeed = MaxSpeed;
+		PlayAccelerationSound();
 	}
+}
+
+void APlayerShip::PlayAccelerationSound() {
+	UGameplayStatics::PlaySoundAtLocation(
+		this,
+		AccelerationSound,
+		GetActorLocation()
+	);
 }
 
 void APlayerShip::Decelerate() {
