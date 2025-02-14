@@ -82,7 +82,6 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(AccelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Accelerate);
 		EnhancedInputComponent->BindAction(DecelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Decelerate);
 		EnhancedInputComponent->BindAction(ToggleViewModeAction, ETriggerEvent::Triggered, this, &APlayerShip::ToggleViewMode);
-		EnhancedInputComponent->BindAction(ScrollCameraAction, ETriggerEvent::Triggered, this, &APlayerShip::ScrollCamera);
 	}
 }
 
@@ -111,18 +110,6 @@ void APlayerShip::ToggleViewMode() {
 		GetController()->SetControlRotation(CameraResetTarget->GetComponentRotation());
 		bUseControllerRotationPitch = ~bUseControllerRotationPitch;
 		bUseControllerRotationYaw = ~bUseControllerRotationYaw;
-	}
-}
-
-void APlayerShip::ScrollCamera(const FInputActionValue& Value) {
-	const float ScrollValue = Value.Get<float>();
-	if (SpringArm) {
-		if (ScrollValue == 1.f && SpringArm->TargetArmLength > 1100.f) {
-			SpringArm->TargetArmLength -= 50.f;
-		}
-		else if(ScrollValue == -1.f && SpringArm->TargetArmLength < 2600.f) {
-			SpringArm->TargetArmLength += 50.f;
-		}
 	}
 }
 

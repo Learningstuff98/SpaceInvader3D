@@ -31,7 +31,6 @@ private:
 	void Accelerate();
 	void Decelerate();
 	void ToggleViewMode();
-	void ScrollCamera(const FInputActionValue& Value);
 
 	// Helpers
 	void SetupMappingContext();
@@ -50,7 +49,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class USpringArmComponent> SpringArm;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCameraComponent> Camera;
 
 	// https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/GameFramework/UFloatingPawnMovement
@@ -90,7 +89,7 @@ private:
 	TObjectPtr<class UInputAction> ToggleViewModeAction;
 
 	UPROPERTY(EditAnywhere, Category = Input)
-	TObjectPtr<class UInputAction> ScrollCameraAction;
+	TObjectPtr<class UInputAction> ZoomCameraAction;
 
 	// Other Variables
 
