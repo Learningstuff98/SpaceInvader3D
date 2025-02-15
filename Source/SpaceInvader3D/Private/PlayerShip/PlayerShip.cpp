@@ -100,22 +100,16 @@ void APlayerShip::Look(const FInputActionValue& Value) {
 }
 
 void APlayerShip::Accelerate() {
-	TObjectPtr<UWorld> World = GetWorld();
-	if (World) {
-		if (Movement && Movement->MaxSpeed < MaxSpeed) {
-			float DeltaSeconds = World->GetDeltaSeconds() * 100.f;
-			Movement->MaxSpeed += (20.f * DeltaSeconds);
-		}
+	if (Movement && Movement->MaxSpeed < MaxSpeed) {
+		float DeltaSeconds = UGameplayStatics::GetWorldDeltaSeconds(this);
+		Movement->MaxSpeed += (10.f * (DeltaSeconds * 100.f));
 	}
 }
 
 void APlayerShip::Decelerate() {
-	TObjectPtr<UWorld> World = GetWorld();
-	if (World) {
-		if (Movement && Movement->MaxSpeed > MinSpeed) {
-			float DeltaSeconds = World->GetDeltaSeconds() * 100.f;
-			Movement->MaxSpeed -= (20.f * DeltaSeconds);
-		}
+	if (Movement && Movement->MaxSpeed > MinSpeed) {
+		float DeltaSeconds = UGameplayStatics::GetWorldDeltaSeconds(this);
+		Movement->MaxSpeed -= (10.f * (DeltaSeconds * 100.f));
 	}
 }
 
