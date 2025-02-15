@@ -34,7 +34,7 @@ private:
 
 	// Helpers
 	void SetupMappingContext();
-	void PlayAccelerationSound();
+	void SetThrusterPitch();
 
 	// Development
 	void LogMessage(const FString& Message);
@@ -101,8 +101,5 @@ private:
 	float MinSpeed;
 
 	UPROPERTY(EditAnywhere, Category = Sound)
-	TObjectPtr<class UAudioComponent> ThrusterSound;
-
-	UPROPERTY(EditAnywhere, Category = Sound)
-	TObjectPtr<class USoundBase> AccelerationSound;
+	TObjectPtr<class UAudioComponent> CruisingThrusterSound;
 };
