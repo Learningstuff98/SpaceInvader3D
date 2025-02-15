@@ -8,6 +8,8 @@
 #include "GameFramework/FloatingPawnMovement.h"
 #include "NiagaraComponent.h"
 #include "Components/ArrowComponent.h"
+#include "Components/AudioComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -40,9 +42,8 @@ APlayerShip::APlayerShip() {
 
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 
-	MaxSpeed = 6000.0f;
-	MinSpeed = 2000.0f;
-	Movement->MaxSpeed = 4000.0f;
+	MaxSpeed = 8500.0f;
+	MinSpeed = 4000.0f;
 
 	EngineThrusterEffect1 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 1"));
 	EngineThrusterEffect1->SetupAttachment(GetRootComponent());
@@ -55,16 +56,21 @@ APlayerShip::APlayerShip() {
 
 	EngineThrusterEffect4 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 4"));
 	EngineThrusterEffect4->SetupAttachment(GetRootComponent());
+
+	CruisingThrusterSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Cruising Thruster Sound"));
+	CruisingThrusterSound->SetVolumeMultiplier(0.02f);
 }
 
 void APlayerShip::BeginPlay() {
 	Super::BeginPlay();
 	SetupMappingContext();
+	Movement->MaxSpeed = MinSpeed;
 }
 
 void APlayerShip::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 	AddMovementInput(GetActorForwardVector(), 1.0f);
+	SetThrusterPitch();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -95,13 +101,15 @@ void APlayerShip::Look(const FInputActionValue& Value) {
 
 void APlayerShip::Accelerate() {
 	if (Movement && Movement->MaxSpeed < MaxSpeed) {
-		Movement->MaxSpeed = MaxSpeed;
+		float DeltaSeconds = UGameplayStatics::GetWorldDeltaSeconds(this);
+		Movement->MaxSpeed += (10.f * (DeltaSeconds * 100.f));
 	}
 }
 
 void APlayerShip::Decelerate() {
 	if (Movement && Movement->MaxSpeed > MinSpeed) {
-		Movement->MaxSpeed = MinSpeed;
+		float DeltaSeconds = UGameplayStatics::GetWorldDeltaSeconds(this);
+		Movement->MaxSpeed -= (10.f * (DeltaSeconds * 100.f));
 	}
 }
 
@@ -117,6 +125,10 @@ void APlayerShip::ToggleViewMode() {
 			SpringArm->TargetOffset = FVector(0.0f, 0.0f, 350.0f);
 		}
 	}
+}
+
+void APlayerShip::SetThrusterPitch() {
+	CruisingThrusterSound->SetPitchMultiplier(Movement->MaxSpeed * 0.0001f);
 }
 
 void APlayerShip::LogMessage(const FString& Message) {
