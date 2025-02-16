@@ -29,9 +29,9 @@ APlayerShip::APlayerShip() {
 	SpringArm->TargetArmLength = 1600.f;
 	SpringArm->TargetOffset = FVector(0.0f, 0.0f, 450.0f);
 	SpringArm->bEnableCameraRotationLag = true;
-	SpringArm->CameraRotationLagSpeed = 6.0f;
+	SpringArm->CameraRotationLagSpeed = 2.0f;
 	SpringArm->bEnableCameraLag = true;
-	SpringArm->CameraLagSpeed = 12.0f;
+	SpringArm->CameraLagSpeed = 6.0f;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
@@ -42,7 +42,7 @@ APlayerShip::APlayerShip() {
 
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 
-	MaxSpeed = 8500.0f;
+	MaxSpeed = 12000.0f;
 	MinSpeed = 4000.0f;
 
 	EngineThrusterEffect1 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 1"));

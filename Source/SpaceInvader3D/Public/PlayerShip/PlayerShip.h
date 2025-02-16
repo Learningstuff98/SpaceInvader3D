@@ -69,6 +69,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect4;
 
+	UPROPERTY(EditAnywhere, Category = Sound)
+	TObjectPtr<class UAudioComponent> CruisingThrusterSound;
+
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UArrowComponent> CameraResetTarget;
 
@@ -99,7 +102,4 @@ private:
 
 	UPROPERTY()
 	float MinSpeed;
-
-	UPROPERTY(EditAnywhere, Category = Sound)
-	TObjectPtr<class UAudioComponent> CruisingThrusterSound;
 };
