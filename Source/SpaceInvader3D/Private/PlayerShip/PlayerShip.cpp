@@ -71,6 +71,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 	AddMovementInput(GetActorForwardVector(), 1.0f);
 	SetThrusterPitch();
+	PerformDownwardSpeedDrift();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -129,6 +130,12 @@ void APlayerShip::ToggleViewMode() {
 
 void APlayerShip::SetThrusterPitch() {
 	CruisingThrusterSound->SetPitchMultiplier(Movement->MaxSpeed * 0.0001f);
+}
+
+void APlayerShip::PerformDownwardSpeedDrift() {
+	if (Movement->MaxSpeed > MinSpeed) {
+		 Movement->MaxSpeed -= 1.f;
+    }
 }
 
 void APlayerShip::LogMessage(const FString& Message) {
