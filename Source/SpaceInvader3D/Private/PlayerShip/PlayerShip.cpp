@@ -102,14 +102,16 @@ void APlayerShip::Look(const FInputActionValue& Value) {
 
 void APlayerShip::Accelerate() {
 	if (Movement && Movement->MaxSpeed < MaxSpeed) {
-		float DeltaSeconds = UGameplayStatics::GetWorldDeltaSeconds(this);
-		Movement->MaxSpeed += (10.f * (DeltaSeconds * 100.f));
+		const float DeltaSeconds = UGameplayStatics::GetWorldDeltaSeconds(this);
+		const float PercentOfMaxSpeed = (Movement->MaxSpeed / MaxSpeed) * 100.f;
+		const float PercentDifference = 100.f - PercentOfMaxSpeed;
+		Movement->MaxSpeed += ((PercentDifference * 0.2f) * (DeltaSeconds * 100.f));
 	}
 }
 
 void APlayerShip::Decelerate() {
 	if (Movement && Movement->MaxSpeed > MinSpeed) {
-		float DeltaSeconds = UGameplayStatics::GetWorldDeltaSeconds(this);
+		const float DeltaSeconds = UGameplayStatics::GetWorldDeltaSeconds(this);
 		Movement->MaxSpeed -= (10.f * (DeltaSeconds * 100.f));
 	}
 }
