@@ -35,6 +35,7 @@ private:
 	// Helpers
 	void SetupMappingContext();
 	void SetThrusterPitch();
+	void PerformDownwardSpeedDrift();
 
 	// Development
 	void LogMessage(const FString& Message);

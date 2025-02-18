@@ -71,6 +71,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 	AddMovementInput(GetActorForwardVector(), 1.0f);
 	SetThrusterPitch();
+	PerformDownwardSpeedDrift();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -101,14 +102,16 @@ void APlayerShip::Look(const FInputActionValue& Value) {
 
 void APlayerShip::Accelerate() {
 	if (Movement && Movement->MaxSpeed < MaxSpeed) {
-		float DeltaSeconds = UGameplayStatics::GetWorldDeltaSeconds(this);
-		Movement->MaxSpeed += (10.f * (DeltaSeconds * 100.f));
+		const float DeltaSeconds = UGameplayStatics::GetWorldDeltaSeconds(this);
+		const float PercentOfMaxSpeed = (Movement->MaxSpeed / MaxSpeed) * 100.f;
+		const float PercentDifference = 100.f - PercentOfMaxSpeed;
+		Movement->MaxSpeed += ((PercentDifference * 0.2f) * (DeltaSeconds * 100.f));
 	}
 }
 
 void APlayerShip::Decelerate() {
 	if (Movement && Movement->MaxSpeed > MinSpeed) {
-		float DeltaSeconds = UGameplayStatics::GetWorldDeltaSeconds(this);
+		const float DeltaSeconds = UGameplayStatics::GetWorldDeltaSeconds(this);
 		Movement->MaxSpeed -= (10.f * (DeltaSeconds * 100.f));
 	}
 }
@@ -129,6 +132,12 @@ void APlayerShip::ToggleViewMode() {
 
 void APlayerShip::SetThrusterPitch() {
 	CruisingThrusterSound->SetPitchMultiplier(Movement->MaxSpeed * 0.0001f);
+}
+
+void APlayerShip::PerformDownwardSpeedDrift() {
+	if (Movement->MaxSpeed > MinSpeed) {
+		 Movement->MaxSpeed -= 1.f;
+    }
 }
 
 void APlayerShip::LogMessage(const FString& Message) {
