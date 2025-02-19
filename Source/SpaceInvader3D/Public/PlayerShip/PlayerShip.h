@@ -36,9 +36,11 @@ private:
 	void SetupMappingContext();
 	void SetThrusterPitch();
 	void PerformDownwardSpeedDrift();
+	void SetThrusterColor();
 
 	// Development
 	void LogMessage(const FString& Message);
+	void LogFloat(const float& Float);
 
 	// Component Variables
 
@@ -54,7 +56,6 @@ private:
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCameraComponent> Camera;
 
-	// https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/GameFramework/UFloatingPawnMovement
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UFloatingPawnMovement> Movement;
 

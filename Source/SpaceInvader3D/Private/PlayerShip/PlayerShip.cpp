@@ -71,6 +71,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 	AddMovementInput(GetActorForwardVector(), 1.0f);
 	SetThrusterPitch();
+	SetThrusterColor();
 	PerformDownwardSpeedDrift();
 }
 
@@ -140,7 +141,24 @@ void APlayerShip::PerformDownwardSpeedDrift() {
     }
 }
 
+void APlayerShip::SetThrusterColor() {
+	const float Blue = (Movement->MaxSpeed * .08f);
+	const float Alpha = (Movement->MaxSpeed * .005f);
+	const FColor NewColor(90.f, 0.f, Blue, Alpha);
+	EngineThrusterEffect1->SetNiagaraVariableLinearColor(FString("ParticleColor"), FLinearColor(NewColor));
+	EngineThrusterEffect2->SetNiagaraVariableLinearColor(FString("ParticleColor"), FLinearColor(NewColor));
+	EngineThrusterEffect3->SetNiagaraVariableLinearColor(FString("ParticleColor"), FLinearColor(NewColor));
+	EngineThrusterEffect4->SetNiagaraVariableLinearColor(FString("ParticleColor"), FLinearColor(NewColor));
+}
+
 void APlayerShip::LogMessage(const FString& Message) {
+	if (GEngine) {
+		GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Green, Message);
+	}
+}
+
+void APlayerShip::LogFloat(const float& Float) {
+	FString Message = FString::Printf(TEXT("THE FLOAT VALUE IS: %f"), Float);
 	if (GEngine) {
 		GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Green, Message);
 	}
