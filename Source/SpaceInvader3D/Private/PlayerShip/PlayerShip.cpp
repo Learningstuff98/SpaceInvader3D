@@ -59,6 +59,8 @@ APlayerShip::APlayerShip() {
 
 	CruisingThrusterSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Cruising Thruster Sound"));
 	CruisingThrusterSound->SetVolumeMultiplier(0.02f);
+
+	FireCooldownTimerFinished = true;
 }
 
 void APlayerShip::BeginPlay() {
@@ -72,7 +74,6 @@ void APlayerShip::Tick(float DeltaTime) {
 	AddMovementInput(GetActorForwardVector(), 1.0f);
 	SetThrusterPitch();
 	SetThrusterColor();
-	PerformDownwardSpeedDrift();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -90,7 +91,21 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(AccelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Accelerate);
 		EnhancedInputComponent->BindAction(DecelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Decelerate);
 		EnhancedInputComponent->BindAction(ToggleViewModeAction, ETriggerEvent::Triggered, this, &APlayerShip::ToggleViewMode);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &APlayerShip::HandleFireTimer);
 	}
+}
+
+void APlayerShip::HandleFireTimer() {
+	if (FireCooldownTimerFinished) {
+		GetWorldTimerManager().ClearTimer(FireCooldownTimer);
+		GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.07f);
+		FireCooldownTimerFinished = false;
+	}
+}
+
+void APlayerShip::Fire() {
+	FireCooldownTimerFinished = true;
+	LogMessage("Fire WAS CALLED");
 }
 
 void APlayerShip::Look(const FInputActionValue& Value) {
@@ -133,12 +148,6 @@ void APlayerShip::ToggleViewMode() {
 
 void APlayerShip::SetThrusterPitch() {
 	CruisingThrusterSound->SetPitchMultiplier(Movement->MaxSpeed * 0.0001f);
-}
-
-void APlayerShip::PerformDownwardSpeedDrift() {
-	if (Movement->MaxSpeed > MinSpeed) {
-		 Movement->MaxSpeed -= 1.f;
-    }
 }
 
 void APlayerShip::SetThrusterColor() {

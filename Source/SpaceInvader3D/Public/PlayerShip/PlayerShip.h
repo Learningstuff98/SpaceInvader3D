@@ -31,11 +31,12 @@ private:
 	void Accelerate();
 	void Decelerate();
 	void ToggleViewMode();
+	void HandleFireTimer();
+	void Fire();
 
 	// Helpers
 	void SetupMappingContext();
 	void SetThrusterPitch();
-	void PerformDownwardSpeedDrift();
 	void SetThrusterColor();
 
 	// Development
@@ -97,6 +98,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<class UInputAction> ZoomCameraAction;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<class UInputAction> FireAction;
+
 	// Other Variables
 
 	UPROPERTY()
@@ -104,4 +108,9 @@ private:
 
 	UPROPERTY()
 	float MinSpeed;
+
+	FTimerHandle FireCooldownTimer;
+
+	UPROPERTY()
+	bool FireCooldownTimerFinished;
 };
