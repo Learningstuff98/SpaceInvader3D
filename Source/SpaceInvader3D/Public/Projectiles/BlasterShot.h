@@ -13,8 +13,18 @@ class SPACEINVADER3D_API ABlasterShot : public AActor
 	
 public:	
 	ABlasterShot();
-	virtual void Tick(float DeltaTime) override;
 
-protected:
+	// <AActor>
+	virtual void Tick(float DeltaTime) override;
+	// </AActor>
+
+private:
+	// <AActor>
 	virtual void BeginPlay() override;
+	// </AActor>
+
+	// Component Variables
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UCapsuleComponent> BlasterShotCapsule;
 };
