@@ -98,14 +98,22 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 void APlayerShip::HandleFireTimer() {
 	if (FireCooldownTimerFinished) {
 		GetWorldTimerManager().ClearTimer(FireCooldownTimer);
-		GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.07f);
+		GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.2f);
 		FireCooldownTimerFinished = false;
 	}
 }
 
 void APlayerShip::Fire() {
 	FireCooldownTimerFinished = true;
-	LogMessage("Fire WAS CALLED");
+	PlayBlasterSound();
+}
+
+void APlayerShip::PlayBlasterSound() {
+	UGameplayStatics::PlaySoundAtLocation(
+		this,
+		BlasterSound,
+		GetActorLocation()
+	);
 }
 
 void APlayerShip::Look(const FInputActionValue& Value) {

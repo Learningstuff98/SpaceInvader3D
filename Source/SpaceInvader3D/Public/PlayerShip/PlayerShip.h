@@ -38,6 +38,7 @@ private:
 	void SetupMappingContext();
 	void SetThrusterPitch();
 	void SetThrusterColor();
+	void PlayBlasterSound();
 
 	// Development
 	void LogMessage(const FString& Message);
@@ -74,6 +75,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<class UAudioComponent> CruisingThrusterSound;
+
+	UPROPERTY(EditAnywhere, Category = Sound)
+	TObjectPtr<class USoundBase> BlasterSound;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UArrowComponent> CameraResetTarget;
