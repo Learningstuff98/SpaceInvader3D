@@ -18,6 +18,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// </AActor>
 
+	// is Helpers a valid category name?
+	void FireInDirection(const FVector& ShootDirection);
+
 private:
 	// <AActor>
 	virtual void BeginPlay() override;
@@ -28,6 +31,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class USphereComponent> BlasterShotSphere;
 
+	// https://dev.epicgames.com/documentation/en-us/unreal-engine/implementing-projectiles-in-unreal-engine
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UProjectileMovementComponent> Movement;
 

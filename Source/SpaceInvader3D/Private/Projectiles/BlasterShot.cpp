@@ -12,6 +12,7 @@ ABlasterShot::ABlasterShot() {
 
 	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
 	Movement->ProjectileGravityScale = 0.0f;
+	Movement->InitialSpeed = 90000.0f;
 
 	BlasterShotEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Blaster Shot Effect"));
 	BlasterShotEffect->SetupAttachment(GetRootComponent());
@@ -23,4 +24,8 @@ void ABlasterShot::BeginPlay() {
 
 void ABlasterShot::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+}
+
+void ABlasterShot::FireInDirection(const FVector& ShootDirection) {
+	Movement->Velocity = ShootDirection * Movement->InitialSpeed;
 }

@@ -32,13 +32,13 @@ private:
 	void Decelerate();
 	void ToggleViewMode();
 	void HandleFireTimer();
-	void Fire();
 
 	// Helpers
 	void SetupMappingContext();
 	void SetThrusterPitch();
 	void SetThrusterColor();
 	void PlayBlasterSound();
+	void Fire();
 
 	// Development
 	void LogMessage(const FString& Message);
@@ -115,6 +115,9 @@ private:
 	UPROPERTY()
 	bool FireCooldownTimerFinished;
 
-	UPROPERTY(EditAnywhere, Category = Sound)
+	UPROPERTY(EditAnywhere, Category = Blaster)
 	TObjectPtr<class USoundBase> BlasterSound;
+
+	UPROPERTY(EditAnywhere, Category = Blaster)
+	TSubclassOf<class ABlasterShot> BlasterShotBlueprintClass;
 };

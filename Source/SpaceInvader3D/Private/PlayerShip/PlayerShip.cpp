@@ -10,6 +10,7 @@
 #include "Components/ArrowComponent.h"
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Projectiles/BlasterShot.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -98,12 +99,26 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 void APlayerShip::HandleFireTimer() {
 	if (FireCooldownTimerFinished) {
 		GetWorldTimerManager().ClearTimer(FireCooldownTimer);
-		GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.2f);
+		GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.15f);
 		FireCooldownTimerFinished = false;
 	}
 }
 
 void APlayerShip::Fire() {
+	if (TObjectPtr<UWorld> World = GetWorld()) {
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = GetInstigator();
+		TObjectPtr<ABlasterShot> BlasterShot = World->SpawnActor<ABlasterShot>(
+			BlasterShotBlueprintClass,
+			GetActorLocation(),
+			GetActorRotation(),
+			SpawnParams
+		);
+		if (BlasterShot) {
+			BlasterShot->FireInDirection(GetActorRotation().Vector());
+		}
+	}
 	FireCooldownTimerFinished = true;
 	PlayBlasterSound();
 }
