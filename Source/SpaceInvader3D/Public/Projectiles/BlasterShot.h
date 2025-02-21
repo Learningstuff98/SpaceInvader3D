@@ -27,4 +27,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UCapsuleComponent> BlasterShotCapsule;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UProjectileMovementComponent> Movement;
 };

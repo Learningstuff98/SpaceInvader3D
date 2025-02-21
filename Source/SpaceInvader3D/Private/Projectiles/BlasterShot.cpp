@@ -1,5 +1,6 @@
 #include "Projectiles/BlasterShot.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 ABlasterShot::ABlasterShot() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -8,6 +9,8 @@ ABlasterShot::ABlasterShot() {
 	SetRootComponent(BlasterShotCapsule);
 	BlasterShotCapsule->SetCapsuleHalfHeight(50.f);
 	BlasterShotCapsule->SetCapsuleRadius(17.f);
+
+	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
 }
 
 void ABlasterShot::BeginPlay() {
