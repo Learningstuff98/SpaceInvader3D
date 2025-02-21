@@ -1,16 +1,20 @@
 #include "Projectiles/BlasterShot.h"
-#include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "NiagaraComponent.h"
 
 ABlasterShot::ABlasterShot() {
 	PrimaryActorTick.bCanEverTick = true;
 
-	BlasterShotCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Blaster Shot Capsule"));
-	SetRootComponent(BlasterShotCapsule);
-	BlasterShotCapsule->SetCapsuleHalfHeight(50.f);
-	BlasterShotCapsule->SetCapsuleRadius(17.f);
+	BlasterShotSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Blaster Shot Sphere"));
+	SetRootComponent(BlasterShotSphere);
+	BlasterShotSphere->SetSphereRadius(22.f);
 
 	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
+	Movement->ProjectileGravityScale = 0.0f;
+
+	BlasterShotEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Blaster Shot Effect"));
+	BlasterShotEffect->SetupAttachment(GetRootComponent());
 }
 
 void ABlasterShot::BeginPlay() {

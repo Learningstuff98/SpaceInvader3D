@@ -26,8 +26,11 @@ private:
 	// Component Variables
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UCapsuleComponent> BlasterShotCapsule;
+	TObjectPtr<class USphereComponent> BlasterShotSphere;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UProjectileMovementComponent> Movement;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UNiagaraComponent> BlasterShotEffect;
 };

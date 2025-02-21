@@ -61,25 +61,22 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UFloatingPawnMovement> Movement;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect1;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect2;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect3;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect4;
 
-	UPROPERTY(EditAnywhere, Category = Sound)
+	UPROPERTY(VisibleAnywhere, Category = Sound)
 	TObjectPtr<class UAudioComponent> CruisingThrusterSound;
 
-	UPROPERTY(EditAnywhere, Category = Sound)
-	TObjectPtr<class USoundBase> BlasterSound;
-
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UArrowComponent> CameraResetTarget;
 
 	// Enhanced Input Varaibles
@@ -117,4 +114,7 @@ private:
 
 	UPROPERTY()
 	bool FireCooldownTimerFinished;
+
+	UPROPERTY(EditAnywhere, Category = Sound)
+	TObjectPtr<class USoundBase> BlasterSound;
 };
