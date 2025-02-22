@@ -105,22 +105,23 @@ void APlayerShip::HandleFireTimer() {
 }
 
 void APlayerShip::Fire() {
-	if (TObjectPtr<UWorld> World = GetWorld()) {
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.Instigator = GetInstigator();
-		TObjectPtr<ABlasterShot> BlasterShot = World->SpawnActor<ABlasterShot>(
-			BlasterShotBlueprintClass,
-			GetActorLocation(),
-			GetActorRotation(),
-			SpawnParams
-		);
-		if (BlasterShot) {
-			BlasterShot->FireInDirection(GetActorRotation().Vector());
-		}
+	if (TObjectPtr<ABlasterShot> BlasterShot = SpawnBlasterShot()) {
+		BlasterShot->FireInDirection(GetActorRotation().Vector());
 	}
 	FireCooldownTimerFinished = true;
 	PlayBlasterSound();
+}
+
+TObjectPtr<ABlasterShot> APlayerShip::SpawnBlasterShot() {
+	TObjectPtr<ABlasterShot> BlasterShot {};
+	if (TObjectPtr<UWorld> World = GetWorld()) {
+		BlasterShot = World->SpawnActor<ABlasterShot>(
+			BlasterShotBlueprintClass,
+			GetActorLocation(),
+			GetActorRotation()
+		);
+	}
+	return BlasterShot;
 }
 
 void APlayerShip::PlayBlasterSound() {

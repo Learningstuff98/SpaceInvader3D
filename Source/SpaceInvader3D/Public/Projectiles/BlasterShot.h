@@ -18,7 +18,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// </AActor>
 
-	// is Helpers a valid category name?
+	// Miscellaneous
 	void FireInDirection(const FVector& ShootDirection);
 
 private:

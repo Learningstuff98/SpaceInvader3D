@@ -33,12 +33,13 @@ private:
 	void ToggleViewMode();
 	void HandleFireTimer();
 
-	// Helpers
+	// Miscellaneous
 	void SetupMappingContext();
 	void SetThrusterPitch();
 	void SetThrusterColor();
 	void PlayBlasterSound();
 	void Fire();
+	TObjectPtr<class ABlasterShot> SpawnBlasterShot();
 
 	// Development
 	void LogMessage(const FString& Message);
