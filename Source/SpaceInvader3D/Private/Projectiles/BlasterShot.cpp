@@ -5,6 +5,7 @@
 
 ABlasterShot::ABlasterShot() {
 	PrimaryActorTick.bCanEverTick = true;
+	InitialLifeSpan = 2.f;
 
 	BlasterShotSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Blaster Shot Sphere"));
 	SetRootComponent(BlasterShotSphere);
