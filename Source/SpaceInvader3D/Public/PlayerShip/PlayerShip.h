@@ -40,6 +40,7 @@ private:
 	void PlayBlasterSound();
 	void Fire();
 	TObjectPtr<class ABlasterShot> SpawnBlasterShot();
+	TObjectPtr<class UArrowComponent> DeterminWhichBarrelToFireFrom();
 
 	// Development
 	void LogMessage(const FString& Message);
@@ -79,6 +80,12 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UArrowComponent> CameraResetTarget;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UArrowComponent> LeftGunBarrel;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UArrowComponent> RightGunBarrel;
 
 	// Enhanced Input Varaibles
 
@@ -121,4 +128,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Blaster)
 	TSubclassOf<class ABlasterShot> BlasterShotBlueprintClass;
+
+	UPROPERTY()
+	bool LeftGunCanFire;
 };

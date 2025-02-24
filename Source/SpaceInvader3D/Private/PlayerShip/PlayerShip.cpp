@@ -41,6 +41,14 @@ APlayerShip::APlayerShip() {
 	CameraResetTarget->SetupAttachment(GetRootComponent());
 	CameraResetTarget->SetRelativeLocation(FVector(-1600.0f, 0.0f, 450.0f));
 
+	LeftGunBarrel = CreateDefaultSubobject<UArrowComponent>(TEXT("Left Gun Barrel"));
+	LeftGunBarrel->SetupAttachment(GetRootComponent());
+
+	RightGunBarrel = CreateDefaultSubobject<UArrowComponent>(TEXT("Right Gun Barrel"));
+	RightGunBarrel->SetupAttachment(GetRootComponent());
+
+	LeftGunCanFire = false;
+
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 
 	MaxSpeed = 12000.0f;
@@ -105,7 +113,7 @@ void APlayerShip::HandleFireTimer() {
 }
 
 void APlayerShip::Fire() {
-	if (TObjectPtr<ABlasterShot> BlasterShot = SpawnBlasterShot()) {
+	if (const TObjectPtr<ABlasterShot> BlasterShot = SpawnBlasterShot()) {
 		BlasterShot->FireInDirection(GetActorRotation().Vector());
 	}
 	FireCooldownTimerFinished = true;
@@ -113,15 +121,27 @@ void APlayerShip::Fire() {
 }
 
 TObjectPtr<ABlasterShot> APlayerShip::SpawnBlasterShot() {
+	const TObjectPtr<UArrowComponent> BarrelToFireFrom = DeterminWhichBarrelToFireFrom();
 	TObjectPtr<ABlasterShot> BlasterShot {};
 	if (TObjectPtr<UWorld> World = GetWorld()) {
 		BlasterShot = World->SpawnActor<ABlasterShot>(
 			BlasterShotBlueprintClass,
-			GetActorLocation(),
-			GetActorRotation()
+			BarrelToFireFrom->GetComponentLocation(),
+			BarrelToFireFrom->GetComponentRotation()
 		);
 	}
 	return BlasterShot;
+}
+
+TObjectPtr<UArrowComponent> APlayerShip::DeterminWhichBarrelToFireFrom() {
+	if (LeftGunCanFire) {
+		LeftGunCanFire = false;
+		return LeftGunBarrel;
+	}
+	else {
+		LeftGunCanFire = true;
+		return RightGunBarrel;
+	}
 }
 
 void APlayerShip::PlayBlasterSound() {
