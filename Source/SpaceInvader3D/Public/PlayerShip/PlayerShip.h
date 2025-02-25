@@ -31,12 +31,16 @@ private:
 	void Accelerate();
 	void Decelerate();
 	void ToggleViewMode();
+	void HandleFireTimer();
 
-	// Helpers
+	// Miscellaneous
 	void SetupMappingContext();
 	void SetThrusterPitch();
-	void PerformDownwardSpeedDrift();
 	void SetThrusterColor();
+	void PlayBlasterSound();
+	void Fire();
+	TObjectPtr<class ABlasterShot> SpawnBlasterShot();
+	TObjectPtr<class UArrowComponent> DeterminWhichBarrelToFireFrom();
 
 	// Development
 	void LogMessage(const FString& Message);
@@ -59,23 +63,29 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UFloatingPawnMovement> Movement;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect1;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect2;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect3;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect4;
 
-	UPROPERTY(EditAnywhere, Category = Sound)
+	UPROPERTY(VisibleAnywhere, Category = Sound)
 	TObjectPtr<class UAudioComponent> CruisingThrusterSound;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UArrowComponent> CameraResetTarget;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UArrowComponent> LeftGunBarrel;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UArrowComponent> RightGunBarrel;
 
 	// Enhanced Input Varaibles
 
@@ -97,6 +107,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<class UInputAction> ZoomCameraAction;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<class UInputAction> FireAction;
+
 	// Other Variables
 
 	UPROPERTY()
@@ -104,4 +117,18 @@ private:
 
 	UPROPERTY()
 	float MinSpeed;
+
+	FTimerHandle FireCooldownTimer;
+
+	UPROPERTY()
+	bool FireCooldownTimerFinished;
+
+	UPROPERTY(EditAnywhere, Category = Blaster)
+	TObjectPtr<class USoundBase> BlasterSound;
+
+	UPROPERTY(EditAnywhere, Category = Blaster)
+	TSubclassOf<class ABlasterShot> BlasterShotBlueprintClass;
+
+	UPROPERTY()
+	bool LeftGunCanFire;
 };

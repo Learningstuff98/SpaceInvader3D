@@ -10,6 +10,7 @@
 #include "Components/ArrowComponent.h"
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Projectiles/BlasterShot.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -40,6 +41,14 @@ APlayerShip::APlayerShip() {
 	CameraResetTarget->SetupAttachment(GetRootComponent());
 	CameraResetTarget->SetRelativeLocation(FVector(-1600.0f, 0.0f, 450.0f));
 
+	LeftGunBarrel = CreateDefaultSubobject<UArrowComponent>(TEXT("Left Gun Barrel"));
+	LeftGunBarrel->SetupAttachment(GetRootComponent());
+
+	RightGunBarrel = CreateDefaultSubobject<UArrowComponent>(TEXT("Right Gun Barrel"));
+	RightGunBarrel->SetupAttachment(GetRootComponent());
+
+	LeftGunCanFire = false;
+
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 
 	MaxSpeed = 12000.0f;
@@ -59,6 +68,8 @@ APlayerShip::APlayerShip() {
 
 	CruisingThrusterSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Cruising Thruster Sound"));
 	CruisingThrusterSound->SetVolumeMultiplier(0.02f);
+
+	FireCooldownTimerFinished = true;
 }
 
 void APlayerShip::BeginPlay() {
@@ -72,7 +83,6 @@ void APlayerShip::Tick(float DeltaTime) {
 	AddMovementInput(GetActorForwardVector(), 1.0f);
 	SetThrusterPitch();
 	SetThrusterColor();
-	PerformDownwardSpeedDrift();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -90,7 +100,56 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(AccelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Accelerate);
 		EnhancedInputComponent->BindAction(DecelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Decelerate);
 		EnhancedInputComponent->BindAction(ToggleViewModeAction, ETriggerEvent::Triggered, this, &APlayerShip::ToggleViewMode);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &APlayerShip::HandleFireTimer);
 	}
+}
+
+void APlayerShip::HandleFireTimer() {
+	if (FireCooldownTimerFinished) {
+		GetWorldTimerManager().ClearTimer(FireCooldownTimer);
+		GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.15f);
+		FireCooldownTimerFinished = false;
+	}
+}
+
+void APlayerShip::Fire() {
+	if (const TObjectPtr<ABlasterShot> BlasterShot = SpawnBlasterShot()) {
+		BlasterShot->FireInDirection(GetActorRotation().Vector());
+	}
+	FireCooldownTimerFinished = true;
+	PlayBlasterSound();
+}
+
+TObjectPtr<ABlasterShot> APlayerShip::SpawnBlasterShot() {
+	const TObjectPtr<UArrowComponent> BarrelToFireFrom = DeterminWhichBarrelToFireFrom();
+	TObjectPtr<ABlasterShot> BlasterShot {};
+	if (TObjectPtr<UWorld> World = GetWorld()) {
+		BlasterShot = World->SpawnActor<ABlasterShot>(
+			BlasterShotBlueprintClass,
+			BarrelToFireFrom->GetComponentLocation(),
+			BarrelToFireFrom->GetComponentRotation()
+		);
+	}
+	return BlasterShot;
+}
+
+TObjectPtr<UArrowComponent> APlayerShip::DeterminWhichBarrelToFireFrom() {
+	if (LeftGunCanFire) {
+		LeftGunCanFire = false;
+		return LeftGunBarrel;
+	}
+	else {
+		LeftGunCanFire = true;
+		return RightGunBarrel;
+	}
+}
+
+void APlayerShip::PlayBlasterSound() {
+	UGameplayStatics::PlaySoundAtLocation(
+		this,
+		BlasterSound,
+		GetActorLocation()
+	);
 }
 
 void APlayerShip::Look(const FInputActionValue& Value) {
@@ -133,12 +192,6 @@ void APlayerShip::ToggleViewMode() {
 
 void APlayerShip::SetThrusterPitch() {
 	CruisingThrusterSound->SetPitchMultiplier(Movement->MaxSpeed * 0.0001f);
-}
-
-void APlayerShip::PerformDownwardSpeedDrift() {
-	if (Movement->MaxSpeed > MinSpeed) {
-		 Movement->MaxSpeed -= 1.f;
-    }
 }
 
 void APlayerShip::SetThrusterColor() {
