@@ -16,17 +16,6 @@ AAsteroid::AAsteroid() {
 
 void AAsteroid::BeginPlay() {
 	Super::BeginPlay();
-	SetRandomMesh();
-}
-
-void AAsteroid::SetRandomMesh() {
-	if (AsteroidMeshComponent) {
-		AsteroidMeshComponent->SetStaticMesh(AsteroidMeshes[GetRandomIndex()]);
-	}
-}
-
-int32 AAsteroid::GetRandomIndex() {
-	return FMath::RandRange(0, 2);
 }
 
 void AAsteroid::Tick(float DeltaTime) {

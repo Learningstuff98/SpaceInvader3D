@@ -23,10 +23,6 @@ private:
 	virtual void BeginPlay() override;
 	// </AActor>
 
-	// Miscellaneous
-	void SetRandomMesh();
-	int32 GetRandomIndex();
-
 	// Component Variables
 
 	UPROPERTY(VisibleAnywhere)
@@ -34,9 +30,4 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UStaticMeshComponent> AsteroidMeshComponent;
-
-	// Other Variables
-
-	UPROPERTY(EditAnywhere, Category = Mesh)
-	TArray<TObjectPtr<class UStaticMesh>> AsteroidMeshes;
 };
