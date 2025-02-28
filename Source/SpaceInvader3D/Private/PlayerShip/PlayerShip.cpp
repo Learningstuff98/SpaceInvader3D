@@ -1,6 +1,6 @@
 #include "PlayerShip/PlayerShip.h"
 #include "Components/StaticMeshComponent.h"
-#include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -11,6 +11,7 @@
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Projectiles/BlasterShot.h"
+#include "Attributes/PlayerShipAttributes.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -18,8 +19,10 @@ APlayerShip::APlayerShip() {
 	bUseControllerRotationPitch = true;
 	bUseControllerRotationYaw = true;
 
-	ShipCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("ShipCapsule"));
-	SetRootComponent(ShipCapsule);
+	ShipSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("ShipSphere"));
+	SetRootComponent(ShipSphereComponent);
+	ShipSphereComponent->SetSphereRadius(250);
+	ShipSphereComponent->SetCollisionProfileName(FName("OverlapAllDynamic"));
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	ShipMesh->SetupAttachment(GetRootComponent());
@@ -37,6 +40,8 @@ APlayerShip::APlayerShip() {
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 
+	Attributes = CreateDefaultSubobject<UPlayerShipAttributes>(TEXT("Attributes"));
+
 	CameraResetTarget = CreateDefaultSubobject<UArrowComponent>(TEXT("Camera Reset Target"));
 	CameraResetTarget->SetupAttachment(GetRootComponent());
 	CameraResetTarget->SetRelativeLocation(FVector(-1600.0f, 0.0f, 450.0f));
@@ -52,7 +57,7 @@ APlayerShip::APlayerShip() {
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 
 	MaxSpeed = 12000.0f;
-	MinSpeed = 4000.0f;
+	MinSpeed = 3300.0f;
 
 	EngineThrusterEffect1 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 1"));
 	EngineThrusterEffect1->SetupAttachment(GetRootComponent());

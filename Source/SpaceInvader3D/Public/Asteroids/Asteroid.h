@@ -23,6 +23,13 @@ private:
 	virtual void BeginPlay() override;
 	// </AActor>
 
+	// Functions
+	UFUNCTION()
+	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	// Development
+	void LogMessage(const FString& Message);
+
 	// Component Variables
 
 	UPROPERTY(VisibleAnywhere)

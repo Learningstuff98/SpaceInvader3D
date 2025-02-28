@@ -49,7 +49,7 @@ private:
 	// Component Variables
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UCapsuleComponent> ShipCapsule;
+	TObjectPtr<class USphereComponent> ShipSphereComponent;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UStaticMeshComponent> ShipMesh;
@@ -86,6 +86,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UArrowComponent> RightGunBarrel;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UPlayerShipAttributes> Attributes;
 
 	// Enhanced Input Varaibles
 
