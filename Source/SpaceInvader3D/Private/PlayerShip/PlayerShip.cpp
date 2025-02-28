@@ -11,6 +11,7 @@
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Projectiles/BlasterShot.h"
+#include "Attributes/PlayerShipAttributes.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -37,6 +38,8 @@ APlayerShip::APlayerShip() {
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 
+	Attributes = CreateDefaultSubobject<UPlayerShipAttributes>(TEXT("Attributes"));
+
 	CameraResetTarget = CreateDefaultSubobject<UArrowComponent>(TEXT("Camera Reset Target"));
 	CameraResetTarget->SetupAttachment(GetRootComponent());
 	CameraResetTarget->SetRelativeLocation(FVector(-1600.0f, 0.0f, 450.0f));
@@ -52,7 +55,7 @@ APlayerShip::APlayerShip() {
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 
 	MaxSpeed = 12000.0f;
-	MinSpeed = 4000.0f;
+	MinSpeed = 500.0f; // setting this low for now
 
 	EngineThrusterEffect1 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 1"));
 	EngineThrusterEffect1->SetupAttachment(GetRootComponent());

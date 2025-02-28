@@ -87,6 +87,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UArrowComponent> RightGunBarrel;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UPlayerShipAttributes> Attributes;
+
 	// Enhanced Input Varaibles
 
 	UPROPERTY(EditAnywhere, Category = Input)
