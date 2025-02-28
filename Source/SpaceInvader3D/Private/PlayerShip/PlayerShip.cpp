@@ -22,7 +22,8 @@ APlayerShip::APlayerShip() {
 	ShipSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("ShipSphere"));
 	SetRootComponent(ShipSphereComponent);
 	ShipSphereComponent->SetSphereRadius(250);
-	ShipSphereComponent->SetCollisionProfileName(FName("OverlapAllDynamic"));
+	ShipSphereComponent->SetCollisionProfileName(FName("BlockAll"));
+	ShipSphereComponent->SetNotifyRigidBodyCollision(true);
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	ShipMesh->SetupAttachment(GetRootComponent());

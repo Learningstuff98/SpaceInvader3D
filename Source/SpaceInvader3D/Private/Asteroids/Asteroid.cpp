@@ -9,7 +9,8 @@ AAsteroid::AAsteroid() {
 
 	AsteroidSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Asteroid Sphere"));
 	SetRootComponent(AsteroidSphere);
-	AsteroidSphere->SetCollisionProfileName(FName("OverlapAllDynamic"));
+	AsteroidSphere->SetCollisionProfileName(FName("BlockAll"));
+	AsteroidSphere->SetNotifyRigidBodyCollision(true);
 
 	AsteroidMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Asteroid Mesh"));
 	AsteroidMeshComponent->SetupAttachment(GetRootComponent());
@@ -17,10 +18,10 @@ AAsteroid::AAsteroid() {
 
 void AAsteroid::BeginPlay() {
 	Super::BeginPlay();
-	AsteroidSphere->OnComponentBeginOverlap.AddDynamic(this, &AAsteroid::OnSphereOverlap);
+	AsteroidSphere->OnComponentHit.AddDynamic(this, &AAsteroid::OnSphereHit);
 }
 
-void AAsteroid::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+void AAsteroid::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
 	LogMessage("THE ASTEROID WAS HIT");
 }
 
