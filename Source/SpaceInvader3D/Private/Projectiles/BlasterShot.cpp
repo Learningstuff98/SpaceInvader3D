@@ -10,6 +10,7 @@ ABlasterShot::ABlasterShot() {
 	BlasterShotSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Blaster Shot Sphere"));
 	SetRootComponent(BlasterShotSphere);
 	BlasterShotSphere->SetSphereRadius(22.f);
+	BlasterShotSphere->SetCollisionProfileName(FName("OverlapAllDynamic"));
 
 	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
 	Movement->ProjectileGravityScale = 0.0f;
