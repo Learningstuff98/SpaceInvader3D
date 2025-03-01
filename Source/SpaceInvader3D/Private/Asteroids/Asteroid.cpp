@@ -29,7 +29,7 @@ void AAsteroid::BeginPlay() {
 void AAsteroid::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
 	if (OtherActor) {
 		if (TObjectPtr<APlayerShip> PlayerShip = Cast<APlayerShip>(OtherActor)) {
-			PlayerShip->PlayerShipAttributes->SetHealth();
+			PlayerShip->PlayerShipAttributes->SetHealthAfterAsteroidImpact();
 		}
 	}
 }

@@ -18,6 +18,8 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	// </UActorComponent>
 
+	// Variables
+
 	UPROPERTY()
 	FVector CurrentVelocity;
 
@@ -32,5 +34,7 @@ private:
 	float Health;
 
 public:
-	void SetHealth();
+	// Public Setters
+
+	void SetHealthAfterAsteroidImpact();
 };

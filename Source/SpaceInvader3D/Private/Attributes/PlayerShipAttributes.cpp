@@ -12,7 +12,7 @@ void UPlayerShipAttributes::BeginPlay() {
 	Super::BeginPlay();
 }
 
-void UPlayerShipAttributes::SetHealth() { // change this function name
+void UPlayerShipAttributes::SetHealthAfterAsteroidImpact() {
 	Health -= abs(CurrentVelocity.X) * 0.003f;
 }
 
