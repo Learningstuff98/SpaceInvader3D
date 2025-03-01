@@ -6,7 +6,6 @@
 #include "Components/ActorComponent.h"
 #include "PlayerShipAttributes.generated.h"
 
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SPACEINVADER3D_API UPlayerShipAttributes : public UActorComponent
 {
@@ -28,4 +27,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Health)
 	int32 Health;
+
+public:
+	void SetHealth();
 };

@@ -3,6 +3,8 @@
 #include "Asteroids/Asteroid.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
+#include "PlayerShip/PlayerShip.h"
+#include "Attributes/PlayerShipAttributes.h"
 
 AAsteroid::AAsteroid() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -26,6 +28,11 @@ void AAsteroid::BeginPlay() {
 
 void AAsteroid::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
 	LogMessage("THE ASTEROID WAS HIT");
+	if (OtherActor) {
+		if (TObjectPtr<APlayerShip> PlayerShip = Cast<APlayerShip>(OtherActor)) {
+			PlayerShip->PlayerShipAttributes->SetHealth();
+		}
+	}
 }
 
 void AAsteroid::Tick(float DeltaTime) {

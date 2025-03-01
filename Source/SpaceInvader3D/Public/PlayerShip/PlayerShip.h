@@ -21,6 +21,11 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// </APawn>
 
+	// Component Variables
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UPlayerShipAttributes> PlayerShipAttributes;
+
 private:
 	// <APawn>
 	virtual void BeginPlay() override;
@@ -86,9 +91,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UArrowComponent> RightGunBarrel;
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UPlayerShipAttributes> Attributes;
 
 	// Enhanced Input Varaibles
 

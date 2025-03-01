@@ -12,6 +12,10 @@ void UPlayerShipAttributes::BeginPlay() {
 	Super::BeginPlay();
 }
 
+void UPlayerShipAttributes::SetHealth() {
+	Health -= 10;
+}
+
 void UPlayerShipAttributes::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }

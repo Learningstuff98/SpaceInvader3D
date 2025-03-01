@@ -44,7 +44,7 @@ APlayerShip::APlayerShip() {
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 
-	Attributes = CreateDefaultSubobject<UPlayerShipAttributes>(TEXT("Attributes"));
+	PlayerShipAttributes = CreateDefaultSubobject<UPlayerShipAttributes>(TEXT("Player Ship Attributes"));
 
 	CameraResetTarget = CreateDefaultSubobject<UArrowComponent>(TEXT("Camera Reset Target"));
 	CameraResetTarget->SetupAttachment(GetRootComponent());
