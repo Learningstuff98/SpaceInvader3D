@@ -9,8 +9,11 @@ AAsteroid::AAsteroid() {
 
 	AsteroidSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Asteroid Sphere"));
 	SetRootComponent(AsteroidSphere);
-	AsteroidSphere->SetCollisionProfileName(FName("BlockAll"));
 	AsteroidSphere->SetNotifyRigidBodyCollision(true);
+	AsteroidSphere->SetCollisionProfileName(FName("Custom"));
+    AsteroidSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	AsteroidSphere->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	AsteroidSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 
 	AsteroidMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Asteroid Mesh"));
 	AsteroidMeshComponent->SetupAttachment(GetRootComponent());

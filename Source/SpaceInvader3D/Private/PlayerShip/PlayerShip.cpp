@@ -22,8 +22,14 @@ APlayerShip::APlayerShip() {
 	ShipSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("ShipSphere"));
 	SetRootComponent(ShipSphereComponent);
 	ShipSphereComponent->SetSphereRadius(250);
-	ShipSphereComponent->SetCollisionProfileName(FName("BlockAll"));
 	ShipSphereComponent->SetNotifyRigidBodyCollision(true);
+	ShipSphereComponent->SetCollisionProfileName(FName("Custom"));
+	ShipSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	ShipSphereComponent->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
+	ShipSphereComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	ShipSphereComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
+	ShipSphereComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+	ShipSphereComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Destructible, ECollisionResponse::ECR_Overlap);
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	ShipMesh->SetupAttachment(GetRootComponent());

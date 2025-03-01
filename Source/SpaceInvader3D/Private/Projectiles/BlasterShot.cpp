@@ -9,8 +9,13 @@ ABlasterShot::ABlasterShot() {
 
 	BlasterShotSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Blaster Shot Sphere"));
 	SetRootComponent(BlasterShotSphere);
-	BlasterShotSphere->SetSphereRadius(22.f);
-	BlasterShotSphere->SetCollisionProfileName(FName("OverlapAllDynamic"));
+	BlasterShotSphere->SetSphereRadius(15.f);
+	BlasterShotSphere->SetNotifyRigidBodyCollision(true);
+	BlasterShotSphere->SetCollisionProfileName(FName("Custom"));
+	BlasterShotSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	BlasterShotSphere->SetCollisionObjectType(ECollisionChannel::ECC_Destructible);
+	BlasterShotSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	BlasterShotSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
 
 	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
 	Movement->ProjectileGravityScale = 0.0f;
