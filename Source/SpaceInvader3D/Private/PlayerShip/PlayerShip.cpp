@@ -1,6 +1,6 @@
 #include "PlayerShip/PlayerShip.h"
 #include "Components/StaticMeshComponent.h"
-#include "Components/SphereComponent.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -19,15 +19,14 @@ APlayerShip::APlayerShip() {
 	bUseControllerRotationPitch = true;
 	bUseControllerRotationYaw = true;
 
-	ShipSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("ShipSphere"));
-	SetRootComponent(ShipSphereComponent);
-	ShipSphereComponent->SetSphereRadius(250);
-	ShipSphereComponent->SetNotifyRigidBodyCollision(true);
-	ShipSphereComponent->SetCollisionProfileName(FName("Custom"));
-	ShipSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	ShipSphereComponent->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
-	ShipSphereComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	ShipSphereComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
+	ShipBoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("ShipBox"));
+	SetRootComponent(ShipBoxComponent);
+	ShipBoxComponent->SetNotifyRigidBodyCollision(true);
+	ShipBoxComponent->SetCollisionProfileName(FName("Custom"));
+	ShipBoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	ShipBoxComponent->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
+	ShipBoxComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	ShipBoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	ShipMesh->SetupAttachment(GetRootComponent());

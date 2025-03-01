@@ -49,7 +49,7 @@ private:
 	// Component Variables
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class USphereComponent> ShipSphereComponent;
+	TObjectPtr<class UBoxComponent> ShipBoxComponent;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UStaticMeshComponent> ShipMesh;
