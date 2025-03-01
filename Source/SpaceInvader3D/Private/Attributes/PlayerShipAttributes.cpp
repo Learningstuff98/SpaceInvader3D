@@ -5,15 +5,15 @@
 UPlayerShipAttributes::UPlayerShipAttributes() {
 	PrimaryComponentTick.bCanEverTick = true;
 
-	Health = 100;
+	Health = 500.0f;
 }
 
 void UPlayerShipAttributes::BeginPlay() {
 	Super::BeginPlay();
 }
 
-void UPlayerShipAttributes::SetHealth() {
-	Health -= 10;
+void UPlayerShipAttributes::SetHealth() { // change this function name
+	Health -= abs(CurrentVelocity.X) * 0.003f;
 }
 
 void UPlayerShipAttributes::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {

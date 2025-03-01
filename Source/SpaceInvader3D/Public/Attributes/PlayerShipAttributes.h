@@ -18,6 +18,9 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	// </UActorComponent>
 
+	UPROPERTY()
+	FVector CurrentVelocity;
+
 private:
 	// <UActorComponent>
 	virtual void BeginPlay() override;
@@ -26,7 +29,7 @@ private:
 	// Variables
 
 	UPROPERTY(EditAnywhere, Category = Health)
-	int32 Health;
+	float Health;
 
 public:
 	void SetHealth();

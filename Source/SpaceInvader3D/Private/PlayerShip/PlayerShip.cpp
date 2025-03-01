@@ -92,6 +92,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	AddMovementInput(GetActorForwardVector(), 1.0f);
 	SetThrusterPitch();
 	SetThrusterColor();
+	PlayerShipAttributes->CurrentVelocity = Movement->Velocity;
 }
 
 void APlayerShip::SetupMappingContext() {
