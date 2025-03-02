@@ -36,8 +36,5 @@ private:
 	TObjectPtr<class USphereComponent> AsteroidSphere;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UAsteroidCenterSphere> AsteroidCenterSphere;
-
-	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UStaticMeshComponent> AsteroidMeshComponent;
 };

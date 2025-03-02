@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "CustomComponents/AsteroidDetectionCapsule.h"
-#include "CustomComponents/AsteroidCenterSphere.h"
+#include "Asteroids/Asteroid.h"
 
 UAsteroidDetectionCapsule::UAsteroidDetectionCapsule() {
-	bIsFlyingTowardsTheCenterOfAnAsteroid = false;
+	bIsFlyingDirectlyTowardsAnAsteroid = false;
 }
 
 void UAsteroidDetectionCapsule::BeginPlay() {
@@ -14,17 +14,17 @@ void UAsteroidDetectionCapsule::BeginPlay() {
 }
 
 void UAsteroidDetectionCapsule::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
-	if (OtherComp) {
-		if (TObjectPtr<UAsteroidCenterSphere> AsteroidCenterSphere = Cast<UAsteroidCenterSphere>(OtherComp)) {
-			bIsFlyingTowardsTheCenterOfAnAsteroid = true;
+	if (OtherActor) {
+		if (TObjectPtr<AAsteroid> Asteroid = Cast<AAsteroid>(OtherActor)) {
+			bIsFlyingDirectlyTowardsAnAsteroid = true;
 		}
 	}
 }
 
 void UAsteroidDetectionCapsule::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
-	bIsFlyingTowardsTheCenterOfAnAsteroid = false;
+	bIsFlyingDirectlyTowardsAnAsteroid = false;
 }
 
-bool UAsteroidDetectionCapsule::GetbIsFlyingTowardsTheCenterOfAnAsteroid() {
-	return bIsFlyingTowardsTheCenterOfAnAsteroid;
+bool UAsteroidDetectionCapsule::GetbIsFlyingDirectlyTowardsAnAsteroid() {
+	return bIsFlyingDirectlyTowardsAnAsteroid;
 }
