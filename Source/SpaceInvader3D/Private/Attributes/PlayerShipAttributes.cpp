@@ -12,8 +12,12 @@ void UPlayerShipAttributes::BeginPlay() {
 	Super::BeginPlay();
 }
 
-void UPlayerShipAttributes::SetHealthAfterAsteroidImpact() {
+void UPlayerShipAttributes::ApplyAsteroidScrapingDamage() {
 	Health -= abs(CurrentVelocity.X) * 0.003f;
+}
+
+void UPlayerShipAttributes::ApplyHeadOnCollisionAsteroidDamage() {
+	Health = 0;
 }
 
 void UPlayerShipAttributes::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {

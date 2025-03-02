@@ -26,6 +26,9 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UPlayerShipAttributes> PlayerShipAttributes;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UAsteroidDetectionCapsule> AsteroidDetectionCapsule;
+
 private:
 	// <APawn>
 	virtual void BeginPlay() override;

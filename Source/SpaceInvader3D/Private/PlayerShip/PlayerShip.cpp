@@ -12,6 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Projectiles/BlasterShot.h"
 #include "Attributes/PlayerShipAttributes.h"
+#include "CustomComponents/AsteroidDetectionCapsule.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -27,6 +28,9 @@ APlayerShip::APlayerShip() {
 	ShipBoxComponent->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
 	ShipBoxComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	ShipBoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
+
+	AsteroidDetectionCapsule = CreateDefaultSubobject<UAsteroidDetectionCapsule>(TEXT("Asteroid Detection Capsule"));
+	AsteroidDetectionCapsule->SetupAttachment(GetRootComponent());
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	ShipMesh->SetupAttachment(GetRootComponent());

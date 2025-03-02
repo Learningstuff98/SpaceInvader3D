@@ -5,6 +5,8 @@
 #include "Components/SphereComponent.h"
 #include "PlayerShip/PlayerShip.h"
 #include "Attributes/PlayerShipAttributes.h"
+#include "CustomComponents/AsteroidCenterSphere.h"
+#include "CustomComponents/AsteroidDetectionCapsule.h"
 
 AAsteroid::AAsteroid() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -16,6 +18,9 @@ AAsteroid::AAsteroid() {
     AsteroidSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	AsteroidSphere->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	AsteroidSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+
+	AsteroidCenterSphere = CreateDefaultSubobject<UAsteroidCenterSphere>(TEXT("Asteroid Center Sphere"));
+	AsteroidCenterSphere->SetupAttachment(GetRootComponent());
 
 	AsteroidMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Asteroid Mesh"));
 	AsteroidMeshComponent->SetupAttachment(GetRootComponent());
@@ -29,7 +34,12 @@ void AAsteroid::BeginPlay() {
 void AAsteroid::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
 	if (OtherActor) {
 		if (TObjectPtr<APlayerShip> PlayerShip = Cast<APlayerShip>(OtherActor)) {
-			PlayerShip->PlayerShipAttributes->SetHealthAfterAsteroidImpact();
+			if (PlayerShip->AsteroidDetectionCapsule->bIsFlyingTowardsTheCenterOfAnAsteroid) {
+				PlayerShip->PlayerShipAttributes->ApplyHeadOnCollisionAsteroidDamage();
+			}
+			else {
+				PlayerShip->PlayerShipAttributes->ApplyAsteroidScrapingDamage();
+			}
 		}
 	}
 }

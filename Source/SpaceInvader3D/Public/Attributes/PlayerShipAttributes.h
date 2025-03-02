@@ -28,13 +28,11 @@ private:
 	virtual void BeginPlay() override;
 	// </UActorComponent>
 
-	// Variables
-
 	UPROPERTY(EditAnywhere, Category = Health)
 	float Health;
 
 public:
 	// Public Setters
-
-	void SetHealthAfterAsteroidImpact();
+	void ApplyAsteroidScrapingDamage();
+	void ApplyHeadOnCollisionAsteroidDamage();
 };
