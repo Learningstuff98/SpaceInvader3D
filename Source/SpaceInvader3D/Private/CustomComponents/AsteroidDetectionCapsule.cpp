@@ -24,3 +24,7 @@ void UAsteroidDetectionCapsule::OnSphereOverlap(UPrimitiveComponent* OverlappedC
 void UAsteroidDetectionCapsule::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
 	bIsFlyingTowardsTheCenterOfAnAsteroid = false;
 }
+
+bool UAsteroidDetectionCapsule::GetbIsFlyingTowardsTheCenterOfAnAsteroid() {
+	return bIsFlyingTowardsTheCenterOfAnAsteroid;
+}
