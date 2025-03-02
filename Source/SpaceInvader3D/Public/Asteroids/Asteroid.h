@@ -23,10 +23,20 @@ private:
 	virtual void BeginPlay() override;
 	// </AActor>
 
+	// Functions
+	UFUNCTION()
+	void OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	// Development
+	void LogMessage(const FString& Message);
+
 	// Component Variables
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class USphereComponent> AsteroidSphere;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UAsteroidCenterSphere> AsteroidCenterSphere;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UStaticMeshComponent> AsteroidMeshComponent;

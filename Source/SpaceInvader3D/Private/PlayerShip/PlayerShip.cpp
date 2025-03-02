@@ -1,6 +1,6 @@
 #include "PlayerShip/PlayerShip.h"
 #include "Components/StaticMeshComponent.h"
-#include "Components/CapsuleComponent.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -11,6 +11,8 @@
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Projectiles/BlasterShot.h"
+#include "Attributes/PlayerShipAttributes.h"
+#include "CustomComponents/AsteroidDetectionCapsule.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -18,8 +20,17 @@ APlayerShip::APlayerShip() {
 	bUseControllerRotationPitch = true;
 	bUseControllerRotationYaw = true;
 
-	ShipCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("ShipCapsule"));
-	SetRootComponent(ShipCapsule);
+	ShipBoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("ShipBox"));
+	SetRootComponent(ShipBoxComponent);
+	ShipBoxComponent->SetNotifyRigidBodyCollision(true);
+	ShipBoxComponent->SetCollisionProfileName(FName("Custom"));
+	ShipBoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	ShipBoxComponent->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
+	ShipBoxComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	ShipBoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
+
+	AsteroidDetectionCapsule = CreateDefaultSubobject<UAsteroidDetectionCapsule>(TEXT("Asteroid Detection Capsule"));
+	AsteroidDetectionCapsule->SetupAttachment(GetRootComponent());
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	ShipMesh->SetupAttachment(GetRootComponent());
@@ -37,6 +48,8 @@ APlayerShip::APlayerShip() {
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 
+	PlayerShipAttributes = CreateDefaultSubobject<UPlayerShipAttributes>(TEXT("Player Ship Attributes"));
+
 	CameraResetTarget = CreateDefaultSubobject<UArrowComponent>(TEXT("Camera Reset Target"));
 	CameraResetTarget->SetupAttachment(GetRootComponent());
 	CameraResetTarget->SetRelativeLocation(FVector(-1600.0f, 0.0f, 450.0f));
@@ -52,7 +65,7 @@ APlayerShip::APlayerShip() {
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 
 	MaxSpeed = 12000.0f;
-	MinSpeed = 4000.0f;
+	MinSpeed = 3300.0f;
 
 	EngineThrusterEffect1 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 1"));
 	EngineThrusterEffect1->SetupAttachment(GetRootComponent());
@@ -83,6 +96,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	AddMovementInput(GetActorForwardVector(), 1.0f);
 	SetThrusterPitch();
 	SetThrusterColor();
+	PlayerShipAttributes->SetCurrentVelocity(Movement->Velocity);
 }
 
 void APlayerShip::SetupMappingContext() {

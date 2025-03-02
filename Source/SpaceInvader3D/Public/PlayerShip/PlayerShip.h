@@ -21,6 +21,14 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// </APawn>
 
+	// Component Variables
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UPlayerShipAttributes> PlayerShipAttributes;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UAsteroidDetectionCapsule> AsteroidDetectionCapsule;
+
 private:
 	// <APawn>
 	virtual void BeginPlay() override;
@@ -49,7 +57,7 @@ private:
 	// Component Variables
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UCapsuleComponent> ShipCapsule;
+	TObjectPtr<class UBoxComponent> ShipBoxComponent;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UStaticMeshComponent> ShipMesh;
