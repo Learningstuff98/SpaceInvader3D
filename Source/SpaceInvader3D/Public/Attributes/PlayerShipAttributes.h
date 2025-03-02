@@ -18,21 +18,22 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	// </UActorComponent>
 
-	// Variables
-
-	UPROPERTY()
-	FVector CurrentVelocity;
-
 private:
 	// <UActorComponent>
 	virtual void BeginPlay() override;
 	// </UActorComponent>
 
+	// Variables
+
 	UPROPERTY(EditAnywhere, Category = Health)
 	float Health;
 
+	UPROPERTY()
+	FVector CurrentVelocity;
+
 public:
 	// Public Setters
+	void SetCurrentVelocity(const FVector& MovementComponentVelocity);
 	void ApplyAsteroidScrapingDamage();
 	void ApplyHeadOnCollisionAsteroidDamage();
 };

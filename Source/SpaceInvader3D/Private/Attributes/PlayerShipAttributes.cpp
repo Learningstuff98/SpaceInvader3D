@@ -12,6 +12,10 @@ void UPlayerShipAttributes::BeginPlay() {
 	Super::BeginPlay();
 }
 
+void UPlayerShipAttributes::SetCurrentVelocity(const FVector& MovementComponentVelocity) {
+	CurrentVelocity = MovementComponentVelocity;
+}
+
 void UPlayerShipAttributes::ApplyAsteroidScrapingDamage() {
 	Health -= abs(CurrentVelocity.X) * 0.003f;
 }
