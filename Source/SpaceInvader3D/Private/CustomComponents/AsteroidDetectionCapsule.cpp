@@ -9,11 +9,11 @@ UAsteroidDetectionCapsule::UAsteroidDetectionCapsule() {
 
 void UAsteroidDetectionCapsule::BeginPlay() {
 	Super::BeginPlay();
-	OnComponentBeginOverlap.AddDynamic(this, &UAsteroidDetectionCapsule::OnSphereOverlap);
-	OnComponentEndOverlap.AddDynamic(this, &UAsteroidDetectionCapsule::OnSphereEndOverlap);
+	OnComponentBeginOverlap.AddDynamic(this, &UAsteroidDetectionCapsule::OnCapsuleOverlap);
+	OnComponentEndOverlap.AddDynamic(this, &UAsteroidDetectionCapsule::OnCapsuleEndOverlap);
 }
 
-void UAsteroidDetectionCapsule::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+void UAsteroidDetectionCapsule::OnCapsuleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	if (OtherActor) {
 		if (TObjectPtr<AAsteroid> Asteroid = Cast<AAsteroid>(OtherActor)) {
 			bIsFlyingDirectlyTowardsAnAsteroid = true;
@@ -21,7 +21,7 @@ void UAsteroidDetectionCapsule::OnSphereOverlap(UPrimitiveComponent* OverlappedC
 	}
 }
 
-void UAsteroidDetectionCapsule::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+void UAsteroidDetectionCapsule::OnCapsuleEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
 	bIsFlyingDirectlyTowardsAnAsteroid = false;
 }
 
