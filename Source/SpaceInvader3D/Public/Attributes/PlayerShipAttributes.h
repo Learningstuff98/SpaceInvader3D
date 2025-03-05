@@ -28,12 +28,16 @@ private:
 	UPROPERTY(EditAnywhere, Category = Health)
 	float Health;
 
+	UPROPERTY(EditAnywhere, Category = Health)
+	float MaxHealth;
+
 	UPROPERTY()
 	FVector CurrentVelocity;
 
 public:
-	// Public Setters
+	// Public Setters and getters
 	void SetCurrentVelocity(const FVector& MovementComponentVelocity);
 	void ApplyAsteroidScrapingDamage();
 	void ApplyHeadOnCollisionAsteroidDamage();
+	float GetHealthPercent();
 };
