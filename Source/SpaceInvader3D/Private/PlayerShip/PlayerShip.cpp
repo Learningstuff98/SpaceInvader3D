@@ -90,17 +90,9 @@ APlayerShip::APlayerShip() {
 void APlayerShip::BeginPlay() {
 	Super::BeginPlay();
 	SetupMappingContext();
-	Movement->MaxSpeed = MinSpeed;
-	if (TObjectPtr<APlayerController> PlayerController = Cast<APlayerController>(GetController())) {
-		if (TObjectPtr<ASpaceInvader3DHUD> SpaceInvader3DHUD = Cast<ASpaceInvader3DHUD>(PlayerController->GetHUD())) {
-			if (TObjectPtr<USpaceInvader3DOverlay> SpaceInvader3DOverlay = SpaceInvader3DHUD->GetSpaceInvader3DOverlay()) {
-				if (PlayerShipAttributes) {
-					SpaceInvader3DOverlay->SetHealthBarPercent(PlayerShipAttributes->GetHealthPercent());
-					PlayerShipOverlay = SpaceInvader3DOverlay;
-				}
-			}
-		}
-	}
+	SetInitialSpeed();
+	PlayerShipOverlay = SetOverlay();
+	SetHealthBarPercent();
 }
 
 void APlayerShip::Tick(float DeltaTime) {
@@ -108,8 +100,8 @@ void APlayerShip::Tick(float DeltaTime) {
 	AddMovementInput(GetActorForwardVector(), 1.0f);
 	SetThrusterPitch();
 	SetThrusterColor();
-	PlayerShipAttributes->SetCurrentVelocity(Movement->Velocity);
-	PlayerShipOverlay->SetHealthBarPercent(PlayerShipAttributes->GetHealthPercent());
+	UpdateVelocity();
+	SetHealthBarPercent();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -169,6 +161,38 @@ TObjectPtr<UArrowComponent> APlayerShip::DeterminWhichBarrelToFireFrom() {
 		LeftGunCanFire = true;
 		return RightGunBarrel;
 	}
+}
+
+void APlayerShip::SetInitialSpeed() {
+	if (Movement) {
+		Movement->MaxSpeed = MinSpeed;
+	}
+}
+
+void APlayerShip::SetHealthBarPercent() {
+	if (PlayerShipOverlay) {
+		PlayerShipOverlay->SetHealthBarPercent(PlayerShipAttributes->GetHealthPercent());
+	}
+}
+
+void APlayerShip::UpdateVelocity() {
+	if (PlayerShipAttributes) {
+		PlayerShipAttributes->SetCurrentVelocity(Movement->Velocity);
+	}
+}
+
+TObjectPtr<USpaceInvader3DOverlay> APlayerShip::SetOverlay() {
+	TObjectPtr<USpaceInvader3DOverlay> Overlay {};
+	if (TObjectPtr<APlayerController> PlayerController = Cast<APlayerController>(GetController())) {
+		if (TObjectPtr<ASpaceInvader3DHUD> SpaceInvader3DHUD = Cast<ASpaceInvader3DHUD>(PlayerController->GetHUD())) {
+			if (TObjectPtr<USpaceInvader3DOverlay> SpaceInvader3DOverlay = SpaceInvader3DHUD->GetSpaceInvader3DOverlay()) {
+				if (PlayerShipAttributes) {
+					Overlay = SpaceInvader3DOverlay;
+				}
+			}
+		}
+	}
+	return Overlay;
 }
 
 void APlayerShip::PlayBlasterSound() {

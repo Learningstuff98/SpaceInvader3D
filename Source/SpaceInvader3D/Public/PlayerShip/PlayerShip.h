@@ -49,6 +49,10 @@ private:
 	void Fire();
 	TObjectPtr<class ABlasterShot> SpawnBlasterShot();
 	TObjectPtr<class UArrowComponent> DeterminWhichBarrelToFireFrom();
+	void SetInitialSpeed();
+	void UpdateVelocity();
+	TObjectPtr<class USpaceInvader3DOverlay> SetOverlay();
+	void SetHealthBarPercent();
 
 	// Development
 	void LogMessage(const FString& Message);
