@@ -6,6 +6,7 @@ UPlayerShipAttributes::UPlayerShipAttributes() {
 	PrimaryComponentTick.bCanEverTick = true;
 
 	Health = 500.0f;
+	MaxHealth = 500.0f;
 }
 
 void UPlayerShipAttributes::BeginPlay() {
@@ -22,6 +23,10 @@ void UPlayerShipAttributes::ApplyAsteroidScrapingDamage() {
 
 void UPlayerShipAttributes::ApplyHeadOnCollisionAsteroidDamage() {
 	Health = 0;
+}
+
+float UPlayerShipAttributes::GetHealthPercent() {
+	return Health / MaxHealth;
 }
 
 void UPlayerShipAttributes::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {

@@ -94,7 +94,9 @@ void APlayerShip::BeginPlay() {
 	if (TObjectPtr<APlayerController> PlayerController = Cast<APlayerController>(GetController())) {
 		if (TObjectPtr<ASpaceInvader3DHUD> SpaceInvader3DHUD = Cast<ASpaceInvader3DHUD>(PlayerController->GetHUD())) {
 			if (TObjectPtr<USpaceInvader3DOverlay> SpaceInvader3DOverlay = SpaceInvader3DHUD->GetSpaceInvader3DOverlay()) {
-				SpaceInvader3DOverlay->SetHealthBarPercent(.8f);
+				if (PlayerShipAttributes) {
+					SpaceInvader3DOverlay->SetHealthBarPercent(PlayerShipAttributes->GetHealthPercent());
+				}
 			}
 		}
 	}
