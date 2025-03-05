@@ -139,4 +139,7 @@ private:
 
 	UPROPERTY()
 	bool LeftGunCanFire;
+
+	UPROPERTY()
+	TObjectPtr<class USpaceInvader3DOverlay> PlayerShipOverlay;
 };

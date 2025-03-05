@@ -96,6 +96,7 @@ void APlayerShip::BeginPlay() {
 			if (TObjectPtr<USpaceInvader3DOverlay> SpaceInvader3DOverlay = SpaceInvader3DHUD->GetSpaceInvader3DOverlay()) {
 				if (PlayerShipAttributes) {
 					SpaceInvader3DOverlay->SetHealthBarPercent(PlayerShipAttributes->GetHealthPercent());
+					PlayerShipOverlay = SpaceInvader3DOverlay;
 				}
 			}
 		}
@@ -108,6 +109,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	SetThrusterPitch();
 	SetThrusterColor();
 	PlayerShipAttributes->SetCurrentVelocity(Movement->Velocity);
+	PlayerShipOverlay->SetHealthBarPercent(PlayerShipAttributes->GetHealthPercent());
 }
 
 void APlayerShip::SetupMappingContext() {
