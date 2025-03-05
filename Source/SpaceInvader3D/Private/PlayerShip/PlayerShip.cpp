@@ -13,6 +13,8 @@
 #include "Projectiles/BlasterShot.h"
 #include "Attributes/PlayerShipAttributes.h"
 #include "CustomComponents/AsteroidDetectionCapsule.h"
+#include "HUD/SpaceInvader3DHUD.h"
+#include "HUD/SpaceInvader3DOverlay.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -89,6 +91,13 @@ void APlayerShip::BeginPlay() {
 	Super::BeginPlay();
 	SetupMappingContext();
 	Movement->MaxSpeed = MinSpeed;
+	if (TObjectPtr<APlayerController> PlayerController = Cast<APlayerController>(GetController())) {
+		if (TObjectPtr<ASpaceInvader3DHUD> SpaceInvader3DHUD = Cast<ASpaceInvader3DHUD>(PlayerController->GetHUD())) {
+			if (TObjectPtr<USpaceInvader3DOverlay> SpaceInvader3DOverlay = SpaceInvader3DHUD->GetSpaceInvader3DOverlay()) {
+				SpaceInvader3DOverlay->SetHealthBarPercent(.8f);
+			}
+		}
+	}
 }
 
 void APlayerShip::Tick(float DeltaTime) {

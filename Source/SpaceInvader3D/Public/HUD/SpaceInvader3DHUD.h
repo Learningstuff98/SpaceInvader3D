@@ -22,4 +22,8 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<class USpaceInvader3DOverlay> SpaceInvader3DOverlay;
+
+public:
+
+	FORCEINLINE TObjectPtr<USpaceInvader3DOverlay> GetSpaceInvader3DOverlay() const { return SpaceInvader3DOverlay; }
 };
