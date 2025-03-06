@@ -34,10 +34,15 @@ private:
 	UPROPERTY()
 	FVector CurrentVelocity;
 
+	UPROPERTY(EditAnywhere, Category = Impact)
+	bool bHasPlayedCrashSound;
+
 public:
 	// Public Setters and getters
 	void SetCurrentVelocity(const FVector& MovementComponentVelocity);
 	void ApplyAsteroidScrapingDamage();
 	void ApplyHeadOnCollisionAsteroidDamage();
 	float GetHealthPercent();
+	FORCEINLINE bool GetbHasPlayedCrashSound() const { return bHasPlayedCrashSound; }
+	void SetbHasPlayedCrashSound(const bool& BoolValue);
 };

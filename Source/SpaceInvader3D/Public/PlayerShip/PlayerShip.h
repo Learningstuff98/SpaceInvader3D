@@ -21,6 +21,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// </APawn>
 
+	// Miscellaneous
+
+	void PlayCrashingSound();
+
 	// Component Variables
 
 	UPROPERTY(VisibleAnywhere)
@@ -137,6 +141,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Blaster)
 	TObjectPtr<class USoundBase> BlasterSound;
+
+	UPROPERTY(EditAnywhere, Category = Impact)
+	TObjectPtr<class USoundBase> CrashingSound;
 
 	UPROPERTY(EditAnywhere, Category = Blaster)
 	TSubclassOf<class ABlasterShot> BlasterShotBlueprintClass;

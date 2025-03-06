@@ -203,6 +203,15 @@ void APlayerShip::PlayBlasterSound() {
 	);
 }
 
+
+void APlayerShip::PlayCrashingSound() {
+	UGameplayStatics::PlaySoundAtLocation(
+		this,
+		CrashingSound,
+		GetActorLocation()
+	);
+}
+
 void APlayerShip::Look(const FInputActionValue& Value) {
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
 	if (GetController()) {
