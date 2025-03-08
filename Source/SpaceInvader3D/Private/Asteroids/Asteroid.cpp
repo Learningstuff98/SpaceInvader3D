@@ -21,6 +21,8 @@ AAsteroid::AAsteroid() {
 
 	AsteroidMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Asteroid Mesh"));
 	AsteroidMeshComponent->SetupAttachment(GetRootComponent());
+
+	bHasPlayedImpactSound = false;
 }
 
 void AAsteroid::BeginPlay() {
@@ -43,10 +45,23 @@ void AAsteroid::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 				}
 			}
 			else {
-				LogMessage("Put bouncing off asteroids mechanic here");
+				if (!bHasPlayedImpactSound) {
+					PlayImpactSound();
+					bHasPlayedImpactSound = true;
+					// code that sends the ship in a different direction goes here
+					// bHasPlayedImpactSound = false; goes here
+				}
 			}
 		}
 	}
+}
+
+void AAsteroid::PlayImpactSound() {
+	UGameplayStatics::PlaySoundAtLocation(
+		this,
+		ImpactSound,
+		GetActorLocation()
+	);
 }
 
 void AAsteroid::LogMessage(const FString& Message) {
