@@ -6,6 +6,7 @@
 #include "PlayerShip/PlayerShip.h"
 #include "Attributes/PlayerShipAttributes.h"
 #include "CustomComponents/AsteroidDetectionCapsule.h"
+#include "Kismet/GameplayStatics.h"
 
 AAsteroid::AAsteroid() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -32,6 +33,10 @@ void AAsteroid::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		if (TObjectPtr<APlayerShip> PlayerShip = Cast<APlayerShip>(OtherActor)) {
 			if (PlayerShip->AsteroidDetectionCapsule->GetbIsFlyingDirectlyTowardsAnAsteroid()) {
 				PlayerShip->PlayerShipAttributes->ApplyHeadOnCollisionAsteroidDamage();
+				if (!PlayerShip->PlayerShipAttributes->GetbHasPlayedCrashSound()) {
+					PlayerShip->PlayCrashingSound();
+					PlayerShip->PlayerShipAttributes->SetbHasPlayedCrashSound(true);
+				}
 			}
 			else {
 				PlayerShip->PlayerShipAttributes->ApplyAsteroidScrapingDamage();
