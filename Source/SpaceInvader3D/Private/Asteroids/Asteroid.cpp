@@ -21,8 +21,6 @@ AAsteroid::AAsteroid() {
 
 	AsteroidMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Asteroid Mesh"));
 	AsteroidMeshComponent->SetupAttachment(GetRootComponent());
-
-	ScrapingSoundCooldownTimerFinished = true;
 }
 
 void AAsteroid::BeginPlay() {
@@ -42,27 +40,9 @@ void AAsteroid::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 			}
 			else {
 				PlayerShip->PlayerShipAttributes->ApplyAsteroidScrapingDamage();
-				HandleScrapingSound();
 			}
 		}
 	}
-}
-
-void AAsteroid::HandleScrapingSound() {
-	if (ScrapingSoundCooldownTimerFinished) {
-		GetWorldTimerManager().ClearTimer(ScrapingSoundCooldownTimer);
-		GetWorldTimerManager().SetTimer(ScrapingSoundCooldownTimer, this, &AAsteroid::PlayScrapingSound, 0.15f);
-		ScrapingSoundCooldownTimerFinished = false;
-	}
-}
-
-void AAsteroid::PlayScrapingSound() {
-	UGameplayStatics::PlaySoundAtLocation(
-		this,
-		ScrapingSound,
-		GetActorLocation()
-	);
-	ScrapingSoundCooldownTimerFinished = true;
 }
 
 void AAsteroid::Tick(float DeltaTime) {
