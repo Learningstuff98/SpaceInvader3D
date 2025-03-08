@@ -18,10 +18,6 @@ void UPlayerShipAttributes::SetCurrentVelocity(const FVector& MovementComponentV
 	CurrentVelocity = MovementComponentVelocity;
 }
 
-void UPlayerShipAttributes::ApplyAsteroidScrapingDamage() {
-	Health -= abs(CurrentVelocity.X) * 0.003f;
-}
-
 void UPlayerShipAttributes::ApplyHeadOnCollisionAsteroidDamage() {
 	Health = 0;
 }
