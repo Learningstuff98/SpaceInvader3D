@@ -28,6 +28,10 @@ void AAsteroid::BeginPlay() {
 	AsteroidSphere->OnComponentHit.AddDynamic(this, &AAsteroid::OnSphereHit);
 }
 
+void AAsteroid::Tick(float DeltaTime) {
+	Super::Tick(DeltaTime);
+}
+
 void AAsteroid::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
 	if (OtherActor) {
 		if (TObjectPtr<APlayerShip> PlayerShip = Cast<APlayerShip>(OtherActor)) {
@@ -39,14 +43,10 @@ void AAsteroid::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 				}
 			}
 			else {
-				PlayerShip->PlayerShipAttributes->ApplyAsteroidScrapingDamage();
+				LogMessage("Put bouncing off asteroids mechanic here");
 			}
 		}
 	}
-}
-
-void AAsteroid::Tick(float DeltaTime) {
-	Super::Tick(DeltaTime);
 }
 
 void AAsteroid::LogMessage(const FString& Message) {

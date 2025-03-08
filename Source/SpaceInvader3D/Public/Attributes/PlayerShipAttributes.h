@@ -40,7 +40,6 @@ private:
 public:
 	// Public Setters and getters
 	void SetCurrentVelocity(const FVector& MovementComponentVelocity);
-	void ApplyAsteroidScrapingDamage();
 	void ApplyHeadOnCollisionAsteroidDamage();
 	float GetHealthPercent();
 	FORCEINLINE bool GetbHasPlayedCrashSound() const { return bHasPlayedCrashSound; }
