@@ -48,8 +48,9 @@ void AAsteroid::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 				if (!bHasPlayedImpactSound) {
 					PlayImpactSound();
 					bHasPlayedImpactSound = true;
-					// code that sends the ship in a different direction goes here
-					// bHasPlayedImpactSound = false; goes here
+					TObjectPtr<AActor> Asteroid = Cast<AActor>(this);
+					PlayerShip->ChangeDirectionAfterImpact(Asteroid);
+					//bHasPlayedImpactSound = false;
 				}
 			}
 		}
