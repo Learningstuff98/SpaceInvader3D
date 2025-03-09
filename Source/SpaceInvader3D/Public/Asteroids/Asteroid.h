@@ -26,6 +26,7 @@ private:
 	// Functions
 	UFUNCTION()
 	void OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	void PlayImpactSound();
 
 	// Development
 	void LogMessage(const FString& Message);
@@ -37,4 +38,12 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UStaticMeshComponent> AsteroidMeshComponent;
+
+	// Other Variables
+
+	UPROPERTY(EditAnywhere, Category = Sound)
+	TObjectPtr<class USoundBase> ImpactSound;
+
+	UPROPERTY()
+	bool bHasPlayedImpactSound;
 };

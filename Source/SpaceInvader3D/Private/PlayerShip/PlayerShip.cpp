@@ -15,6 +15,7 @@
 #include "CustomComponents/AsteroidDetectionCapsule.h"
 #include "HUD/SpaceInvader3DHUD.h"
 #include "HUD/SpaceInvader3DOverlay.h"
+//#include "Math/UnrealMathUtility.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -173,6 +174,25 @@ void APlayerShip::SetHealthBarPercent() {
 	if (PlayerShipOverlay) {
 		PlayerShipOverlay->SetHealthBarPercent(PlayerShipAttributes->GetHealthPercent());
 	}
+}
+
+void APlayerShip::ChangeDirectionAfterImpact(const TObjectPtr<AActor> Asteroid) {
+	// https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Core/Math/FMath/GetReflectionVector
+
+	const FVector NewShipDirection = FMath::GetReflectionVector(
+	    GetActorForwardVector(),
+		Asteroid->GetActorLocation()
+	);
+	
+	FVector NewForwardVector = FVector(
+	    NewShipDirection.X,
+	    NewShipDirection.Y,
+		NewShipDirection.Z
+	);
+
+	FRotator NewRotation = FRotationMatrix::MakeFromX(NewForwardVector).Rotator();
+
+	GetController()->SetControlRotation(NewRotation);
 }
 
 void APlayerShip::UpdateVelocity() {

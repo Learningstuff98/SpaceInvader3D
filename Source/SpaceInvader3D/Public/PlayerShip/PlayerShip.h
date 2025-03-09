@@ -24,6 +24,7 @@ public:
 	// Miscellaneous
 
 	void PlayCrashingSound();
+	void ChangeDirectionAfterImpact(const TObjectPtr<AActor> Asteroid);
 
 	// Component Variables
 
