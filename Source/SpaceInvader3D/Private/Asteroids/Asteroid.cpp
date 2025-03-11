@@ -5,7 +5,6 @@
 #include "Components/SphereComponent.h"
 #include "PlayerShip/PlayerShip.h"
 #include "Attributes/PlayerShipAttributes.h"
-#include "CustomComponents/AsteroidDetectionCapsule.h"
 #include "Kismet/GameplayStatics.h"
 
 AAsteroid::AAsteroid() {
@@ -36,23 +35,12 @@ void AAsteroid::Tick(float DeltaTime) {
 
 void AAsteroid::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
 	if (OtherActor) {
-		if (TObjectPtr<APlayerShip> PlayerShip = Cast<APlayerShip>(OtherActor)) {
-			if (PlayerShip->AsteroidDetectionCapsule->GetbIsFlyingDirectlyTowardsAnAsteroid()) {
-				PlayerShip->PlayerShipAttributes->ApplyHeadOnCollisionAsteroidDamage();
-				if (!PlayerShip->PlayerShipAttributes->GetbHasPlayedCrashSound()) {
-					PlayerShip->PlayCrashingSound();
-					PlayerShip->PlayerShipAttributes->SetbHasPlayedCrashSound(true);
-				}
+		if (!bHasPlayedImpactSound) {
+			if (TObjectPtr<APlayerShip> PlayerShip = Cast<APlayerShip>(OtherActor)) {
+				PlayerShip->PlayerShipAttributes->ApplyCollisionDamage();
 			}
-			else {
-				if (!bHasPlayedImpactSound) {
-					PlayImpactSound();
-					bHasPlayedImpactSound = true;
-					TObjectPtr<AActor> Asteroid = Cast<AActor>(this);
-					PlayerShip->ChangeDirectionAfterImpact(Asteroid);
-					//bHasPlayedImpactSound = false;
-				}
-			}
+			PlayImpactSound();
+			bHasPlayedImpactSound = true;
 		}
 	}
 }

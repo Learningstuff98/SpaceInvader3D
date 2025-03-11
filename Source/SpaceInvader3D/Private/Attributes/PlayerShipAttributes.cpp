@@ -7,7 +7,6 @@ UPlayerShipAttributes::UPlayerShipAttributes() {
 
 	Health = 500.0f;
 	MaxHealth = 500.0f;
-	bHasPlayedCrashSound = false;
 }
 
 void UPlayerShipAttributes::BeginPlay() {
@@ -18,16 +17,12 @@ void UPlayerShipAttributes::SetCurrentVelocity(const FVector& MovementComponentV
 	CurrentVelocity = MovementComponentVelocity;
 }
 
-void UPlayerShipAttributes::ApplyHeadOnCollisionAsteroidDamage() {
-	Health = 0;
+void UPlayerShipAttributes::ApplyCollisionDamage() {
+	Health -= 100; // damage should be based on current velocity
 }
 
 float UPlayerShipAttributes::GetHealthPercent() {
 	return Health / MaxHealth;
-}
-
-void UPlayerShipAttributes::SetbHasPlayedCrashSound(const bool& BoolValue) {
-	bHasPlayedCrashSound = BoolValue;
 }
 
 void UPlayerShipAttributes::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
