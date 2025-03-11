@@ -20,6 +20,9 @@ APlayerShip::APlayerShip() {
 
 	bUseControllerRotationPitch = true;
 	bUseControllerRotationYaw = true;
+	bFireCooldownTimerFinished = true;
+	bHasPlayedExplodingSound = false;
+	bLeftGunCanFire = false;
 
 	ShipBoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("ShipBox"));
 	SetRootComponent(ShipBoxComponent);
@@ -58,8 +61,6 @@ APlayerShip::APlayerShip() {
 	RightGunBarrel = CreateDefaultSubobject<UArrowComponent>(TEXT("Right Gun Barrel"));
 	RightGunBarrel->SetupAttachment(GetRootComponent());
 
-	LeftGunCanFire = false;
-
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 
 	MaxSpeed = 12000.0f;
@@ -79,8 +80,6 @@ APlayerShip::APlayerShip() {
 
 	CruisingThrusterSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Cruising Thruster Sound"));
 	CruisingThrusterSound->SetVolumeMultiplier(0.02f);
-
-	FireCooldownTimerFinished = true;
 }
 
 void APlayerShip::BeginPlay() {
@@ -98,6 +97,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	SetThrusterColor();
 	UpdateVelocity();
 	SetHealthBarPercent();
+	HandleExplodingSound();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -120,10 +120,10 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 }
 
 void APlayerShip::HandleFireTimer() {
-	if (FireCooldownTimerFinished) {
+	if (bFireCooldownTimerFinished) {
 		GetWorldTimerManager().ClearTimer(FireCooldownTimer);
 		GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.15f);
-		FireCooldownTimerFinished = false;
+		bFireCooldownTimerFinished = false;
 	}
 }
 
@@ -131,7 +131,7 @@ void APlayerShip::Fire() {
 	if (const TObjectPtr<ABlasterShot> BlasterShot = SpawnBlasterShot()) {
 		BlasterShot->FireInDirection(GetActorRotation().Vector());
 	}
-	FireCooldownTimerFinished = true;
+	bFireCooldownTimerFinished = true;
 	PlayBlasterSound();
 }
 
@@ -149,12 +149,12 @@ TObjectPtr<ABlasterShot> APlayerShip::SpawnBlasterShot() {
 }
 
 TObjectPtr<UArrowComponent> APlayerShip::DeterminWhichBarrelToFireFrom() {
-	if (LeftGunCanFire) {
-		LeftGunCanFire = false;
+	if (bLeftGunCanFire) {
+		bLeftGunCanFire = false;
 		return LeftGunBarrel;
 	}
 	else {
-		LeftGunCanFire = true;
+		bLeftGunCanFire = true;
 		return RightGunBarrel;
 	}
 }
@@ -199,11 +199,19 @@ void APlayerShip::PlayBlasterSound() {
 	);
 }
 
+void APlayerShip::HandleExplodingSound() {
+	if (PlayerShipAttributes) {
+		if (!bHasPlayedExplodingSound && PlayerShipAttributes->GetHealthPercent() <= 0.f) {
+			PlayExplodingSound();
+			bHasPlayedExplodingSound = true;
+		}
+	}
+}
 
-void APlayerShip::PlayCrashingSound() {
+void APlayerShip::PlayExplodingSound() {
 	UGameplayStatics::PlaySoundAtLocation(
 		this,
-		CrashingSound,
+		ExplodingSound,
 		GetActorLocation()
 	);
 }

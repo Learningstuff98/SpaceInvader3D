@@ -18,7 +18,7 @@ void UPlayerShipAttributes::SetCurrentVelocity(const FVector& MovementComponentV
 }
 
 void UPlayerShipAttributes::ApplyCollisionDamage() {
-	Health -= 100; // damage should be based on current velocity
+	Health -= 100.0f; // damage should be based on current velocity. also health sould be a float 
 }
 
 float UPlayerShipAttributes::GetHealthPercent() {
