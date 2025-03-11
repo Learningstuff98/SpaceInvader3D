@@ -21,7 +21,7 @@ AAsteroid::AAsteroid() {
 	AsteroidMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Asteroid Mesh"));
 	AsteroidMeshComponent->SetupAttachment(GetRootComponent());
 
-	bHasPlayedImpactSound = false;
+	bHasPerformedImpact = false;
 }
 
 void AAsteroid::BeginPlay() {
@@ -35,13 +35,17 @@ void AAsteroid::Tick(float DeltaTime) {
 
 void AAsteroid::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
 	if (OtherActor) {
-		if (!bHasPlayedImpactSound) {
-			if (TObjectPtr<APlayerShip> PlayerShip = Cast<APlayerShip>(OtherActor)) {
-				PlayerShip->PlayerShipAttributes->ApplyCollisionDamage();
-			}
+		if (!bHasPerformedImpact) {
+			ApplyCollisionDamage(OtherActor);
 			PlayImpactSound();
-			bHasPlayedImpactSound = true;
+			bHasPerformedImpact = true;
 		}
+	}
+}
+
+void AAsteroid::ApplyCollisionDamage(const TObjectPtr<AActor> OtherActor) {
+	if (const TObjectPtr<APlayerShip> PlayerShip = Cast<APlayerShip>(OtherActor)) {
+		PlayerShip->PlayerShipAttributes->ApplyCollisionDamage();
 	}
 }
 

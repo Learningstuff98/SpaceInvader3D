@@ -27,6 +27,7 @@ private:
 	UFUNCTION()
 	void OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	void PlayImpactSound();
+	void ApplyCollisionDamage(const TObjectPtr<AActor> OtherActor);
 
 	// Development
 	void LogMessage(const FString& Message);
@@ -45,5 +46,5 @@ private:
 	TObjectPtr<class USoundBase> ImpactSound;
 
 	UPROPERTY()
-	bool bHasPlayedImpactSound;
+	bool bHasPerformedImpact;
 };
