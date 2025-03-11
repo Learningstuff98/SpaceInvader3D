@@ -18,6 +18,9 @@ AAsteroid::AAsteroid() {
 	AsteroidSphere->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	AsteroidSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 
+	AsteroidDetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Asteroid Detection Sphere"));
+	AsteroidDetectionSphere->SetupAttachment(GetRootComponent());
+
 	AsteroidMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Asteroid Mesh"));
 	AsteroidMeshComponent->SetupAttachment(GetRootComponent());
 
@@ -27,10 +30,15 @@ AAsteroid::AAsteroid() {
 void AAsteroid::BeginPlay() {
 	Super::BeginPlay();
 	AsteroidSphere->OnComponentHit.AddDynamic(this, &AAsteroid::OnSphereHit);
+	AsteroidDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &AAsteroid::OnDetectionSphereEndOverlap);
 }
 
 void AAsteroid::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+}
+
+void AAsteroid::OnDetectionSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+	bHasPerformedImpact = false;
 }
 
 void AAsteroid::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {

@@ -26,6 +26,10 @@ private:
 	// Functions
 	UFUNCTION()
 	void OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	UFUNCTION()
+	void OnDetectionSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 	void PlayImpactSound();
 	void ApplyCollisionDamage(const TObjectPtr<AActor> OtherActor);
 
@@ -36,6 +40,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class USphereComponent> AsteroidSphere;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class USphereComponent> AsteroidDetectionSphere;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UStaticMeshComponent> AsteroidMeshComponent;
