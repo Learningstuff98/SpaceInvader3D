@@ -4,6 +4,7 @@
 
 UPlayerShipAttributes::UPlayerShipAttributes() {
 	PrimaryComponentTick.bCanEverTick = true;
+	bHasBlownUp = false;
 
 	Health = 500.0f;
 	MaxHealth = 500.0f;
@@ -13,18 +14,25 @@ void UPlayerShipAttributes::BeginPlay() {
 	Super::BeginPlay();
 }
 
+void UPlayerShipAttributes::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+}
+
 void UPlayerShipAttributes::SetCurrentVelocity(const FVector& MovementComponentVelocity) {
 	CurrentVelocity = MovementComponentVelocity;
 }
 
 void UPlayerShipAttributes::ApplyCollisionDamage() {
-	Health -= 100.0f; // damage should be based on current velocity. also health sould be a float 
+	Health -= 100.0f; // damage should be based on current velocity.
+	HandleHasBlownUpStatus();
+}
+
+void UPlayerShipAttributes::HandleHasBlownUpStatus() {
+	if (Health <= 0.f) {
+		bHasBlownUp = true;
+	}
 }
 
 float UPlayerShipAttributes::GetHealthPercent() {
 	return Health / MaxHealth;
-}
-
-void UPlayerShipAttributes::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }

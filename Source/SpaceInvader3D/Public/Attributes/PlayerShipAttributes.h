@@ -23,6 +23,9 @@ private:
 	virtual void BeginPlay() override;
 	// </UActorComponent>
 
+	// Functions
+	void HandleHasBlownUpStatus();
+
 	// Variables
 
 	UPROPERTY(EditAnywhere, Category = Health)
@@ -34,9 +37,13 @@ private:
 	UPROPERTY()
 	FVector CurrentVelocity;
 
+	UPROPERTY(EditAnywhere, Category = Status)
+	bool bHasBlownUp;
+
 public:
 	// Public Setters and getters
 	void SetCurrentVelocity(const FVector& MovementComponentVelocity);
 	void ApplyCollisionDamage();
 	float GetHealthPercent();
+	FORCEINLINE bool GetbHasBlownUp() const { return bHasBlownUp; }
 };

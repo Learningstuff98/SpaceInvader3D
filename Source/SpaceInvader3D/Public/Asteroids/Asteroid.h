@@ -31,7 +31,7 @@ private:
 	void OnDetectionSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	void PlayImpactSound();
-	void ApplyCollisionDamage(const TObjectPtr<AActor> OtherActor);
+	void HandlePlayerShipImpact(const TObjectPtr<class APlayerShip> PlayerShip);
 
 	// Development
 	void LogMessage(const FString& Message);

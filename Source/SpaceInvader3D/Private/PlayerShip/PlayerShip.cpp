@@ -201,7 +201,7 @@ void APlayerShip::PlayBlasterSound() {
 
 void APlayerShip::HandleExplodingSound() {
 	if (PlayerShipAttributes) {
-		if (!bHasPlayedExplodingSound && PlayerShipAttributes->GetHealthPercent() <= 0.f) {
+		if (!bHasPlayedExplodingSound && PlayerShipAttributes->GetbHasBlownUp()) {
 			PlayExplodingSound();
 			bHasPlayedExplodingSound = true;
 		}

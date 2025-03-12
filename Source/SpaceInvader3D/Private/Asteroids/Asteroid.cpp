@@ -10,6 +10,8 @@
 AAsteroid::AAsteroid() {
 	PrimaryActorTick.bCanEverTick = true;
 
+	bHasPerformedImpact = false;
+
 	AsteroidSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Asteroid Sphere"));
 	SetRootComponent(AsteroidSphere);
 	AsteroidSphere->SetNotifyRigidBodyCollision(true);
@@ -23,8 +25,6 @@ AAsteroid::AAsteroid() {
 
 	AsteroidMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Asteroid Mesh"));
 	AsteroidMeshComponent->SetupAttachment(GetRootComponent());
-
-	bHasPerformedImpact = false;
 }
 
 void AAsteroid::BeginPlay() {
@@ -43,17 +43,19 @@ void AAsteroid::OnDetectionSphereEndOverlap(UPrimitiveComponent* OverlappedCompo
 
 void AAsteroid::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
 	if (OtherActor) {
-		if (!bHasPerformedImpact) {
-			ApplyCollisionDamage(OtherActor);
-			PlayImpactSound();
-			bHasPerformedImpact = true;
+		if (const TObjectPtr<APlayerShip> PlayerShip = Cast<APlayerShip>(OtherActor)) {
+			HandlePlayerShipImpact(PlayerShip);
 		}
 	}
 }
 
-void AAsteroid::ApplyCollisionDamage(const TObjectPtr<AActor> OtherActor) {
-	if (const TObjectPtr<APlayerShip> PlayerShip = Cast<APlayerShip>(OtherActor)) {
+void AAsteroid::HandlePlayerShipImpact(const TObjectPtr<APlayerShip> PlayerShip) {
+	if (PlayerShip->PlayerShipAttributes && !bHasPerformedImpact) {
 		PlayerShip->PlayerShipAttributes->ApplyCollisionDamage();
+		if (!PlayerShip->PlayerShipAttributes->GetbHasBlownUp()) {
+			PlayImpactSound();
+		}
+		bHasPerformedImpact = true;
 	}
 }
 
