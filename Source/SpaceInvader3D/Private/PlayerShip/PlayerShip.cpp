@@ -95,7 +95,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	AddMovementInput(GetActorForwardVector(), 1.0f);
 	SetThrusterPitch();
 	SetThrusterColor();
-	UpdateVelocity();
+	UpdateSpeed();
 	SetHealthBarPercent();
 	HandleExplodingSound();
 }
@@ -171,9 +171,9 @@ void APlayerShip::SetHealthBarPercent() {
 	}
 }
 
-void APlayerShip::UpdateVelocity() {
+void APlayerShip::UpdateSpeed() {
 	if (PlayerShipAttributes) {
-		PlayerShipAttributes->SetCurrentVelocity(Movement->Velocity);
+		PlayerShipAttributes->SetCurrentSpeed(Movement->MaxSpeed);
 	}
 }
 

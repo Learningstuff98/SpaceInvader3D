@@ -47,7 +47,7 @@ private:
 	TObjectPtr<class ABlasterShot> SpawnBlasterShot();
 	TObjectPtr<class UArrowComponent> DeterminWhichBarrelToFireFrom();
 	void SetInitialSpeed();
-	void UpdateVelocity();
+	void UpdateSpeed();
 	TObjectPtr<class USpaceInvader3DOverlay> SetOverlay();
 	void SetHealthBarPercent();
 	void PlayExplodingSound();

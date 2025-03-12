@@ -35,14 +35,14 @@ private:
 	float MaxHealth;
 
 	UPROPERTY()
-	FVector CurrentVelocity;
+	float CurrentSpeed;
 
-	UPROPERTY(EditAnywhere, Category = Status)
+	UPROPERTY()
 	bool bHasBlownUp;
 
 public:
 	// Public Setters and getters
-	void SetCurrentVelocity(const FVector& MovementComponentVelocity);
+	void SetCurrentSpeed(const float& Speed);
 	void ApplyCollisionDamage();
 	float GetHealthPercent();
 	FORCEINLINE bool GetbHasBlownUp() const { return bHasBlownUp; }

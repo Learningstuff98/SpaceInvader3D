@@ -18,12 +18,12 @@ void UPlayerShipAttributes::TickComponent(float DeltaTime, ELevelTick TickType, 
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UPlayerShipAttributes::SetCurrentVelocity(const FVector& MovementComponentVelocity) {
-	CurrentVelocity = MovementComponentVelocity;
+void UPlayerShipAttributes::SetCurrentSpeed(const float& Speed) {
+	CurrentSpeed = Speed;
 }
 
 void UPlayerShipAttributes::ApplyCollisionDamage() {
-	Health -= 100.0f; // damage should be based on current velocity.
+	Health -= 0.85f * (CurrentSpeed * 0.1f);
 	HandleHasBlownUpStatus();
 }
 
