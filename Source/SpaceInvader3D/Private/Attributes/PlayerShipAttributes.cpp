@@ -5,9 +5,9 @@
 UPlayerShipAttributes::UPlayerShipAttributes() {
 	PrimaryComponentTick.bCanEverTick = true;
 	bHasBlownUp = false;
-
 	Health = 500.0f;
 	MaxHealth = 500.0f;
+	CurrentSpeed = 3300.0f;
 }
 
 void UPlayerShipAttributes::BeginPlay() {
