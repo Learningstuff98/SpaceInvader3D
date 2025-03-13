@@ -6,6 +6,7 @@
 #include "PlayerShip/PlayerShip.h"
 #include "Attributes/PlayerShipAttributes.h"
 #include "Kismet/GameplayStatics.h"
+#include "Projectiles/BlasterShot.h"
 
 AAsteroid::AAsteroid() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -46,7 +47,14 @@ void AAsteroid::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		if (const TObjectPtr<APlayerShip> PlayerShip = Cast<APlayerShip>(OtherActor)) {
 			HandlePlayerShipImpact(PlayerShip);
 		}
+		if (const TObjectPtr<ABlasterShot> BlasterShot = Cast<ABlasterShot>(OtherActor)) {
+			HandleBlasterShotImpact(BlasterShot);
+		}
 	}
+}
+
+void AAsteroid::HandleBlasterShotImpact(const TObjectPtr<class ABlasterShot> BlasterShot) {
+	BlasterShot->Destroy();
 }
 
 void AAsteroid::HandlePlayerShipImpact(const TObjectPtr<APlayerShip> PlayerShip) {
@@ -65,10 +73,4 @@ void AAsteroid::PlayImpactSound() {
 		ImpactSound,
 		GetActorLocation()
 	);
-}
-
-void AAsteroid::LogMessage(const FString& Message) {
-	if (GEngine) {
-		GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Green, Message);
-	}
 }

@@ -53,10 +53,6 @@ private:
 	void PlayExplodingSound();
 	void HandleExplodingSound();
 
-	// Development
-	void LogMessage(const FString& Message);
-	void LogFloat(const float& Float);
-
 	// Component Variables
 
 	UPROPERTY(VisibleAnywhere)

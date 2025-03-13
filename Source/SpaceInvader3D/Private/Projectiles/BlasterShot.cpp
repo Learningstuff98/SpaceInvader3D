@@ -19,7 +19,7 @@ ABlasterShot::ABlasterShot() {
 
 	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
 	Movement->ProjectileGravityScale = 0.0f;
-	Movement->InitialSpeed = 90000.0f;
+	Movement->InitialSpeed = 200000.0f;
 
 	BlasterShotEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Blaster Shot Effect"));
 	BlasterShotEffect->SetupAttachment(GetRootComponent());

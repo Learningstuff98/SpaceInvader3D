@@ -32,9 +32,7 @@ private:
 
 	void PlayImpactSound();
 	void HandlePlayerShipImpact(const TObjectPtr<class APlayerShip> PlayerShip);
-
-	// Development
-	void LogMessage(const FString& Message);
+	void HandleBlasterShotImpact(const TObjectPtr<class ABlasterShot> BlasterShot);
 
 	// Component Variables
 
