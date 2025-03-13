@@ -4,32 +4,35 @@
 
 UPlayerShipAttributes::UPlayerShipAttributes() {
 	PrimaryComponentTick.bCanEverTick = true;
-
+	bHasBlownUp = false;
 	Health = 500.0f;
 	MaxHealth = 500.0f;
-	bHasPlayedCrashSound = false;
+	CurrentSpeed = 3300.0f;
 }
 
 void UPlayerShipAttributes::BeginPlay() {
 	Super::BeginPlay();
 }
 
-void UPlayerShipAttributes::SetCurrentVelocity(const FVector& MovementComponentVelocity) {
-	CurrentVelocity = MovementComponentVelocity;
+void UPlayerShipAttributes::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UPlayerShipAttributes::ApplyHeadOnCollisionAsteroidDamage() {
-	Health = 0;
+void UPlayerShipAttributes::SetCurrentSpeed(const float& Speed) {
+	CurrentSpeed = Speed;
+}
+
+void UPlayerShipAttributes::ApplyCollisionDamage() {
+	Health -= 0.85f * (CurrentSpeed * 0.1f);
+	HandleHasBlownUpStatus();
+}
+
+void UPlayerShipAttributes::HandleHasBlownUpStatus() {
+	if (Health <= 0.f) {
+		bHasBlownUp = true;
+	}
 }
 
 float UPlayerShipAttributes::GetHealthPercent() {
 	return Health / MaxHealth;
-}
-
-void UPlayerShipAttributes::SetbHasPlayedCrashSound(const bool& BoolValue) {
-	bHasPlayedCrashSound = BoolValue;
-}
-
-void UPlayerShipAttributes::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }

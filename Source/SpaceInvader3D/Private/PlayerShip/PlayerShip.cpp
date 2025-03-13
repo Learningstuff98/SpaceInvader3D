@@ -12,7 +12,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Projectiles/BlasterShot.h"
 #include "Attributes/PlayerShipAttributes.h"
-#include "CustomComponents/AsteroidDetectionCapsule.h"
 #include "HUD/SpaceInvader3DHUD.h"
 #include "HUD/SpaceInvader3DOverlay.h"
 
@@ -21,6 +20,9 @@ APlayerShip::APlayerShip() {
 
 	bUseControllerRotationPitch = true;
 	bUseControllerRotationYaw = true;
+	bFireCooldownTimerFinished = true;
+	bHasPlayedExplodingSound = false;
+	bLeftGunCanFire = false;
 
 	ShipBoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("ShipBox"));
 	SetRootComponent(ShipBoxComponent);
@@ -30,9 +32,6 @@ APlayerShip::APlayerShip() {
 	ShipBoxComponent->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
 	ShipBoxComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	ShipBoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
-
-	AsteroidDetectionCapsule = CreateDefaultSubobject<UAsteroidDetectionCapsule>(TEXT("Asteroid Detection Capsule"));
-	AsteroidDetectionCapsule->SetupAttachment(GetRootComponent());
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	ShipMesh->SetupAttachment(GetRootComponent());
@@ -62,8 +61,6 @@ APlayerShip::APlayerShip() {
 	RightGunBarrel = CreateDefaultSubobject<UArrowComponent>(TEXT("Right Gun Barrel"));
 	RightGunBarrel->SetupAttachment(GetRootComponent());
 
-	LeftGunCanFire = false;
-
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 
 	MaxSpeed = 12000.0f;
@@ -83,8 +80,6 @@ APlayerShip::APlayerShip() {
 
 	CruisingThrusterSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Cruising Thruster Sound"));
 	CruisingThrusterSound->SetVolumeMultiplier(0.02f);
-
-	FireCooldownTimerFinished = true;
 }
 
 void APlayerShip::BeginPlay() {
@@ -100,8 +95,9 @@ void APlayerShip::Tick(float DeltaTime) {
 	AddMovementInput(GetActorForwardVector(), 1.0f);
 	SetThrusterPitch();
 	SetThrusterColor();
-	UpdateVelocity();
+	UpdateSpeed();
 	SetHealthBarPercent();
+	HandleExplodingSound();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -124,10 +120,10 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 }
 
 void APlayerShip::HandleFireTimer() {
-	if (FireCooldownTimerFinished) {
+	if (bFireCooldownTimerFinished) {
 		GetWorldTimerManager().ClearTimer(FireCooldownTimer);
 		GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.15f);
-		FireCooldownTimerFinished = false;
+		bFireCooldownTimerFinished = false;
 	}
 }
 
@@ -135,7 +131,7 @@ void APlayerShip::Fire() {
 	if (const TObjectPtr<ABlasterShot> BlasterShot = SpawnBlasterShot()) {
 		BlasterShot->FireInDirection(GetActorRotation().Vector());
 	}
-	FireCooldownTimerFinished = true;
+	bFireCooldownTimerFinished = true;
 	PlayBlasterSound();
 }
 
@@ -153,12 +149,12 @@ TObjectPtr<ABlasterShot> APlayerShip::SpawnBlasterShot() {
 }
 
 TObjectPtr<UArrowComponent> APlayerShip::DeterminWhichBarrelToFireFrom() {
-	if (LeftGunCanFire) {
-		LeftGunCanFire = false;
+	if (bLeftGunCanFire) {
+		bLeftGunCanFire = false;
 		return LeftGunBarrel;
 	}
 	else {
-		LeftGunCanFire = true;
+		bLeftGunCanFire = true;
 		return RightGunBarrel;
 	}
 }
@@ -175,9 +171,9 @@ void APlayerShip::SetHealthBarPercent() {
 	}
 }
 
-void APlayerShip::UpdateVelocity() {
+void APlayerShip::UpdateSpeed() {
 	if (PlayerShipAttributes) {
-		PlayerShipAttributes->SetCurrentVelocity(Movement->Velocity);
+		PlayerShipAttributes->SetCurrentSpeed(Movement->MaxSpeed);
 	}
 }
 
@@ -203,11 +199,19 @@ void APlayerShip::PlayBlasterSound() {
 	);
 }
 
+void APlayerShip::HandleExplodingSound() {
+	if (PlayerShipAttributes) {
+		if (!bHasPlayedExplodingSound && PlayerShipAttributes->GetbHasBlownUp()) {
+			PlayExplodingSound();
+			bHasPlayedExplodingSound = true;
+		}
+	}
+}
 
-void APlayerShip::PlayCrashingSound() {
+void APlayerShip::PlayExplodingSound() {
 	UGameplayStatics::PlaySoundAtLocation(
 		this,
-		CrashingSound,
+		ExplodingSound,
 		GetActorLocation()
 	);
 }

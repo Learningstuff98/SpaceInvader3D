@@ -21,17 +21,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// </APawn>
 
-	// Miscellaneous
-
-	void PlayCrashingSound();
-
 	// Component Variables
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UPlayerShipAttributes> PlayerShipAttributes;
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UAsteroidDetectionCapsule> AsteroidDetectionCapsule;
 
 private:
 	// <APawn>
@@ -54,9 +47,11 @@ private:
 	TObjectPtr<class ABlasterShot> SpawnBlasterShot();
 	TObjectPtr<class UArrowComponent> DeterminWhichBarrelToFireFrom();
 	void SetInitialSpeed();
-	void UpdateVelocity();
+	void UpdateSpeed();
 	TObjectPtr<class USpaceInvader3DOverlay> SetOverlay();
 	void SetHealthBarPercent();
+	void PlayExplodingSound();
+	void HandleExplodingSound();
 
 	// Development
 	void LogMessage(const FString& Message);
@@ -137,19 +132,22 @@ private:
 	FTimerHandle FireCooldownTimer;
 
 	UPROPERTY()
-	bool FireCooldownTimerFinished;
+	bool bFireCooldownTimerFinished;
 
 	UPROPERTY(EditAnywhere, Category = Blaster)
 	TObjectPtr<class USoundBase> BlasterSound;
 
-	UPROPERTY(EditAnywhere, Category = Impact)
-	TObjectPtr<class USoundBase> CrashingSound;
+	UPROPERTY(EditAnywhere, Category = Sound)
+	TObjectPtr<class USoundBase> ExplodingSound;
+
+	UPROPERTY()
+	bool bHasPlayedExplodingSound;
 
 	UPROPERTY(EditAnywhere, Category = Blaster)
 	TSubclassOf<class ABlasterShot> BlasterShotBlueprintClass;
 
 	UPROPERTY()
-	bool LeftGunCanFire;
+	bool bLeftGunCanFire;
 
 	UPROPERTY()
 	TObjectPtr<class USpaceInvader3DOverlay> PlayerShipOverlay;
