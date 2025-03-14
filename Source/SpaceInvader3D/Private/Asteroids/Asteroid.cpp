@@ -54,6 +54,7 @@ void AAsteroid::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 }
 
 void AAsteroid::HandleBlasterShotImpact(const TObjectPtr<class ABlasterShot> BlasterShot) {
+	BlasterShot->SpawnImpactBurst();
 	BlasterShot->Destroy();
 	PlayImpactSound(BlasterShotImpactSound);
 }
