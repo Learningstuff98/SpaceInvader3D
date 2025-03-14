@@ -20,6 +20,7 @@ public:
 
 	// Miscellaneous
 	void FireInDirection(const FVector& ShootDirection);
+	void SpawnImpactBurst();
 
 private:
 	// <AActor>

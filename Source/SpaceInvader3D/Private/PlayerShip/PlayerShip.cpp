@@ -267,16 +267,3 @@ void APlayerShip::SetThrusterColor() {
 	EngineThrusterEffect3->SetNiagaraVariableLinearColor(FString("ParticleColor"), FLinearColor(NewColor));
 	EngineThrusterEffect4->SetNiagaraVariableLinearColor(FString("ParticleColor"), FLinearColor(NewColor));
 }
-
-void APlayerShip::LogMessage(const FString& Message) {
-	if (GEngine) {
-		GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Green, Message);
-	}
-}
-
-void APlayerShip::LogFloat(const float& Float) {
-	FString Message = FString::Printf(TEXT("THE FLOAT VALUE IS: %f"), Float);
-	if (GEngine) {
-		GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Green, Message);
-	}
-}
