@@ -55,19 +55,20 @@ void AAsteroid::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 
 void AAsteroid::HandleBlasterShotImpact(const TObjectPtr<class ABlasterShot> BlasterShot) {
 	BlasterShot->Destroy();
+	PlayImpactSound(BlasterShotImpactSound);
 }
 
 void AAsteroid::HandlePlayerShipImpact(const TObjectPtr<APlayerShip> PlayerShip) {
 	if (PlayerShip->PlayerShipAttributes && !bHasPerformedImpact) {
 		PlayerShip->PlayerShipAttributes->ApplyCollisionDamage();
 		if (!PlayerShip->PlayerShipAttributes->GetbHasBlownUp()) {
-			PlayImpactSound();
+			PlayImpactSound(ShipImpactSound);
 		}
 		bHasPerformedImpact = true;
 	}
 }
 
-void AAsteroid::PlayImpactSound() {
+void AAsteroid::PlayImpactSound(const TObjectPtr<USoundBase> ImpactSound) {
 	UGameplayStatics::PlaySoundAtLocation(
 		this,
 		ImpactSound,
