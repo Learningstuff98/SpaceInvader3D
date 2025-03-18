@@ -38,4 +38,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UNiagaraComponent> BlasterShotEffect;
+
+	// Other Varibles
+
+	UPROPERTY(EditAnywhere, Category = Niagara)
+	TObjectPtr<class UNiagaraSystem> ImpactBurst;
 };

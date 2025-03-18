@@ -31,13 +31,14 @@ void ABlasterShot::BeginPlay() {
 }
 
 void ABlasterShot::SpawnImpactBurst() {
-	TObjectPtr<UNiagaraSystem> ImpactEffect = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/Effects/Niagara_Effects/Projectiles/BlasterShot_Impact"));
-	TObjectPtr<UNiagaraComponent> ImpactBurst = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-		GetWorld(),
-		ImpactEffect,
-		GetActorLocation(),
-		GetActorRotation()
-	);
+	if (ImpactBurst) {
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			this,
+			ImpactBurst,
+			GetActorLocation(),
+			GetActorRotation()
+		);
+	}
 }
 
 void ABlasterShot::Tick(float DeltaTime) {
