@@ -7,8 +7,6 @@
 class SPACEINVADER3D_API Development
 {
 public:
-	Development();
-	~Development();
 	static void LogMessage(const FString& Message);
 	static void LogFloat(const float& Float);
 };
