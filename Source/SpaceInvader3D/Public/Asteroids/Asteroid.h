@@ -30,11 +30,9 @@ private:
 	UFUNCTION()
 	void OnDetectionSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	void PlayImpactSound();
+	void PlayImpactSound(const TObjectPtr<USoundBase> ImpactSound);
 	void HandlePlayerShipImpact(const TObjectPtr<class APlayerShip> PlayerShip);
-
-	// Development
-	void LogMessage(const FString& Message);
+	void HandleBlasterShotImpact(const TObjectPtr<class ABlasterShot> BlasterShot);
 
 	// Component Variables
 
@@ -50,7 +48,10 @@ private:
 	// Other Variables
 
 	UPROPERTY(EditAnywhere, Category = Sound)
-	TObjectPtr<class USoundBase> ImpactSound;
+	TObjectPtr<class USoundBase> ShipImpactSound;
+
+	UPROPERTY(EditAnywhere, Category = Sound)
+	TObjectPtr<class USoundBase> BlasterShotImpactSound;
 
 	UPROPERTY()
 	bool bHasPerformedImpact;

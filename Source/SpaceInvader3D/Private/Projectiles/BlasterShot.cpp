@@ -2,6 +2,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 ABlasterShot::ABlasterShot() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -19,7 +20,7 @@ ABlasterShot::ABlasterShot() {
 
 	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
 	Movement->ProjectileGravityScale = 0.0f;
-	Movement->InitialSpeed = 90000.0f;
+	Movement->InitialSpeed = 200000.0f;
 
 	BlasterShotEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Blaster Shot Effect"));
 	BlasterShotEffect->SetupAttachment(GetRootComponent());
@@ -27,6 +28,17 @@ ABlasterShot::ABlasterShot() {
 
 void ABlasterShot::BeginPlay() {
 	Super::BeginPlay();
+}
+
+void ABlasterShot::SpawnImpactBurst() {
+	if (ImpactBurst) {
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			this,
+			ImpactBurst,
+			GetActorLocation(),
+			GetActorRotation()
+		);
+	}
 }
 
 void ABlasterShot::Tick(float DeltaTime) {

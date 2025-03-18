@@ -6,6 +6,7 @@
 #include "PlayerShip/PlayerShip.h"
 #include "Attributes/PlayerShipAttributes.h"
 #include "Kismet/GameplayStatics.h"
+#include "Projectiles/BlasterShot.h"
 
 AAsteroid::AAsteroid() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -46,29 +47,32 @@ void AAsteroid::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		if (const TObjectPtr<APlayerShip> PlayerShip = Cast<APlayerShip>(OtherActor)) {
 			HandlePlayerShipImpact(PlayerShip);
 		}
+		if (const TObjectPtr<ABlasterShot> BlasterShot = Cast<ABlasterShot>(OtherActor)) {
+			HandleBlasterShotImpact(BlasterShot);
+		}
 	}
+}
+
+void AAsteroid::HandleBlasterShotImpact(const TObjectPtr<ABlasterShot> BlasterShot) {
+	BlasterShot->SpawnImpactBurst();
+	BlasterShot->Destroy();
+	PlayImpactSound(BlasterShotImpactSound);
 }
 
 void AAsteroid::HandlePlayerShipImpact(const TObjectPtr<APlayerShip> PlayerShip) {
 	if (PlayerShip->PlayerShipAttributes && !bHasPerformedImpact) {
 		PlayerShip->PlayerShipAttributes->ApplyCollisionDamage();
 		if (!PlayerShip->PlayerShipAttributes->GetbHasBlownUp()) {
-			PlayImpactSound();
+			PlayImpactSound(ShipImpactSound);
 		}
 		bHasPerformedImpact = true;
 	}
 }
 
-void AAsteroid::PlayImpactSound() {
+void AAsteroid::PlayImpactSound(const TObjectPtr<USoundBase> ImpactSound) {
 	UGameplayStatics::PlaySoundAtLocation(
 		this,
 		ImpactSound,
 		GetActorLocation()
 	);
-}
-
-void AAsteroid::LogMessage(const FString& Message) {
-	if (GEngine) {
-		GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Green, Message);
-	}
 }
