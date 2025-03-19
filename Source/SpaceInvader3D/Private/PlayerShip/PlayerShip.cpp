@@ -1,6 +1,5 @@
 #include "PlayerShip/PlayerShip.h"
 #include "Components/StaticMeshComponent.h"
-#include "Components/BoxComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -24,17 +23,14 @@ APlayerShip::APlayerShip() {
 	bHasPlayedExplodingSound = false;
 	bLeftGunCanFire = false;
 
-	ShipBox = CreateDefaultSubobject<UBoxComponent>(TEXT("ShipBox"));
-	SetRootComponent(ShipBox);
-	ShipBox->SetNotifyRigidBodyCollision(true);
-	ShipBox->SetCollisionProfileName(FName("Custom"));
-	ShipBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	ShipBox->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
-	ShipBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	ShipBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
-
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
-	ShipMeshComponent->SetupAttachment(GetRootComponent());
+	SetRootComponent(ShipMeshComponent);
+	ShipMeshComponent->SetNotifyRigidBodyCollision(true);
+	ShipMeshComponent->SetCollisionProfileName(FName("Custom"));
+	ShipMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	ShipMeshComponent->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
+	ShipMeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	ShipMeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
 	
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(GetRootComponent());

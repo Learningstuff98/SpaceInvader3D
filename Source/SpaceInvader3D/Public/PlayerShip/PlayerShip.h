@@ -56,9 +56,6 @@ private:
 	// Component Variables
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UBoxComponent> ShipBox;
-
-	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UStaticMeshComponent> ShipMeshComponent;
 
 	UPROPERTY(VisibleAnywhere)
