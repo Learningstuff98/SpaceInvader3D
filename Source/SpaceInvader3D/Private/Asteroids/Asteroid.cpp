@@ -10,27 +10,23 @@
 
 AAsteroid::AAsteroid() {
 	PrimaryActorTick.bCanEverTick = true;
-
 	bHasPerformedImpact = false;
 
-	AsteroidSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Asteroid Sphere"));
-	SetRootComponent(AsteroidSphere);
-	AsteroidSphere->SetNotifyRigidBodyCollision(true);
-	AsteroidSphere->SetCollisionProfileName(FName("Custom"));
-    AsteroidSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	AsteroidSphere->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
-	AsteroidSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+	AsteroidMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Asteroid Mesh"));
+	SetRootComponent(AsteroidMeshComponent);
+	AsteroidMeshComponent->SetNotifyRigidBodyCollision(true);
+	AsteroidMeshComponent->SetCollisionProfileName(FName("Custom"));
+	AsteroidMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	AsteroidMeshComponent->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	AsteroidMeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 
 	AsteroidDetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Asteroid Detection Sphere"));
 	AsteroidDetectionSphere->SetupAttachment(GetRootComponent());
-
-	AsteroidMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Asteroid Mesh"));
-	AsteroidMeshComponent->SetupAttachment(GetRootComponent());
 }
 
 void AAsteroid::BeginPlay() {
 	Super::BeginPlay();
-	AsteroidSphere->OnComponentHit.AddDynamic(this, &AAsteroid::OnSphereHit);
+	AsteroidMeshComponent->OnComponentHit.AddDynamic(this, &AAsteroid::OnMeshHit);
 	AsteroidDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &AAsteroid::OnDetectionSphereEndOverlap);
 }
 
@@ -42,7 +38,7 @@ void AAsteroid::OnDetectionSphereEndOverlap(UPrimitiveComponent* OverlappedCompo
 	bHasPerformedImpact = false;
 }
 
-void AAsteroid::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
+void AAsteroid::OnMeshHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
 	if (OtherActor) {
 		if (const TObjectPtr<APlayerShip> PlayerShip = Cast<APlayerShip>(OtherActor)) {
 			HandlePlayerShipImpact(PlayerShip);
