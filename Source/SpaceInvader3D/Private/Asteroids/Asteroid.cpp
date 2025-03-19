@@ -13,11 +13,8 @@ AAsteroid::AAsteroid() {
 	PrimaryActorTick.bCanEverTick = true;
 	bHasPerformedImpact = false;
 
-	AsteroidRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Asteroid Root"));
-	SetRootComponent(AsteroidRoot);
-
 	AsteroidMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Asteroid Mesh"));
-	AsteroidMeshComponent->SetupAttachment(GetRootComponent());
+	SetRootComponent(AsteroidMeshComponent);
 	AsteroidMeshComponent->SetNotifyRigidBodyCollision(true);
 	AsteroidMeshComponent->SetCollisionProfileName(FName("Custom"));
 	AsteroidMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);

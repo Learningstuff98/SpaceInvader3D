@@ -37,10 +37,6 @@ private:
 	// Component Variables
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class USceneComponent> AsteroidRoot;
-
-	// https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-collisions-with-static-meshes-in-unreal-engine
-	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class USphereComponent> AsteroidSphere;
 
 	UPROPERTY(VisibleAnywhere)
