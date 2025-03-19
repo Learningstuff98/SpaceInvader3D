@@ -25,7 +25,7 @@ private:
 
 	// Functions
 	UFUNCTION()
-	void OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	void OnMeshHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	UFUNCTION()
 	void OnDetectionSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
@@ -36,6 +36,10 @@ private:
 
 	// Component Variables
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class USceneComponent> AsteroidRoot;
+
+	// https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-collisions-with-static-meshes-in-unreal-engine
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class USphereComponent> AsteroidSphere;
 
