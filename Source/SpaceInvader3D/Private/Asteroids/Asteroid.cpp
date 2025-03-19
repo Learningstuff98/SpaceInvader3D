@@ -2,7 +2,6 @@
 
 #include "Asteroids/Asteroid.h"
 #include "Components/StaticMeshComponent.h"
-#include "Components/SceneComponent.h"
 #include "Components/SphereComponent.h"
 #include "PlayerShip/PlayerShip.h"
 #include "Attributes/PlayerShipAttributes.h"
