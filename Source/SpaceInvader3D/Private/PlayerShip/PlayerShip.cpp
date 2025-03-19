@@ -24,17 +24,17 @@ APlayerShip::APlayerShip() {
 	bHasPlayedExplodingSound = false;
 	bLeftGunCanFire = false;
 
-	ShipBoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("ShipBox"));
-	SetRootComponent(ShipBoxComponent);
-	ShipBoxComponent->SetNotifyRigidBodyCollision(true);
-	ShipBoxComponent->SetCollisionProfileName(FName("Custom"));
-	ShipBoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	ShipBoxComponent->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
-	ShipBoxComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	ShipBoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
+	ShipBox = CreateDefaultSubobject<UBoxComponent>(TEXT("ShipBox"));
+	SetRootComponent(ShipBox);
+	ShipBox->SetNotifyRigidBodyCollision(true);
+	ShipBox->SetCollisionProfileName(FName("Custom"));
+	ShipBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	ShipBox->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
+	ShipBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	ShipBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
 
-	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
-	ShipMesh->SetupAttachment(GetRootComponent());
+	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
+	ShipMeshComponent->SetupAttachment(GetRootComponent());
 	
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(GetRootComponent());
