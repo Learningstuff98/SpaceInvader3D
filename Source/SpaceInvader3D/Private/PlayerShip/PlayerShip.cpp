@@ -21,7 +21,6 @@ APlayerShip::APlayerShip() {
 	bUseControllerRotationYaw = true;
 	bFireCooldownTimerFinished = true;
 	bHasPlayedExplodingSound = false;
-	bLeftGunCanFire = false;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -51,11 +50,19 @@ APlayerShip::APlayerShip() {
 	CameraResetTarget->SetupAttachment(GetRootComponent());
 	CameraResetTarget->SetRelativeLocation(FVector(-1600.0f, 0.0f, 450.0f));
 
-	LeftGunBarrel = CreateDefaultSubobject<UArrowComponent>(TEXT("Left Gun Barrel"));
-	LeftGunBarrel->SetupAttachment(GetRootComponent());
+	GunBarrel1 = CreateDefaultSubobject<UArrowComponent>(TEXT("Gun Barrel 1"));
+	GunBarrel1->SetupAttachment(GetRootComponent());
 
-	RightGunBarrel = CreateDefaultSubobject<UArrowComponent>(TEXT("Right Gun Barrel"));
-	RightGunBarrel->SetupAttachment(GetRootComponent());
+	GunBarrel2 = CreateDefaultSubobject<UArrowComponent>(TEXT("Gun Barrel 2"));
+	GunBarrel2->SetupAttachment(GetRootComponent());
+
+	GunBarrel3 = CreateDefaultSubobject<UArrowComponent>(TEXT("Gun Barrel 3"));
+	GunBarrel3->SetupAttachment(GetRootComponent());
+
+	GunBarrel4 = CreateDefaultSubobject<UArrowComponent>(TEXT("Gun Barrel 4"));
+	GunBarrel4->SetupAttachment(GetRootComponent());
+
+	NextBarrelToFireFrom = GunBarrel1;
 
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 
@@ -139,14 +146,23 @@ TObjectPtr<ABlasterShot> APlayerShip::SpawnBlasterShot() {
 }
 
 TObjectPtr<UArrowComponent> APlayerShip::DeterminWhichBarrelToFireFrom() {
-	if (bLeftGunCanFire) {
-		bLeftGunCanFire = false;
-		return LeftGunBarrel;
+	if (NextBarrelToFireFrom == GunBarrel1) {
+		NextBarrelToFireFrom = GunBarrel2;
+		return GunBarrel1;
 	}
-	else {
-		bLeftGunCanFire = true;
-		return RightGunBarrel;
+	if (NextBarrelToFireFrom == GunBarrel2) {
+		NextBarrelToFireFrom = GunBarrel3;
+		return GunBarrel2;
 	}
+	if (NextBarrelToFireFrom == GunBarrel3) {
+		NextBarrelToFireFrom = GunBarrel4;
+		return GunBarrel3;
+	}
+	if (NextBarrelToFireFrom == GunBarrel4) {
+		NextBarrelToFireFrom = GunBarrel1;
+		return GunBarrel4;
+	}
+	return GunBarrel1;
 }
 
 void APlayerShip::SetInitialSpeed() {

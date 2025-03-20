@@ -80,10 +80,19 @@ private:
 	TObjectPtr<class UArrowComponent> CameraResetTarget;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UArrowComponent> LeftGunBarrel;
+	TObjectPtr<class UArrowComponent> GunBarrel1;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UArrowComponent> RightGunBarrel;
+	TObjectPtr<class UArrowComponent> GunBarrel2;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UArrowComponent> GunBarrel3;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UArrowComponent> GunBarrel4;
+
+	UPROPERTY()
+	TObjectPtr<class UArrowComponent> NextBarrelToFireFrom;
 
 	// Enhanced Input Varaibles
 
@@ -132,9 +141,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Blaster)
 	TSubclassOf<class ABlasterShot> BlasterShotBlueprintClass;
-
-	UPROPERTY()
-	bool bLeftGunCanFire;
 
 	UPROPERTY()
 	TObjectPtr<class USpaceInvader3DOverlay> PlayerShipOverlay;
