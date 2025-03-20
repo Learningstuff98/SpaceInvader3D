@@ -73,12 +73,6 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect2;
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect3;
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect4;
-
 	UPROPERTY(VisibleAnywhere, Category = Sound)
 	TObjectPtr<class UAudioComponent> CruisingThrusterSound;
 

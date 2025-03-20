@@ -68,12 +68,6 @@ APlayerShip::APlayerShip() {
 	EngineThrusterEffect2 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 2"));
 	EngineThrusterEffect2->SetupAttachment(GetRootComponent());
 
-	EngineThrusterEffect3 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 3"));
-	EngineThrusterEffect3->SetupAttachment(GetRootComponent());
-
-	EngineThrusterEffect4 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 4"));
-	EngineThrusterEffect4->SetupAttachment(GetRootComponent());
-
 	CruisingThrusterSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Cruising Thruster Sound"));
 	CruisingThrusterSound->SetVolumeMultiplier(0.02f);
 }
@@ -260,6 +254,4 @@ void APlayerShip::SetThrusterColor() {
 	const FColor NewColor(90.f, 0.f, Blue, Alpha);
 	EngineThrusterEffect1->SetNiagaraVariableLinearColor(FString("ParticleColor"), FLinearColor(NewColor));
 	EngineThrusterEffect2->SetNiagaraVariableLinearColor(FString("ParticleColor"), FLinearColor(NewColor));
-	EngineThrusterEffect3->SetNiagaraVariableLinearColor(FString("ParticleColor"), FLinearColor(NewColor));
-	EngineThrusterEffect4->SetNiagaraVariableLinearColor(FString("ParticleColor"), FLinearColor(NewColor));
 }
