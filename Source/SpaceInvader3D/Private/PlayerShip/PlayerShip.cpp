@@ -21,7 +21,6 @@ APlayerShip::APlayerShip() {
 	bUseControllerRotationYaw = true;
 	bFireCooldownTimerFinished = true;
 	bHasPlayedExplodingSound = false;
-	bLeftGunCanFire = false;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -51,11 +50,19 @@ APlayerShip::APlayerShip() {
 	CameraResetTarget->SetupAttachment(GetRootComponent());
 	CameraResetTarget->SetRelativeLocation(FVector(-1600.0f, 0.0f, 450.0f));
 
-	LeftGunBarrel = CreateDefaultSubobject<UArrowComponent>(TEXT("Left Gun Barrel"));
-	LeftGunBarrel->SetupAttachment(GetRootComponent());
+	GunBarrel1 = CreateDefaultSubobject<UArrowComponent>(TEXT("Gun Barrel 1"));
+	GunBarrel1->SetupAttachment(GetRootComponent());
 
-	RightGunBarrel = CreateDefaultSubobject<UArrowComponent>(TEXT("Right Gun Barrel"));
-	RightGunBarrel->SetupAttachment(GetRootComponent());
+	GunBarrel2 = CreateDefaultSubobject<UArrowComponent>(TEXT("Gun Barrel 2"));
+	GunBarrel2->SetupAttachment(GetRootComponent());
+
+	GunBarrel3 = CreateDefaultSubobject<UArrowComponent>(TEXT("Gun Barrel 3"));
+	GunBarrel3->SetupAttachment(GetRootComponent());
+
+	GunBarrel4 = CreateDefaultSubobject<UArrowComponent>(TEXT("Gun Barrel 4"));
+	GunBarrel4->SetupAttachment(GetRootComponent());
+
+	BarrelNumberToFireFrom = 1;
 
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 
@@ -139,14 +146,21 @@ TObjectPtr<ABlasterShot> APlayerShip::SpawnBlasterShot() {
 }
 
 TObjectPtr<UArrowComponent> APlayerShip::DeterminWhichBarrelToFireFrom() {
-	if (bLeftGunCanFire) {
-		bLeftGunCanFire = false;
-		return LeftGunBarrel;
+	switch (BarrelNumberToFireFrom) {
+	    case 1:
+			BarrelNumberToFireFrom = 2;
+			return GunBarrel1;
+		case 2:
+			BarrelNumberToFireFrom = 3;
+			return GunBarrel2;
+		case 3:
+			BarrelNumberToFireFrom = 4;
+			return GunBarrel3;
+		case 4:
+			BarrelNumberToFireFrom = 1;
+			return GunBarrel4;
 	}
-	else {
-		bLeftGunCanFire = true;
-		return RightGunBarrel;
-	}
+	return GunBarrel1;
 }
 
 void APlayerShip::SetInitialSpeed() {
