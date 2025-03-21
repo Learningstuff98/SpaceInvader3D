@@ -91,9 +91,6 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UArrowComponent> GunBarrel4;
 
-	UPROPERTY()
-	TObjectPtr<class UArrowComponent> NextBarrelToFireFrom;
-
 	// Enhanced Input Varaibles
 
 	UPROPERTY(EditAnywhere, Category = Input)
@@ -118,6 +115,9 @@ private:
 	TObjectPtr<class UInputAction> FireAction;
 
 	// Other Variables
+
+	UPROPERTY()
+	int32 BarrelNumberToFireFrom;
 
 	UPROPERTY()
 	float MaxSpeed;

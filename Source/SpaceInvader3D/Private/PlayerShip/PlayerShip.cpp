@@ -62,7 +62,7 @@ APlayerShip::APlayerShip() {
 	GunBarrel4 = CreateDefaultSubobject<UArrowComponent>(TEXT("Gun Barrel 4"));
 	GunBarrel4->SetupAttachment(GetRootComponent());
 
-	NextBarrelToFireFrom = GunBarrel1;
+	BarrelNumberToFireFrom = 1;
 
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 
@@ -146,21 +146,19 @@ TObjectPtr<ABlasterShot> APlayerShip::SpawnBlasterShot() {
 }
 
 TObjectPtr<UArrowComponent> APlayerShip::DeterminWhichBarrelToFireFrom() {
-	if (NextBarrelToFireFrom == GunBarrel1) {
-		NextBarrelToFireFrom = GunBarrel2;
-		return GunBarrel1;
-	}
-	if (NextBarrelToFireFrom == GunBarrel2) {
-		NextBarrelToFireFrom = GunBarrel3;
-		return GunBarrel2;
-	}
-	if (NextBarrelToFireFrom == GunBarrel3) {
-		NextBarrelToFireFrom = GunBarrel4;
-		return GunBarrel3;
-	}
-	if (NextBarrelToFireFrom == GunBarrel4) {
-		NextBarrelToFireFrom = GunBarrel1;
-		return GunBarrel4;
+	switch (BarrelNumberToFireFrom) {
+	    case 1:
+			BarrelNumberToFireFrom = 2;
+			return GunBarrel1;
+		case 2:
+			BarrelNumberToFireFrom = 3;
+			return GunBarrel2;
+		case 3:
+			BarrelNumberToFireFrom = 4;
+			return GunBarrel3;
+		case 4:
+			BarrelNumberToFireFrom = 1;
+			return GunBarrel4;
 	}
 	return GunBarrel1;
 }
