@@ -32,6 +32,17 @@ void AAsteroid::BeginPlay() {
 
 void AAsteroid::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+	Rotate();
+}
+
+void AAsteroid::Rotate() {
+	FRotator OldRotation = GetActorRotation();
+	const FRotator NewRotation(
+		OldRotation.Pitch,
+		OldRotation.Roll,
+		OldRotation.Yaw + 0.1
+	);
+	SetActorRotation(NewRotation);
 }
 
 void AAsteroid::OnDetectionSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {

@@ -33,6 +33,7 @@ private:
 	void PlayImpactSound(const TObjectPtr<USoundBase> ImpactSound);
 	void HandlePlayerShipImpact(const TObjectPtr<class APlayerShip> PlayerShip);
 	void HandleBlasterShotImpact(const TObjectPtr<class ABlasterShot> BlasterShot);
+	void Rotate();
 
 	// Component Variables
 
