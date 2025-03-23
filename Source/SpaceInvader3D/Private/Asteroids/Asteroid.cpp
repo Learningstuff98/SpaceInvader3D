@@ -10,6 +10,7 @@
 
 AAsteroid::AAsteroid() {
 	PrimaryActorTick.bCanEverTick = true;
+	RotationalDrift = 0.0;
 
 	AsteroidMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Asteroid Mesh"));
 	SetRootComponent(AsteroidMeshComponent);
@@ -28,16 +29,6 @@ void AAsteroid::BeginPlay() {
 void AAsteroid::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 	Rotate();
-}
-
-void AAsteroid::Rotate() {
-	FRotator OldRotation = GetActorRotation();
-	const FRotator NewRotation(
-		OldRotation.Pitch,
-		OldRotation.Roll,
-		OldRotation.Yaw + 0.1
-	);
-	SetActorRotation(NewRotation);
 }
 
 void AAsteroid::OnMeshHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
@@ -69,4 +60,14 @@ void AAsteroid::PlayImpactSound(const TObjectPtr<USoundBase> ImpactSound) {
 		ImpactSound,
 		GetActorLocation()
 	);
+}
+
+void AAsteroid::Rotate() {
+	FRotator OldRotation = GetActorRotation();
+	const FRotator NewRotation(
+		OldRotation.Pitch,
+		OldRotation.Roll + RotationalDrift,
+		OldRotation.Yaw
+	);
+	SetActorRotation(NewRotation);
 }

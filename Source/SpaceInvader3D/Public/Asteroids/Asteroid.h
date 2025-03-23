@@ -44,4 +44,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<class USoundBase> BlasterShotImpactSound;
+
+	UPROPERTY(EditAnywhere, Category = "Rotational Drift")
+	double RotationalDrift;
 };
