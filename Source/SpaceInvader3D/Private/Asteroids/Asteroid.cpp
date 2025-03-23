@@ -10,7 +10,6 @@
 
 AAsteroid::AAsteroid() {
 	PrimaryActorTick.bCanEverTick = true;
-	bHasPerformedImpact = false;
 
 	AsteroidMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Asteroid Mesh"));
 	SetRootComponent(AsteroidMeshComponent);
@@ -19,15 +18,11 @@ AAsteroid::AAsteroid() {
 	AsteroidMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	AsteroidMeshComponent->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	AsteroidMeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
-
-	AsteroidDetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Asteroid Detection Sphere"));
-	AsteroidDetectionSphere->SetupAttachment(GetRootComponent());
 }
 
 void AAsteroid::BeginPlay() {
 	Super::BeginPlay();
 	AsteroidMeshComponent->OnComponentHit.AddDynamic(this, &AAsteroid::OnMeshHit);
-	AsteroidDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &AAsteroid::OnDetectionSphereEndOverlap);
 }
 
 void AAsteroid::Tick(float DeltaTime) {
@@ -43,10 +38,6 @@ void AAsteroid::Rotate() {
 		OldRotation.Yaw + 0.1
 	);
 	SetActorRotation(NewRotation);
-}
-
-void AAsteroid::OnDetectionSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
-	bHasPerformedImpact = false;
 }
 
 void AAsteroid::OnMeshHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
@@ -67,12 +58,8 @@ void AAsteroid::HandleBlasterShotImpact(const TObjectPtr<ABlasterShot> BlasterSh
 }
 
 void AAsteroid::HandlePlayerShipImpact(const TObjectPtr<APlayerShip> PlayerShip) {
-	if (PlayerShip->PlayerShipAttributes && !bHasPerformedImpact) {
+	if (PlayerShip->PlayerShipAttributes) {
 		PlayerShip->PlayerShipAttributes->ApplyCollisionDamage();
-		if (!PlayerShip->PlayerShipAttributes->GetbHasBlownUp()) {
-			PlayImpactSound(ShipImpactSound);
-		}
-		bHasPerformedImpact = true;
 	}
 }
 
