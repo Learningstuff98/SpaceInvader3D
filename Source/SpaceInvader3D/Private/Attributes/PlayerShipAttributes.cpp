@@ -23,7 +23,7 @@ void UPlayerShipAttributes::SetCurrentSpeed(const float& Speed) {
 }
 
 void UPlayerShipAttributes::ApplyCollisionDamage() {
-	Health -= 0.85f * (CurrentSpeed * 0.1f);
+	Health = 0.f;
 	HandleHasBlownUpStatus();
 }
 

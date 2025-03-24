@@ -10,7 +10,7 @@
 
 AAsteroid::AAsteroid() {
 	PrimaryActorTick.bCanEverTick = true;
-	bHasPerformedImpact = false;
+	RotationalDrift = 0.0;
 
 	AsteroidMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Asteroid Mesh"));
 	SetRootComponent(AsteroidMeshComponent);
@@ -19,23 +19,16 @@ AAsteroid::AAsteroid() {
 	AsteroidMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	AsteroidMeshComponent->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	AsteroidMeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
-
-	AsteroidDetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Asteroid Detection Sphere"));
-	AsteroidDetectionSphere->SetupAttachment(GetRootComponent());
 }
 
 void AAsteroid::BeginPlay() {
 	Super::BeginPlay();
 	AsteroidMeshComponent->OnComponentHit.AddDynamic(this, &AAsteroid::OnMeshHit);
-	AsteroidDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &AAsteroid::OnDetectionSphereEndOverlap);
 }
 
 void AAsteroid::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
-}
-
-void AAsteroid::OnDetectionSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
-	bHasPerformedImpact = false;
+	Rotate(DeltaTime);
 }
 
 void AAsteroid::OnMeshHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
@@ -56,12 +49,8 @@ void AAsteroid::HandleBlasterShotImpact(const TObjectPtr<ABlasterShot> BlasterSh
 }
 
 void AAsteroid::HandlePlayerShipImpact(const TObjectPtr<APlayerShip> PlayerShip) {
-	if (PlayerShip->PlayerShipAttributes && !bHasPerformedImpact) {
+	if (PlayerShip->PlayerShipAttributes) {
 		PlayerShip->PlayerShipAttributes->ApplyCollisionDamage();
-		if (!PlayerShip->PlayerShipAttributes->GetbHasBlownUp()) {
-			PlayImpactSound(ShipImpactSound);
-		}
-		bHasPerformedImpact = true;
 	}
 }
 
@@ -71,4 +60,14 @@ void AAsteroid::PlayImpactSound(const TObjectPtr<USoundBase> ImpactSound) {
 		ImpactSound,
 		GetActorLocation()
 	);
+}
+
+void AAsteroid::Rotate(const float& DeltaTime) {
+	FRotator OldRotation = GetActorRotation();
+	const FRotator NewRotation(
+		OldRotation.Pitch,
+		OldRotation.Roll + (RotationalDrift * DeltaTime),
+		OldRotation.Yaw
+	);
+	SetActorRotation(NewRotation);
 }

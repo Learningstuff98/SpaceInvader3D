@@ -27,12 +27,10 @@ private:
 	UFUNCTION()
 	void OnMeshHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
-	UFUNCTION()
-	void OnDetectionSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
 	void PlayImpactSound(const TObjectPtr<USoundBase> ImpactSound);
 	void HandlePlayerShipImpact(const TObjectPtr<class APlayerShip> PlayerShip);
 	void HandleBlasterShotImpact(const TObjectPtr<class ABlasterShot> BlasterShot);
+	void Rotate(const float& DeltaTime);
 
 	// Component Variables
 
@@ -40,19 +38,13 @@ private:
 	TObjectPtr<class USphereComponent> AsteroidSphere;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class USphereComponent> AsteroidDetectionSphere;
-
-	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UStaticMeshComponent> AsteroidMeshComponent;
 
 	// Other Variables
 
 	UPROPERTY(EditAnywhere, Category = Sound)
-	TObjectPtr<class USoundBase> ShipImpactSound;
-
-	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<class USoundBase> BlasterShotImpactSound;
 
-	UPROPERTY()
-	bool bHasPerformedImpact;
+	UPROPERTY(EditAnywhere, Category = "Rotational Drift")
+	double RotationalDrift;
 };
