@@ -10,6 +10,7 @@
 
 AAsteroid::AAsteroid() {
 	PrimaryActorTick.bCanEverTick = true;
+	bHasPositiveRotation = false;
 	RotationalDrift = 0.0;
 
 	AsteroidMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Asteroid Mesh"));
@@ -63,11 +64,21 @@ void AAsteroid::PlayImpactSound(const TObjectPtr<USoundBase> ImpactSound) {
 }
 
 void AAsteroid::Rotate(const float& DeltaTime) {
-	FRotator OldRotation = GetActorRotation();
-	const FRotator NewRotation(
-		OldRotation.Pitch,
-		OldRotation.Roll + (RotationalDrift * DeltaTime),
-		OldRotation.Yaw
+	const FRotator OldRotation = GetActorRotation();
+	SetActorRotation(
+	    FRotator(
+			OldRotation.Pitch,
+			GetNewRotationRoll(OldRotation, DeltaTime),
+			OldRotation.Yaw
+		)
 	);
-	SetActorRotation(NewRotation);
+}
+
+double AAsteroid::GetNewRotationRoll(const FRotator& OldRotation, const float& DeltaTime) {
+	if (bHasPositiveRotation) {
+		return OldRotation.Roll + (RotationalDrift * DeltaTime);
+	}
+	else {
+		return OldRotation.Roll - (RotationalDrift * DeltaTime);
+	}
 }

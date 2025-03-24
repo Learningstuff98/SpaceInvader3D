@@ -31,6 +31,7 @@ private:
 	void HandlePlayerShipImpact(const TObjectPtr<class APlayerShip> PlayerShip);
 	void HandleBlasterShotImpact(const TObjectPtr<class ABlasterShot> BlasterShot);
 	void Rotate(const float& DeltaTime);
+	double GetNewRotationRoll(const FRotator& OldRotation, const float& DeltaTime);
 
 	// Component Variables
 
@@ -47,4 +48,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Rotational Drift")
 	double RotationalDrift;
+
+	UPROPERTY(EditAnywhere, Category = "Rotational Drift")
+	bool bHasPositiveRotation;
 };
