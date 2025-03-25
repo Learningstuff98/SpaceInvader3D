@@ -55,6 +55,7 @@ private:
 	void PlayExplodingSound();
 	void HandleExplodingSound();
 	void UpdatePlayerShipLocalRotation(const float& DeltaTime);
+	void SetCurrentPitchControlSpeed(const FVector2D& LookAxisValue);
 
 	// Component Variables
 

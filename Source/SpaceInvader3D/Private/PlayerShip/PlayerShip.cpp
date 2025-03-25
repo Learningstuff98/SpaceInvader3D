@@ -230,9 +230,15 @@ void APlayerShip::UpdatePlayerShipLocalRotation(const float& DeltaTime) {
 void APlayerShip::Look(const FInputActionValue& Value) {
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
 	if (GetController()) {
-		CurrentPitchControlSpeed += LookAxisValue.Y * -20.0;
+		SetCurrentPitchControlSpeed(LookAxisValue);
 		AddControllerYawInput(LookAxisValue.X);
 	}
+}
+
+void APlayerShip::SetCurrentPitchControlSpeed(const FVector2D& LookAxisValue) {
+    float ClampedCurrentPitchControlSpeed = FMath::Clamp(CurrentPitchControlSpeed, -50.0f, 50.0f);
+    ClampedCurrentPitchControlSpeed += LookAxisValue.Y * -20.0;
+    CurrentPitchControlSpeed = ClampedCurrentPitchControlSpeed;
 }
 
 void APlayerShip::RollLeft() {
