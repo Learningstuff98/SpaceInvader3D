@@ -16,11 +16,11 @@
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
-
-	bUseControllerRotationPitch = true;
-	bUseControllerRotationYaw = true;
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
 	bFireCooldownTimerFinished = true;
 	bHasPlayedExplodingSound = false;
+	CurrentPitchControlSpeed = 0.0;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -95,6 +95,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	UpdateSpeed();
 	SetHealthBarPercent();
 	HandleExplodingSound();
+	UpdatePlayerShipLocalRotation(DeltaTime);
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -113,6 +114,8 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(DecelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Decelerate);
 		EnhancedInputComponent->BindAction(ToggleViewModeAction, ETriggerEvent::Triggered, this, &APlayerShip::ToggleViewMode);
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &APlayerShip::HandleFireTimer);
+		EnhancedInputComponent->BindAction(RollLeftAction, ETriggerEvent::Triggered, this, &APlayerShip::RollLeft);
+		EnhancedInputComponent->BindAction(RollRightAction, ETriggerEvent::Triggered, this, &APlayerShip::RollRight);
 	}
 }
 
@@ -220,12 +223,27 @@ void APlayerShip::PlayExplodingSound() {
 	);
 }
 
+void APlayerShip::UpdatePlayerShipLocalRotation(const float& DeltaTime) {
+	// Pitch == y
+	// Roll == z
+	// Yaw == x
+	AddActorLocalRotation(FRotator(CurrentPitchControlSpeed * DeltaTime, 0, 0));
+}
+
 void APlayerShip::Look(const FInputActionValue& Value) {
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
 	if (GetController()) {
+		CurrentPitchControlSpeed = LookAxisValue.Y * -500.0;
 		AddControllerYawInput(LookAxisValue.X);
-		AddControllerPitchInput(LookAxisValue.Y);
 	}
+}
+
+void APlayerShip::RollLeft() {
+	AddActorLocalRotation(FRotator(0, 0, -0.8));
+}
+
+void APlayerShip::RollRight() {
+	AddActorLocalRotation(FRotator(0, 0, 0.8));
 }
 
 void APlayerShip::Accelerate() {

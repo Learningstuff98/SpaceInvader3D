@@ -9,4 +9,5 @@ class SPACEINVADER3D_API Development
 public:
 	static void LogMessage(const FString& Message);
 	static void LogFloat(const float& Float);
+	static void LogDouble(const double& Double);
 };
