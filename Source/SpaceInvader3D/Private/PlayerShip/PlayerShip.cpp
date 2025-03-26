@@ -19,6 +19,7 @@ APlayerShip::APlayerShip() {
 	bFireCooldownTimerFinished = true;
 	bHasPlayedExplodingSound = false;
 	CurrentPitchControlSpeed = 0.0;
+	CurrentYawControlSpeed = 0.0;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -31,7 +32,7 @@ APlayerShip::APlayerShip() {
 	
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(GetRootComponent());
-	SpringArm->TargetArmLength = 1600.f;
+	SpringArm->TargetArmLength = 1000.f;
 	SpringArm->SocketOffset = FVector(0.0f, 0.0f, 450.0f);
 	SpringArm->bEnableCameraRotationLag = true;
 	SpringArm->CameraRotationLagSpeed = 2.0f;
@@ -224,19 +225,33 @@ void APlayerShip::UpdatePlayerShipLocalRotation(const float& DeltaTime) {
 	// Pitch == y
 	// Roll == z
 	// Yaw == x
-	AddActorLocalRotation(FRotator(CurrentPitchControlSpeed * DeltaTime, 0, 0));
+	AddActorLocalRotation(
+		FRotator(
+			CurrentPitchControlSpeed * DeltaTime,
+			CurrentYawControlSpeed * DeltaTime,
+			0
+		)
+	);
 }
 
 void APlayerShip::Look(const FInputActionValue& Value) {
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
 	if (GetController()) {
 		SetCurrentPitchControlSpeed(LookAxisValue);
-		AddControllerYawInput(LookAxisValue.X);
+		SetCurrentYawControlSpeed(LookAxisValue);
+	}
+}
+
+void APlayerShip::SetCurrentYawControlSpeed(const FVector2D& LookAxisValue) {
+	if (abs(LookAxisValue.X) > 0.15) {
+		float ClampedCurrentYawControlSpeed = FMath::Clamp(CurrentYawControlSpeed, -50.0f, 50.0f);
+		ClampedCurrentYawControlSpeed -= LookAxisValue.X * 2.0;
+		CurrentYawControlSpeed = ClampedCurrentYawControlSpeed;
 	}
 }
 
 void APlayerShip::SetCurrentPitchControlSpeed(const FVector2D& LookAxisValue) {
-	if (abs(LookAxisValue.Y) > 0.25) {
+	if (abs(LookAxisValue.Y) > 0.20) {
 		float ClampedCurrentPitchControlSpeed = FMath::Clamp(CurrentPitchControlSpeed, -50.0f, 50.0f);
 		ClampedCurrentPitchControlSpeed += LookAxisValue.Y * -3.0;
 		CurrentPitchControlSpeed = ClampedCurrentPitchControlSpeed;
