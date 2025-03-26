@@ -243,9 +243,9 @@ void APlayerShip::Look(const FInputActionValue& Value) {
 }
 
 void APlayerShip::SetCurrentYawControlSpeed(const FVector2D& LookAxisValue) {
-	if (abs(LookAxisValue.X) > 0.15) {
+	if (abs(LookAxisValue.X) > 0.1) {
 		float ClampedCurrentYawControlSpeed = FMath::Clamp(CurrentYawControlSpeed, -50.0f, 50.0f);
-		ClampedCurrentYawControlSpeed -= LookAxisValue.X * 2.0;
+		ClampedCurrentYawControlSpeed -= LookAxisValue.X * 0.5;
 		CurrentYawControlSpeed = ClampedCurrentYawControlSpeed;
 	}
 }
@@ -253,7 +253,7 @@ void APlayerShip::SetCurrentYawControlSpeed(const FVector2D& LookAxisValue) {
 void APlayerShip::SetCurrentPitchControlSpeed(const FVector2D& LookAxisValue) {
 	if (abs(LookAxisValue.Y) > 0.20) {
 		float ClampedCurrentPitchControlSpeed = FMath::Clamp(CurrentPitchControlSpeed, -50.0f, 50.0f);
-		ClampedCurrentPitchControlSpeed += LookAxisValue.Y * -3.0;
+		ClampedCurrentPitchControlSpeed += LookAxisValue.Y * -1.0;
 		CurrentPitchControlSpeed = ClampedCurrentPitchControlSpeed;
 	}
 }
