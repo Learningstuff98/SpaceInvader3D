@@ -236,9 +236,11 @@ void APlayerShip::Look(const FInputActionValue& Value) {
 }
 
 void APlayerShip::SetCurrentPitchControlSpeed(const FVector2D& LookAxisValue) {
-    float ClampedCurrentPitchControlSpeed = FMath::Clamp(CurrentPitchControlSpeed, -50.0f, 50.0f);
-    ClampedCurrentPitchControlSpeed += LookAxisValue.Y * -20.0;
-    CurrentPitchControlSpeed = ClampedCurrentPitchControlSpeed;
+	if (abs(LookAxisValue.Y) > 0.25) {
+		float ClampedCurrentPitchControlSpeed = FMath::Clamp(CurrentPitchControlSpeed, -50.0f, 50.0f);
+		ClampedCurrentPitchControlSpeed += LookAxisValue.Y * -3.0;
+		CurrentPitchControlSpeed = ClampedCurrentPitchControlSpeed;
+	}
 }
 
 void APlayerShip::RollLeft() {
