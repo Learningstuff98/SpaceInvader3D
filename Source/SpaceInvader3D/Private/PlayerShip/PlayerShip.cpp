@@ -242,11 +242,15 @@ void APlayerShip::SetCurrentPitchControlSpeed(const FVector2D& LookAxisValue) {
 }
 
 void APlayerShip::RollLeft() {
-	AddActorLocalRotation(FRotator(0, 0, -0.8));
+	AddActorLocalRotation(
+		FRotator(0, 0, -90 * UGameplayStatics::GetWorldDeltaSeconds(this))
+	);
 }
 
 void APlayerShip::RollRight() {
-	AddActorLocalRotation(FRotator(0, 0, 0.8));
+	AddActorLocalRotation(
+		FRotator(0, 0, 90 * UGameplayStatics::GetWorldDeltaSeconds(this))
+	);
 }
 
 void APlayerShip::Accelerate() {
