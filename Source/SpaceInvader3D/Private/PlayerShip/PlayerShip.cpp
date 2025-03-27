@@ -244,8 +244,8 @@ void APlayerShip::Look(const FInputActionValue& Value) {
 
 void APlayerShip::SetCurrentYawControlSpeed(const FVector2D& LookAxisValue) {
 	if (abs(LookAxisValue.X) > 0.1) {
-		float ClampedCurrentYawControlSpeed = FMath::Clamp(CurrentYawControlSpeed, -50.0f, 50.0f);
-		ClampedCurrentYawControlSpeed -= LookAxisValue.X * 0.5;
+		float ClampedCurrentYawControlSpeed = FMath::Clamp(CurrentYawControlSpeed, -30.0f, 30.0f);
+		ClampedCurrentYawControlSpeed -= LookAxisValue.X * 0.15;
 		CurrentYawControlSpeed = ClampedCurrentYawControlSpeed;
 	}
 }
