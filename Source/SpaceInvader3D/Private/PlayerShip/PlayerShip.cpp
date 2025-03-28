@@ -93,7 +93,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	UpdateSpeed();
 	SetHealthBarPercent();
 	HandleExplodingSound();
-	UpdatePlayerShipLocalRotation(DeltaTime);
+	UpdatePlayerShipRotation(DeltaTime);
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -107,7 +107,7 @@ void APlayerShip::SetupMappingContext() {
 void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	if (TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerShip::Look);
+		EnhancedInputComponent->BindAction(SteerAction, ETriggerEvent::Triggered, this, &APlayerShip::Steer);
 		EnhancedInputComponent->BindAction(AccelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Accelerate);
 		EnhancedInputComponent->BindAction(DecelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Decelerate);
 		EnhancedInputComponent->BindAction(ToggleViewModeAction, ETriggerEvent::Triggered, this, &APlayerShip::ToggleViewMode);
@@ -221,7 +221,7 @@ void APlayerShip::PlayExplodingSound() {
 	);
 }
 
-void APlayerShip::UpdatePlayerShipLocalRotation(const float& DeltaTime) {
+void APlayerShip::UpdatePlayerShipRotation(const float& DeltaTime) {
 	// Pitch == y
 	// Roll == z
 	// Yaw == x
@@ -234,27 +234,19 @@ void APlayerShip::UpdatePlayerShipLocalRotation(const float& DeltaTime) {
 	);
 }
 
-void APlayerShip::Look(const FInputActionValue& Value) {
+void APlayerShip::Steer(const FInputActionValue& Value) {
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
 	if (GetController()) {
-		SetCurrentPitchControlSpeed(LookAxisValue);
-		SetCurrentYawControlSpeed(LookAxisValue);
+		SetCurrentControlSpeed(LookAxisValue.X, 0.1, 30.0, 0.15, CurrentYawControlSpeed);
+		SetCurrentControlSpeed(LookAxisValue.Y, 0.2, 50.0, 1.0, CurrentPitchControlSpeed);
 	}
 }
 
-void APlayerShip::SetCurrentYawControlSpeed(const FVector2D& LookAxisValue) {
-	if (abs(LookAxisValue.X) > 0.1) {
-		float ClampedCurrentYawControlSpeed = FMath::Clamp(CurrentYawControlSpeed, -30.0f, 30.0f);
-		ClampedCurrentYawControlSpeed -= LookAxisValue.X * 0.15;
-		CurrentYawControlSpeed = ClampedCurrentYawControlSpeed;
-	}
-}
-
-void APlayerShip::SetCurrentPitchControlSpeed(const FVector2D& LookAxisValue) {
-	if (abs(LookAxisValue.Y) > 0.20) {
-		float ClampedCurrentPitchControlSpeed = FMath::Clamp(CurrentPitchControlSpeed, -50.0f, 50.0f);
-		ClampedCurrentPitchControlSpeed += LookAxisValue.Y * -1.0;
-		CurrentPitchControlSpeed = ClampedCurrentPitchControlSpeed;
+void APlayerShip::SetCurrentControlSpeed(const double& ControlSpeedInput, const double& DeadZone, const double& MaxTurnSpeed, const double& Sensitivity, double& CurrentControlSpeed) {
+	if (abs(ControlSpeedInput) > DeadZone) {
+		float ClampedCurrentControlSpeed = FMath::Clamp(CurrentControlSpeed, -MaxTurnSpeed, MaxTurnSpeed);
+		ClampedCurrentControlSpeed -= ControlSpeedInput * Sensitivity;
+		CurrentControlSpeed = ClampedCurrentControlSpeed;
 	}
 }
 

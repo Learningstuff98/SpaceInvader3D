@@ -32,7 +32,7 @@ private:
 	// </APawn>
 
 	// Callbacks for input
-	void Look(const FInputActionValue& Value);
+	void Steer(const FInputActionValue& Value);
 	void Accelerate();
 	void Decelerate();
 	void ToggleViewMode();
@@ -54,9 +54,8 @@ private:
 	void SetHealthBarPercent();
 	void PlayExplodingSound();
 	void HandleExplodingSound();
-	void UpdatePlayerShipLocalRotation(const float& DeltaTime);
-	void SetCurrentPitchControlSpeed(const FVector2D& LookAxisValue);
-	void SetCurrentYawControlSpeed(const FVector2D& LookAxisValue);
+	void UpdatePlayerShipRotation(const float& DeltaTime);
+	void SetCurrentControlSpeed(const double& ControlSpeedInput, const double& DeadZone, const double& MaxTurnSpeed, const double& Sensitivity, double& CurrentControlSpeed);
 
 	// Component Variables
 
@@ -102,7 +101,7 @@ private:
 	TObjectPtr<class UInputMappingContext> MappingContext;
 
 	UPROPERTY(EditAnywhere, Category = Input)
-	TObjectPtr<class UInputAction> LookAction;
+	TObjectPtr<class UInputAction> SteerAction;
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<class UInputAction> AccelerateAction;
