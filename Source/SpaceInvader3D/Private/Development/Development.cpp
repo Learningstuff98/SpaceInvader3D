@@ -15,3 +15,10 @@ void Development::LogFloat(const float& Float) {
 		GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Green, Message);
 	}
 }
+
+void Development::LogDouble(const double& Double) {
+	FString Message = FString::Printf(TEXT("THE DOUBLE VALUE IS: %f"), Double);
+	if (GEngine) {
+		GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Green, Message);
+	}
+}
