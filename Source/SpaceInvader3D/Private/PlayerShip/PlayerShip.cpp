@@ -18,8 +18,12 @@ APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
 	bFireCooldownTimerFinished = true;
 	bHasPlayedExplodingSound = false;
+	bInViewMode = false;
 	CurrentPitchControlSpeed = 0.0;
 	CurrentYawControlSpeed = 0.0;
+	BarrelNumberToFireFrom = 1;
+	MaxSpeed = 12000.0f;
+	MinSpeed = 3300.0f;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -32,7 +36,7 @@ APlayerShip::APlayerShip() {
 	
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(GetRootComponent());
-	SpringArm->TargetArmLength = 1000.f;
+	SpringArm->TargetArmLength = 1500.f;
 	SpringArm->SocketOffset = FVector(0.0f, 0.0f, 450.0f);
 	SpringArm->bEnableCameraRotationLag = true;
 	SpringArm->CameraRotationLagSpeed = 2.0f;
@@ -60,12 +64,7 @@ APlayerShip::APlayerShip() {
 	GunBarrel4 = CreateDefaultSubobject<UArrowComponent>(TEXT("Gun Barrel 4"));
 	GunBarrel4->SetupAttachment(GetRootComponent());
 
-	BarrelNumberToFireFrom = 1;
-
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
-
-	MaxSpeed = 12000.0f;
-	MinSpeed = 3300.0f;
 
 	EngineThrusterEffect1 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 1"));
 	EngineThrusterEffect1->SetupAttachment(GetRootComponent());
@@ -107,7 +106,7 @@ void APlayerShip::SetupMappingContext() {
 void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	if (TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
-		EnhancedInputComponent->BindAction(SteerAction, ETriggerEvent::Triggered, this, &APlayerShip::Steer);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerShip::Look);
 		EnhancedInputComponent->BindAction(AccelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Accelerate);
 		EnhancedInputComponent->BindAction(DecelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Decelerate);
 		EnhancedInputComponent->BindAction(ToggleViewModeAction, ETriggerEvent::Triggered, this, &APlayerShip::ToggleViewMode);
@@ -234,11 +233,36 @@ void APlayerShip::UpdatePlayerShipRotation(const float& DeltaTime) {
 	);
 }
 
-void APlayerShip::Steer(const FInputActionValue& Value) {
+void APlayerShip::Look(const FInputActionValue& Value) {
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
-	if (GetController()) {
-		SetCurrentControlSpeed(LookAxisValue.X, 0.1, 30.0, 0.15, CurrentYawControlSpeed);
-		SetCurrentControlSpeed(LookAxisValue.Y, 0.2, 50.0, 1.0, CurrentPitchControlSpeed);
+	if (!bInViewMode) {
+		Steer(LookAxisValue);
+	}
+	else {
+		View(LookAxisValue);
+	}
+}
+
+void APlayerShip::Steer(const FVector2D& LookAxisValue) {
+	SetCurrentControlSpeed(LookAxisValue.X, 0.1, 30.0, 0.15, CurrentYawControlSpeed);
+	SetCurrentControlSpeed(LookAxisValue.Y, 0.2, 50.0, 1.0, CurrentPitchControlSpeed);
+	if (SpringArm) SpringArm->bUsePawnControlRotation = false;
+}
+
+void APlayerShip::View(const FVector2D& LookAxisValue) {
+	ResetControlRotation();
+	if (SpringArm) {
+		SpringArm->bUsePawnControlRotation = true;
+		AddControllerYawInput(-LookAxisValue.X * 0.3);
+		AddControllerPitchInput(LookAxisValue.Y * 0.3);
+	}
+}
+
+void APlayerShip::ResetControlRotation() {
+	if (SpringArm && CameraResetTarget && GetController()) {
+		if (!SpringArm->bUsePawnControlRotation) {
+			GetController()->SetControlRotation(CameraResetTarget->GetComponentRotation());
+		}
 	}
 }
 
@@ -280,14 +304,12 @@ void APlayerShip::Decelerate() {
 
 void APlayerShip::ToggleViewMode() {
 	if (GetController() && CameraResetTarget) {
-		GetController()->SetControlRotation(CameraResetTarget->GetComponentRotation());
-		bUseControllerRotationPitch = ~bUseControllerRotationPitch;
-		bUseControllerRotationYaw = ~bUseControllerRotationYaw;
-		if (bUseControllerRotationPitch && bUseControllerRotationYaw) {
-			SpringArm->TargetOffset = FVector(0.0f, 0.0f, 450.0f);
+		if (bInViewMode) {
+			bInViewMode = false;
+			GetController()->SetControlRotation(CameraResetTarget->GetComponentRotation());
 		}
 		else {
-			SpringArm->TargetOffset = FVector(0.0f, 0.0f, 350.0f);
+			bInViewMode = true;
 		}
 	}
 }

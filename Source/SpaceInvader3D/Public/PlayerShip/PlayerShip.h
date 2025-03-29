@@ -32,7 +32,7 @@ private:
 	// </APawn>
 
 	// Callbacks for input
-	void Steer(const FInputActionValue& Value);
+	void Look(const FInputActionValue& Value);
 	void Accelerate();
 	void Decelerate();
 	void ToggleViewMode();
@@ -56,6 +56,9 @@ private:
 	void HandleExplodingSound();
 	void UpdatePlayerShipRotation(const float& DeltaTime);
 	void SetCurrentControlSpeed(const double& ControlSpeedInput, const double& DeadZone, const double& MaxTurnSpeed, const double& Sensitivity, double& CurrentControlSpeed);
+	void View(const FVector2D& LookAxisValue);
+	void ResetControlRotation();
+	void Steer(const FVector2D& LookAxisValue);
 
 	// Component Variables
 
@@ -101,7 +104,7 @@ private:
 	TObjectPtr<class UInputMappingContext> MappingContext;
 
 	UPROPERTY(EditAnywhere, Category = Input)
-	TObjectPtr<class UInputAction> SteerAction;
+	TObjectPtr<class UInputAction> LookAction;
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<class UInputAction> AccelerateAction;
@@ -160,4 +163,7 @@ private:
 
 	UPROPERTY()
 	double CurrentYawControlSpeed;
+
+	UPROPERTY()
+	bool bInViewMode;
 };
