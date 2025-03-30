@@ -16,11 +16,14 @@
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
-
-	bUseControllerRotationPitch = true;
-	bUseControllerRotationYaw = true;
 	bFireCooldownTimerFinished = true;
 	bHasPlayedExplodingSound = false;
+	bInViewMode = false;
+	CurrentPitchControlSpeed = 0.0;
+	CurrentYawControlSpeed = 0.0;
+	BarrelNumberToFireFrom = 1;
+	MaxSpeed = 12000.0f;
+	MinSpeed = 3300.0f;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -33,9 +36,8 @@ APlayerShip::APlayerShip() {
 	
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(GetRootComponent());
-	SpringArm->bUsePawnControlRotation = true;
-	SpringArm->TargetArmLength = 1600.f;
-	SpringArm->TargetOffset = FVector(0.0f, 0.0f, 450.0f);
+	SpringArm->TargetArmLength = 1500.f;
+	SpringArm->SocketOffset = FVector(0.0f, 0.0f, 450.0f);
 	SpringArm->bEnableCameraRotationLag = true;
 	SpringArm->CameraRotationLagSpeed = 2.0f;
 	SpringArm->bEnableCameraLag = true;
@@ -62,12 +64,7 @@ APlayerShip::APlayerShip() {
 	GunBarrel4 = CreateDefaultSubobject<UArrowComponent>(TEXT("Gun Barrel 4"));
 	GunBarrel4->SetupAttachment(GetRootComponent());
 
-	BarrelNumberToFireFrom = 1;
-
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
-
-	MaxSpeed = 12000.0f;
-	MinSpeed = 3300.0f;
 
 	EngineThrusterEffect1 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 1"));
 	EngineThrusterEffect1->SetupAttachment(GetRootComponent());
@@ -95,6 +92,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	UpdateSpeed();
 	SetHealthBarPercent();
 	HandleExplodingSound();
+	UpdatePlayerShipRotation(DeltaTime);
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -113,6 +111,8 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(DecelerateAction, ETriggerEvent::Triggered, this, &APlayerShip::Decelerate);
 		EnhancedInputComponent->BindAction(ToggleViewModeAction, ETriggerEvent::Triggered, this, &APlayerShip::ToggleViewMode);
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &APlayerShip::HandleFireTimer);
+		EnhancedInputComponent->BindAction(RollLeftAction, ETriggerEvent::Triggered, this, &APlayerShip::RollLeft);
+		EnhancedInputComponent->BindAction(RollRightAction, ETriggerEvent::Triggered, this, &APlayerShip::RollRight);
 	}
 }
 
@@ -220,12 +220,70 @@ void APlayerShip::PlayExplodingSound() {
 	);
 }
 
+void APlayerShip::UpdatePlayerShipRotation(const float& DeltaTime) {
+	// Pitch == y
+	// Roll == z
+	// Yaw == x
+	AddActorLocalRotation(
+		FRotator(
+			CurrentPitchControlSpeed * DeltaTime,
+			CurrentYawControlSpeed * DeltaTime,
+			0
+		)
+	);
+}
+
 void APlayerShip::Look(const FInputActionValue& Value) {
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
-	if (GetController()) {
-		AddControllerYawInput(LookAxisValue.X);
-		AddControllerPitchInput(LookAxisValue.Y);
+	if (SpringArm) {
+		if (bInViewMode) {
+			View(LookAxisValue, 0.3);
+		}
+		else {
+			Steer(LookAxisValue);
+		}
 	}
+}
+
+void APlayerShip::View(const FVector2D& LookAxisValue, const double& Sensitivity) {
+	ResetControlRotation();
+	SpringArm->bUsePawnControlRotation = true;
+	AddControllerYawInput(-LookAxisValue.X * Sensitivity);
+	AddControllerPitchInput(LookAxisValue.Y * Sensitivity);
+}
+
+void APlayerShip::ResetControlRotation() {
+	if (CameraResetTarget && GetController()) {
+		if (!SpringArm->bUsePawnControlRotation) {
+			GetController()->SetControlRotation(CameraResetTarget->GetComponentRotation());
+		}
+	}
+}
+
+void APlayerShip::Steer(const FVector2D& LookAxisValue) {
+	SetCurrentControlSpeed(LookAxisValue.X, 0.1, 30.0, 0.15, CurrentYawControlSpeed);
+	SetCurrentControlSpeed(LookAxisValue.Y, 0.2, 50.0, 1.0, CurrentPitchControlSpeed);
+	SpringArm->bUsePawnControlRotation = false;
+}
+
+void APlayerShip::SetCurrentControlSpeed(const double& ControlSpeedInput, const double& DeadZone, const double& MaxTurnSpeed, const double& Sensitivity, double& CurrentControlSpeed) {
+	if (abs(ControlSpeedInput) > DeadZone) {
+		float ClampedCurrentControlSpeed = FMath::Clamp(CurrentControlSpeed, -MaxTurnSpeed, MaxTurnSpeed);
+		ClampedCurrentControlSpeed -= ControlSpeedInput * Sensitivity;
+		CurrentControlSpeed = ClampedCurrentControlSpeed;
+	}
+}
+
+void APlayerShip::RollLeft() {
+	AddActorLocalRotation(
+		FRotator(0, 0, -90 * UGameplayStatics::GetWorldDeltaSeconds(this))
+	);
+}
+
+void APlayerShip::RollRight() {
+	AddActorLocalRotation(
+		FRotator(0, 0, 90 * UGameplayStatics::GetWorldDeltaSeconds(this))
+	);
 }
 
 void APlayerShip::Accelerate() {
@@ -246,14 +304,12 @@ void APlayerShip::Decelerate() {
 
 void APlayerShip::ToggleViewMode() {
 	if (GetController() && CameraResetTarget) {
-		GetController()->SetControlRotation(CameraResetTarget->GetComponentRotation());
-		bUseControllerRotationPitch = ~bUseControllerRotationPitch;
-		bUseControllerRotationYaw = ~bUseControllerRotationYaw;
-		if (bUseControllerRotationPitch && bUseControllerRotationYaw) {
-			SpringArm->TargetOffset = FVector(0.0f, 0.0f, 450.0f);
+		if (bInViewMode) {
+			bInViewMode = false;
+			GetController()->SetControlRotation(CameraResetTarget->GetComponentRotation());
 		}
 		else {
-			SpringArm->TargetOffset = FVector(0.0f, 0.0f, 350.0f);
+			bInViewMode = true;
 		}
 	}
 }

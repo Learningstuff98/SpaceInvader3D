@@ -37,6 +37,8 @@ private:
 	void Decelerate();
 	void ToggleViewMode();
 	void HandleFireTimer();
+	void RollLeft();
+	void RollRight();
 
 	// Miscellaneous
 	void SetupMappingContext();
@@ -52,6 +54,11 @@ private:
 	void SetHealthBarPercent();
 	void PlayExplodingSound();
 	void HandleExplodingSound();
+	void UpdatePlayerShipRotation(const float& DeltaTime);
+	void SetCurrentControlSpeed(const double& ControlSpeedInput, const double& DeadZone, const double& MaxTurnSpeed, const double& Sensitivity, double& CurrentControlSpeed);
+	void View(const FVector2D& LookAxisValue, const double& Sensitivity);
+	void ResetControlRotation();
+	void Steer(const FVector2D& LookAxisValue);
 
 	// Component Variables
 
@@ -114,6 +121,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<class UInputAction> FireAction;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<class UInputAction> RollLeftAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<class UInputAction> RollRightAction;
+
 	// Other Variables
 
 	UPROPERTY()
@@ -144,4 +157,13 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<class USpaceInvader3DOverlay> PlayerShipOverlay;
+
+	UPROPERTY()
+	double CurrentPitchControlSpeed;
+
+	UPROPERTY()
+	double CurrentYawControlSpeed;
+
+	UPROPERTY()
+	bool bInViewMode;
 };
