@@ -56,7 +56,7 @@ private:
 	void HandleExplodingSound();
 	void UpdatePlayerShipRotation(const float& DeltaTime);
 	void SetCurrentControlSpeed(const double& ControlSpeedInput, const double& DeadZone, const double& MaxTurnSpeed, const double& Sensitivity, double& CurrentControlSpeed);
-	void View(const FVector2D& LookAxisValue);
+	void View(const FVector2D& LookAxisValue, const double& Sensitivity);
 	void ResetControlRotation();
 	void Steer(const FVector2D& LookAxisValue);
 

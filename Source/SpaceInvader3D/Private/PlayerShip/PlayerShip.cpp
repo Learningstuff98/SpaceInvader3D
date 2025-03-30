@@ -235,35 +235,35 @@ void APlayerShip::UpdatePlayerShipRotation(const float& DeltaTime) {
 
 void APlayerShip::Look(const FInputActionValue& Value) {
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
-	if (!bInViewMode) {
-		Steer(LookAxisValue);
+	if (SpringArm) {
+		if (bInViewMode) {
+			View(LookAxisValue, 0.3);
+		}
+		else {
+			Steer(LookAxisValue);
+		}
 	}
-	else {
-		View(LookAxisValue);
+}
+
+void APlayerShip::View(const FVector2D& LookAxisValue, const double& Sensitivity) {
+	ResetControlRotation();
+	SpringArm->bUsePawnControlRotation = true;
+	AddControllerYawInput(-LookAxisValue.X * Sensitivity);
+	AddControllerPitchInput(LookAxisValue.Y * Sensitivity);
+}
+
+void APlayerShip::ResetControlRotation() {
+	if (CameraResetTarget && GetController()) {
+		if (!SpringArm->bUsePawnControlRotation) {
+			GetController()->SetControlRotation(CameraResetTarget->GetComponentRotation());
+		}
 	}
 }
 
 void APlayerShip::Steer(const FVector2D& LookAxisValue) {
 	SetCurrentControlSpeed(LookAxisValue.X, 0.1, 30.0, 0.15, CurrentYawControlSpeed);
 	SetCurrentControlSpeed(LookAxisValue.Y, 0.2, 50.0, 1.0, CurrentPitchControlSpeed);
-	if (SpringArm) SpringArm->bUsePawnControlRotation = false;
-}
-
-void APlayerShip::View(const FVector2D& LookAxisValue) {
-	ResetControlRotation();
-	if (SpringArm) {
-		SpringArm->bUsePawnControlRotation = true;
-		AddControllerYawInput(-LookAxisValue.X * 0.3);
-		AddControllerPitchInput(LookAxisValue.Y * 0.3);
-	}
-}
-
-void APlayerShip::ResetControlRotation() {
-	if (SpringArm && CameraResetTarget && GetController()) {
-		if (!SpringArm->bUsePawnControlRotation) {
-			GetController()->SetControlRotation(CameraResetTarget->GetComponentRotation());
-		}
-	}
+	SpringArm->bUsePawnControlRotation = false;
 }
 
 void APlayerShip::SetCurrentControlSpeed(const double& ControlSpeedInput, const double& DeadZone, const double& MaxTurnSpeed, const double& Sensitivity, double& CurrentControlSpeed) {

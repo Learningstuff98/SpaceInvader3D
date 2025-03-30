@@ -9,15 +9,15 @@ void Development::LogMessage(const FString& Message) {
 	}
 }
 
-void Development::LogFloat(const float& Float) {
-	FString Message = FString::Printf(TEXT("THE FLOAT VALUE IS: %f"), Float);
+void Development::LogNumber(const float& Float) {
+	FString Message = FString::Printf(TEXT("THE NUMBER VALUE IS: %f"), Float);
 	if (GEngine) {
 		GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Green, Message);
 	}
 }
 
-void Development::LogDouble(const double& Double) {
-	FString Message = FString::Printf(TEXT("THE DOUBLE VALUE IS: %f"), Double);
+void Development::LogNumber(const double& Double) {
+	FString Message = FString::Printf(TEXT("THE NUMBER VALUE IS: %f"), Double);
 	if (GEngine) {
 		GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Green, Message);
 	}
