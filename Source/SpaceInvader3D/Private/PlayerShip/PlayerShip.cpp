@@ -89,7 +89,6 @@ void APlayerShip::Tick(float DeltaTime) {
 	AddMovementInput(GetActorForwardVector(), 1.0f);
 	SetThrusterPitch();
 	SetThrusterColor();
-	UpdateSpeed();
 	SetHealthBarPercent();
 	HandleExplodingSound();
 	UpdatePlayerShipRotation(DeltaTime);
@@ -167,12 +166,6 @@ TObjectPtr<UArrowComponent> APlayerShip::DeterminWhichBarrelToFireFrom() {
 void APlayerShip::SetHealthBarPercent() {
 	if (PlayerShipOverlay) {
 		PlayerShipOverlay->SetHealthBarPercent(PlayerShipAttributes->GetHealthPercent());
-	}
-}
-
-void APlayerShip::UpdateSpeed() {
-	if (PlayerShipAttributes) {
-		PlayerShipAttributes->SetCurrentSpeed(Speed);
 	}
 }
 
