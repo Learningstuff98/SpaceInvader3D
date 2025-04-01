@@ -48,8 +48,6 @@ private:
 	void Fire();
 	TObjectPtr<class ABlasterShot> SpawnBlasterShot();
 	TObjectPtr<class UArrowComponent> DeterminWhichBarrelToFireFrom();
-	void SetInitialSpeed();
-	void UpdateSpeed();
 	TObjectPtr<class USpaceInvader3DOverlay> SetOverlay();
 	void SetHealthBarPercent();
 	void PlayExplodingSound();
@@ -59,6 +57,7 @@ private:
 	void View(const FVector2D& LookAxisValue, const double& Sensitivity);
 	void ResetControlRotation();
 	void Steer(const FVector2D& LookAxisValue);
+	void SetMovementComponentMaxSpeed();
 
 	// Component Variables
 
@@ -166,4 +165,7 @@ private:
 
 	UPROPERTY()
 	bool bInViewMode;
+
+	UPROPERTY()
+	float CurrentSpeed;
 };

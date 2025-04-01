@@ -35,14 +35,10 @@ private:
 	float MaxHealth;
 
 	UPROPERTY()
-	float CurrentSpeed;
-
-	UPROPERTY()
 	bool bHasBlownUp;
 
 public:
 	// Public Setters and getters
-	void SetCurrentSpeed(const float& Speed);
 	void ApplyCollisionDamage();
 	float GetHealthPercent();
 	FORCEINLINE bool GetbHasBlownUp() const { return bHasBlownUp; }
