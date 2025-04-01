@@ -167,5 +167,5 @@ private:
 	bool bInViewMode;
 
 	UPROPERTY()
-	float Speed;
+	float CurrentSpeed;
 };

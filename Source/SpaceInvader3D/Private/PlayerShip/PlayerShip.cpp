@@ -24,7 +24,7 @@ APlayerShip::APlayerShip() {
 	BarrelNumberToFireFrom = 1;
 	MaxSpeed = 12000.0f;
 	MinSpeed = 3300.0f;
-	Speed = MinSpeed;
+	CurrentSpeed = MinSpeed;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -210,7 +210,7 @@ void APlayerShip::PlayExplodingSound() {
 
 void APlayerShip::SetMovementComponentMaxSpeed() {
 	if (Movement) {
-		Movement->MaxSpeed = Speed;
+		Movement->MaxSpeed = CurrentSpeed;
 	}
 }
 
@@ -281,18 +281,18 @@ void APlayerShip::RollRight() {
 }
 
 void APlayerShip::Accelerate() {
-	if (Speed < MaxSpeed) {
+	if (CurrentSpeed < MaxSpeed) {
 		const float DeltaSeconds = UGameplayStatics::GetWorldDeltaSeconds(this);
-		const float PercentOfMaxSpeed = (Speed / MaxSpeed) * 100.f;
+		const float PercentOfMaxSpeed = (CurrentSpeed / MaxSpeed) * 100.f;
 		const float PercentDifference = 100.f - PercentOfMaxSpeed;
-		Speed += ((PercentDifference * 0.2f) * (DeltaSeconds * 100.f));
+		CurrentSpeed += ((PercentDifference * 0.2f) * (DeltaSeconds * 100.f));
 	}
 }
 
 void APlayerShip::Decelerate() {
-	if (Speed > MinSpeed) {
+	if (CurrentSpeed > MinSpeed) {
 		const float DeltaSeconds = UGameplayStatics::GetWorldDeltaSeconds(this);
-		Speed -= (10.f * (DeltaSeconds * 100.f));
+		CurrentSpeed -= (10.f * (DeltaSeconds * 100.f));
 	}
 }
 
@@ -309,12 +309,12 @@ void APlayerShip::ToggleViewMode() {
 }
 
 void APlayerShip::SetThrusterPitch() {
-	CruisingThrusterSound->SetPitchMultiplier(Speed * 0.0001f);
+	CruisingThrusterSound->SetPitchMultiplier(CurrentSpeed * 0.0001f);
 }
 
 void APlayerShip::SetThrusterColor() {
-	const float Blue = (Speed * .08f);
-	const float Alpha = (Speed * .005f);
+	const float Blue = (CurrentSpeed * .08f);
+	const float Alpha = (CurrentSpeed * .005f);
 	const FColor NewColor(90.f, 0.f, Blue, Alpha);
 	EngineThrusterEffect1->SetNiagaraVariableLinearColor(FString("ParticleColor"), FLinearColor(NewColor));
 	EngineThrusterEffect2->SetNiagaraVariableLinearColor(FString("ParticleColor"), FLinearColor(NewColor));
