@@ -24,6 +24,7 @@ APlayerShip::APlayerShip() {
 	BarrelNumberToFireFrom = 1;
 	MaxSpeed = 12000.0f;
 	MinSpeed = 3300.0f;
+	Speed = MinSpeed;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -79,7 +80,6 @@ APlayerShip::APlayerShip() {
 void APlayerShip::BeginPlay() {
 	Super::BeginPlay();
 	SetupMappingContext();
-	SetInitialSpeed();
 	PlayerShipOverlay = SetOverlay();
 	SetHealthBarPercent();
 }
@@ -93,6 +93,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	SetHealthBarPercent();
 	HandleExplodingSound();
 	UpdatePlayerShipRotation(DeltaTime);
+	Movement->MaxSpeed = Speed;
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -163,12 +164,6 @@ TObjectPtr<UArrowComponent> APlayerShip::DeterminWhichBarrelToFireFrom() {
 	return GunBarrel1;
 }
 
-void APlayerShip::SetInitialSpeed() {
-	if (Movement) {
-		Movement->MaxSpeed = MinSpeed;
-	}
-}
-
 void APlayerShip::SetHealthBarPercent() {
 	if (PlayerShipOverlay) {
 		PlayerShipOverlay->SetHealthBarPercent(PlayerShipAttributes->GetHealthPercent());
@@ -177,7 +172,7 @@ void APlayerShip::SetHealthBarPercent() {
 
 void APlayerShip::UpdateSpeed() {
 	if (PlayerShipAttributes) {
-		PlayerShipAttributes->SetCurrentSpeed(Movement->MaxSpeed);
+		PlayerShipAttributes->SetCurrentSpeed(Speed);
 	}
 }
 
@@ -261,8 +256,8 @@ void APlayerShip::ResetControlRotation() {
 }
 
 void APlayerShip::Steer(const FVector2D& LookAxisValue) {
-	SetCurrentControlSpeed(LookAxisValue.X, 0.1, 30.0, 0.15, CurrentYawControlSpeed);
-	SetCurrentControlSpeed(LookAxisValue.Y, 0.2, 50.0, 1.0, CurrentPitchControlSpeed);
+	SetCurrentControlSpeed(LookAxisValue.X, 0.1, 30.0, 0.4, CurrentYawControlSpeed);
+	SetCurrentControlSpeed(LookAxisValue.Y, 0.2, 50.0, 1.4, CurrentPitchControlSpeed);
 	SpringArm->bUsePawnControlRotation = false;
 }
 
@@ -287,18 +282,18 @@ void APlayerShip::RollRight() {
 }
 
 void APlayerShip::Accelerate() {
-	if (Movement && Movement->MaxSpeed < MaxSpeed) {
+	if (Speed < MaxSpeed) {
 		const float DeltaSeconds = UGameplayStatics::GetWorldDeltaSeconds(this);
-		const float PercentOfMaxSpeed = (Movement->MaxSpeed / MaxSpeed) * 100.f;
+		const float PercentOfMaxSpeed = (Speed / MaxSpeed) * 100.f;
 		const float PercentDifference = 100.f - PercentOfMaxSpeed;
-		Movement->MaxSpeed += ((PercentDifference * 0.2f) * (DeltaSeconds * 100.f));
+		Speed += ((PercentDifference * 0.2f) * (DeltaSeconds * 100.f));
 	}
 }
 
 void APlayerShip::Decelerate() {
-	if (Movement && Movement->MaxSpeed > MinSpeed) {
+	if (Speed > MinSpeed) {
 		const float DeltaSeconds = UGameplayStatics::GetWorldDeltaSeconds(this);
-		Movement->MaxSpeed -= (10.f * (DeltaSeconds * 100.f));
+		Speed -= (10.f * (DeltaSeconds * 100.f));
 	}
 }
 
@@ -315,12 +310,12 @@ void APlayerShip::ToggleViewMode() {
 }
 
 void APlayerShip::SetThrusterPitch() {
-	CruisingThrusterSound->SetPitchMultiplier(Movement->MaxSpeed * 0.0001f);
+	CruisingThrusterSound->SetPitchMultiplier(Speed * 0.0001f);
 }
 
 void APlayerShip::SetThrusterColor() {
-	const float Blue = (Movement->MaxSpeed * .08f);
-	const float Alpha = (Movement->MaxSpeed * .005f);
+	const float Blue = (Speed * .08f);
+	const float Alpha = (Speed * .005f);
 	const FColor NewColor(90.f, 0.f, Blue, Alpha);
 	EngineThrusterEffect1->SetNiagaraVariableLinearColor(FString("ParticleColor"), FLinearColor(NewColor));
 	EngineThrusterEffect2->SetNiagaraVariableLinearColor(FString("ParticleColor"), FLinearColor(NewColor));

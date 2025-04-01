@@ -48,7 +48,6 @@ private:
 	void Fire();
 	TObjectPtr<class ABlasterShot> SpawnBlasterShot();
 	TObjectPtr<class UArrowComponent> DeterminWhichBarrelToFireFrom();
-	void SetInitialSpeed();
 	void UpdateSpeed();
 	TObjectPtr<class USpaceInvader3DOverlay> SetOverlay();
 	void SetHealthBarPercent();
@@ -166,4 +165,7 @@ private:
 
 	UPROPERTY()
 	bool bInViewMode;
+
+	UPROPERTY()
+	float Speed;
 };
