@@ -58,6 +58,7 @@ private:
 	void View(const FVector2D& LookAxisValue, const double& Sensitivity);
 	void ResetControlRotation();
 	void Steer(const FVector2D& LookAxisValue);
+	void SetMovementComponentMaxSpeed();
 
 	// Component Variables
 

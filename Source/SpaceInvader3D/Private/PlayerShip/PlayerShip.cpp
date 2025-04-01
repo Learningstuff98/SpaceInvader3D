@@ -93,7 +93,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	SetHealthBarPercent();
 	HandleExplodingSound();
 	UpdatePlayerShipRotation(DeltaTime);
-	Movement->MaxSpeed = Speed;
+	SetMovementComponentMaxSpeed();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -213,6 +213,12 @@ void APlayerShip::PlayExplodingSound() {
 		ExplodingSound,
 		GetActorLocation()
 	);
+}
+
+void APlayerShip::SetMovementComponentMaxSpeed() {
+	if (Movement) {
+		Movement->MaxSpeed = Speed;
+	}
 }
 
 void APlayerShip::UpdatePlayerShipRotation(const float& DeltaTime) {
