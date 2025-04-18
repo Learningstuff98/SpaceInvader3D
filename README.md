@@ -9,3 +9,7 @@ I used the UE5 niagara system for the engine thruster effect. The color is deter
 
 https://github.com/user-attachments/assets/3d7b08a5-e7ea-452e-8d69-900b27ec13cc
 
+The ship does have blasters! I used the niagara system for this feature as well.
+
+https://github.com/user-attachments/assets/027c0c59-a10a-42bf-a5a4-98648cf520c7
+
