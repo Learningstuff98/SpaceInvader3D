@@ -13,6 +13,6 @@ The ship does have blasters! I used the niagara system for this feature as well.
 
 https://github.com/user-attachments/assets/027c0c59-a10a-42bf-a5a4-98648cf520c7
 
-The Asteroids do spin!
+The Asteroids do spin! The spinning logic was written with C++
 
 https://github.com/user-attachments/assets/6cce2580-89fb-47b4-afbf-ea26f8f2e2e6
