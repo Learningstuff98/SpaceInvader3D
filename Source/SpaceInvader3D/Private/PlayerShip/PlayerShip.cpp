@@ -197,6 +197,7 @@ void APlayerShip::HandleExplodingSound() {
 			PlayExplodingSound();
 			bHasPlayedExplodingSound = true;
 			DeactivateComponentsAfterExploding();
+			ZeroOutCurrentControlSpeed();
 		}
 	}
 }
@@ -207,6 +208,11 @@ void APlayerShip::DeactivateComponentsAfterExploding() {
 	if (EngineThrusterEffect2) EngineThrusterEffect2->Deactivate();
 	if (CruisingThrusterSound) CruisingThrusterSound->Deactivate();
 	if (Movement) Movement->Deactivate();
+}
+
+void APlayerShip::ZeroOutCurrentControlSpeed() {
+	CurrentYawControlSpeed = 0.0;
+	CurrentPitchControlSpeed = 0.0;
 }
 
 void APlayerShip::PlayExplodingSound() {
@@ -238,7 +244,7 @@ void APlayerShip::UpdatePlayerShipRotation(const float& DeltaTime) {
 
 void APlayerShip::Look(const FInputActionValue& Value) {
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
-	if (SpringArm) {
+	if (SpringArm && !PlayerShipAttributes->GetbHasBlownUp()) {
 		if (bInViewMode) {
 			View(LookAxisValue, 0.3);
 		}

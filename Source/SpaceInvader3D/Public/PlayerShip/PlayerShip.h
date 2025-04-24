@@ -59,6 +59,7 @@ private:
 	void Steer(const FVector2D& LookAxisValue);
 	void SetMovementComponentMaxSpeed();
 	void DeactivateComponentsAfterExploding();
+	void ZeroOutCurrentControlSpeed();
 
 	// Component Variables
 
