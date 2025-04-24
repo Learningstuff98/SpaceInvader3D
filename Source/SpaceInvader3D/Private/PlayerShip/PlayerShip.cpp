@@ -196,8 +196,17 @@ void APlayerShip::HandleExplodingSound() {
 		if (!bHasPlayedExplodingSound && PlayerShipAttributes->GetbHasBlownUp()) {
 			PlayExplodingSound();
 			bHasPlayedExplodingSound = true;
+			DeactivateComponentsAfterExploding();
 		}
 	}
+}
+
+void APlayerShip::DeactivateComponentsAfterExploding() {
+	if (ShipMeshComponent) ShipMeshComponent->SetVisibility(false);
+	if (EngineThrusterEffect1) EngineThrusterEffect1->Deactivate();
+	if (EngineThrusterEffect2) EngineThrusterEffect2->Deactivate();
+	if (CruisingThrusterSound) CruisingThrusterSound->Deactivate();
+	if (Movement) Movement->Deactivate();
 }
 
 void APlayerShip::PlayExplodingSound() {
