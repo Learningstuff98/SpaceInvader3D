@@ -17,7 +17,7 @@
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
 	bFireCooldownTimerFinished = true;
-	bHasPlayedExplodingSound = false;
+	bHasHandledExploding = false;
 	bInViewMode = false;
 	CurrentPitchControlSpeed = 0.0;
 	CurrentYawControlSpeed = 0.0;
@@ -90,7 +90,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	SetThrusterPitch();
 	SetThrusterColor();
 	SetHealthBarPercent();
-	HandleExplodingSound();
+	HandleExploding();
 	UpdatePlayerShipRotation(DeltaTime);
 	SetMovementComponentMaxSpeed();
 }
@@ -193,13 +193,13 @@ void APlayerShip::PlayBlasterSound() {
 	);
 }
 
-void APlayerShip::HandleExplodingSound() {
+void APlayerShip::HandleExploding() {
 	if (PlayerShipAttributes) {
-		if (!bHasPlayedExplodingSound && PlayerShipAttributes->GetbHasBlownUp()) {
+		if (!bHasHandledExploding && PlayerShipAttributes->GetbHasBlownUp()) { // change the blown up attribute to is dead or something
 			PlayExplodingSound();
-			bHasPlayedExplodingSound = true;
 			DeactivateComponentsAfterExploding();
 			ZeroOutCurrentControlSpeed();
+			bHasHandledExploding = true;
 		}
 	}
 }

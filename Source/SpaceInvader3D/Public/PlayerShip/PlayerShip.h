@@ -51,7 +51,7 @@ private:
 	TObjectPtr<class USpaceInvader3DOverlay> SetOverlay();
 	void SetHealthBarPercent();
 	void PlayExplodingSound();
-	void HandleExplodingSound();
+	void HandleExploding();
 	void UpdatePlayerShipRotation(const float& DeltaTime);
 	void SetCurrentControlSpeed(const double& ControlSpeedInput, const double& DeadZone, const double& MaxTurnSpeed, const double& Sensitivity, double& CurrentControlSpeed);
 	void View(const FVector2D& LookAxisValue, const double& Sensitivity);
@@ -150,14 +150,14 @@ private:
 	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<class USoundBase> ExplodingSound;
 
-	UPROPERTY()
-	bool bHasPlayedExplodingSound;
-
 	UPROPERTY(EditAnywhere, Category = Blaster)
 	TSubclassOf<class ABlasterShot> BlasterShotBlueprintClass;
 
 	UPROPERTY()
 	TObjectPtr<class USpaceInvader3DOverlay> PlayerShipOverlay;
+
+	UPROPERTY()
+	bool bHasHandledExploding;
 
 	UPROPERTY()
 	double CurrentPitchControlSpeed;
