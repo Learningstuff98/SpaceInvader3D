@@ -117,11 +117,13 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 }
 
 void APlayerShip::HandleFireTimer() {
-	if (bFireCooldownTimerFinished) {
-		GetWorldTimerManager().ClearTimer(FireCooldownTimer);
-		GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.15f);
-		bFireCooldownTimerFinished = false;
-	}
+	if (!PlayerShipAttributes->GetbHasBlownUp()) {
+		if (bFireCooldownTimerFinished) {
+			GetWorldTimerManager().ClearTimer(FireCooldownTimer);
+			GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.15f);
+			bFireCooldownTimerFinished = false;
+		}
+    }
 }
 
 void APlayerShip::Fire() {
