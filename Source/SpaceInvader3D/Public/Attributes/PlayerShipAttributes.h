@@ -24,7 +24,7 @@ private:
 	// </UActorComponent>
 
 	// Functions
-	void HandleHasBlownUpStatus();
+	void HandlebIsDeadStatus();
 
 	// Variables
 
@@ -35,11 +35,11 @@ private:
 	float MaxHealth;
 
 	UPROPERTY()
-	bool bHasBlownUp;
+	bool bIsDead;
 
 public:
 	// Public Setters and getters
 	void ApplyCollisionDamage();
 	float GetHealthPercent();
-	FORCEINLINE bool GetbHasBlownUp() const { return bHasBlownUp; }
+	FORCEINLINE bool GetbIsDead() const { return bIsDead; }
 };

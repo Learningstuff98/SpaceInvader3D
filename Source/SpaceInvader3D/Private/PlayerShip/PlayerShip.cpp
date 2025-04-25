@@ -117,7 +117,7 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 }
 
 void APlayerShip::HandleFireTimer() {
-	if (!PlayerShipAttributes->GetbHasBlownUp()) {
+	if (!PlayerShipAttributes->GetbIsDead()) {
 		if (bFireCooldownTimerFinished) {
 			GetWorldTimerManager().ClearTimer(FireCooldownTimer);
 			GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.15f);
@@ -195,7 +195,7 @@ void APlayerShip::PlayBlasterSound() {
 
 void APlayerShip::HandleExploding() {
 	if (PlayerShipAttributes) {
-		if (!bHasHandledExploding && PlayerShipAttributes->GetbHasBlownUp()) { // change the blown up attribute to is dead or something
+		if (!bHasHandledExploding && PlayerShipAttributes->GetbIsDead()) {
 			PlayExplodingSound();
 			DeactivateComponentsAfterExploding();
 			ZeroOutCurrentControlSpeed();
@@ -246,7 +246,7 @@ void APlayerShip::UpdatePlayerShipRotation(const float& DeltaTime) {
 
 void APlayerShip::Look(const FInputActionValue& Value) {
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
-	if (SpringArm && !PlayerShipAttributes->GetbHasBlownUp()) {
+	if (SpringArm && !PlayerShipAttributes->GetbIsDead()) {
 		if (bInViewMode) {
 			View(LookAxisValue, 0.3);
 		}
