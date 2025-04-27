@@ -286,15 +286,19 @@ void APlayerShip::SetCurrentControlSpeed(const double& ControlSpeedInput, const 
 }
 
 void APlayerShip::RollLeft() {
-	AddActorLocalRotation(
-		FRotator(0, 0, -90 * UGameplayStatics::GetWorldDeltaSeconds(this))
-	);
+	if (!PlayerShipAttributes->GetbIsDead()) {
+		AddActorLocalRotation(
+			FRotator(0, 0, -90 * UGameplayStatics::GetWorldDeltaSeconds(this))
+		);
+	}
 }
 
 void APlayerShip::RollRight() {
-	AddActorLocalRotation(
-		FRotator(0, 0, 90 * UGameplayStatics::GetWorldDeltaSeconds(this))
-	);
+	if (!PlayerShipAttributes->GetbIsDead()) {
+		AddActorLocalRotation(
+			FRotator(0, 0, 90 * UGameplayStatics::GetWorldDeltaSeconds(this))
+		);
+	}
 }
 
 void APlayerShip::Accelerate() {
