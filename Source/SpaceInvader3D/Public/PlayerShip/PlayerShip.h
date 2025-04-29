@@ -60,6 +60,8 @@ private:
 	void SetMovementComponentMaxSpeed();
 	void DeactivateComponentsAfterExploding();
 	void ZeroOutCurrentControlSpeed();
+	void SpawnShipPieces();
+	void SpawnShipExplodingFieldSystem();
 
 	// Component Variables
 
@@ -152,6 +154,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Blaster)
 	TSubclassOf<class ABlasterShot> BlasterShotBlueprintClass;
+
+	UPROPERTY(EditAnywhere, Category = Pieces)
+	TSubclassOf<class AShipPieces> ShipPiecesBlueprintClass;
+
+	UPROPERTY(EditAnywhere, Category = "Field Systems")
+	TSubclassOf<class AFieldSystemActor> ShipExplodingFieldSystemBlueprintClass;
 
 	UPROPERTY()
 	TObjectPtr<class USpaceInvader3DOverlay> PlayerShipOverlay;

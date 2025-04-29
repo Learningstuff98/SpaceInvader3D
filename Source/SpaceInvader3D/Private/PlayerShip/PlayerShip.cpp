@@ -13,6 +13,8 @@
 #include "Attributes/PlayerShipAttributes.h"
 #include "HUD/SpaceInvader3DHUD.h"
 #include "HUD/SpaceInvader3DOverlay.h"
+#include "ShipPieces/ShipPieces.h"
+#include "Field/FieldSystemActor.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -199,8 +201,30 @@ void APlayerShip::HandleExploding() {
 			PlayExplodingSound();
 			DeactivateComponentsAfterExploding();
 			ZeroOutCurrentControlSpeed();
+			SpawnShipPieces();
+			SpawnShipExplodingFieldSystem();
 			bHasHandledExploding = true;
 		}
+	}
+}
+
+void APlayerShip::SpawnShipPieces() {
+	if (TObjectPtr<UWorld> World = GetWorld()) {
+		World->SpawnActor<AShipPieces>(
+			ShipPiecesBlueprintClass,
+			GetActorLocation(),
+			GetActorRotation()
+		);
+	}
+}
+
+void APlayerShip::SpawnShipExplodingFieldSystem() {
+	if (TObjectPtr<UWorld> World = GetWorld()) {
+		World->SpawnActor<AFieldSystemActor>(
+			ShipExplodingFieldSystemBlueprintClass,
+			GetActorLocation(),
+			GetActorRotation()
+		);
 	}
 }
 
