@@ -62,6 +62,7 @@ private:
 	void ZeroOutCurrentControlSpeed();
 	void SpawnShipPieces();
 	void SpawnShipExplodingFieldSystem();
+	void SpawnShipExplodingEffect();
 
 	// Component Variables
 
@@ -160,6 +161,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Field Systems")
 	TSubclassOf<class AFieldSystemActor> ShipExplodingFieldSystemBlueprintClass;
+
+	UPROPERTY(EditAnywhere, Category = "Explosion Effect")
+	TSubclassOf<class AShipExplodingEffect> ShipExplodingEffectBlueprintClass;
 
 	UPROPERTY()
 	TObjectPtr<class USpaceInvader3DOverlay> PlayerShipOverlay;
