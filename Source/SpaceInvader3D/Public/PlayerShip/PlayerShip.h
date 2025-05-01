@@ -51,13 +51,18 @@ private:
 	TObjectPtr<class USpaceInvader3DOverlay> SetOverlay();
 	void SetHealthBarPercent();
 	void PlayExplodingSound();
-	void HandleExplodingSound();
+	void HandleExploding();
 	void UpdatePlayerShipRotation(const float& DeltaTime);
 	void SetCurrentControlSpeed(const double& ControlSpeedInput, const double& DeadZone, const double& MaxTurnSpeed, const double& Sensitivity, double& CurrentControlSpeed);
 	void View(const FVector2D& LookAxisValue, const double& Sensitivity);
 	void ResetControlRotation();
 	void Steer(const FVector2D& LookAxisValue);
 	void SetMovementComponentMaxSpeed();
+	void DeactivateComponentsAfterExploding();
+	void ZeroOutCurrentControlSpeed();
+	void SpawnShipPieces();
+	void SpawnShipExplodingFieldSystem();
+	void SpawnShipExplodingEffect();
 
 	// Component Variables
 
@@ -148,14 +153,23 @@ private:
 	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<class USoundBase> ExplodingSound;
 
-	UPROPERTY()
-	bool bHasPlayedExplodingSound;
-
 	UPROPERTY(EditAnywhere, Category = Blaster)
 	TSubclassOf<class ABlasterShot> BlasterShotBlueprintClass;
 
+	UPROPERTY(EditAnywhere, Category = Pieces)
+	TSubclassOf<class AShipPieces> ShipPiecesBlueprintClass;
+
+	UPROPERTY(EditAnywhere, Category = "Field Systems")
+	TSubclassOf<class AFieldSystemActor> ShipExplodingFieldSystemBlueprintClass;
+
+	UPROPERTY(EditAnywhere, Category = "Explosion Effect")
+	TSubclassOf<class AShipExplodingEffect> ShipExplodingEffectBlueprintClass;
+
 	UPROPERTY()
 	TObjectPtr<class USpaceInvader3DOverlay> PlayerShipOverlay;
+
+	UPROPERTY()
+	bool bHasHandledExploding;
 
 	UPROPERTY()
 	double CurrentPitchControlSpeed;

@@ -13,11 +13,14 @@
 #include "Attributes/PlayerShipAttributes.h"
 #include "HUD/SpaceInvader3DHUD.h"
 #include "HUD/SpaceInvader3DOverlay.h"
+#include "ShipPieces/ShipPieces.h"
+#include "Field/FieldSystemActor.h"
+#include "ExplodingEffects/ShipExplodingEffect.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
 	bFireCooldownTimerFinished = true;
-	bHasPlayedExplodingSound = false;
+	bHasHandledExploding = false;
 	bInViewMode = false;
 	CurrentPitchControlSpeed = 0.0;
 	CurrentYawControlSpeed = 0.0;
@@ -90,7 +93,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	SetThrusterPitch();
 	SetThrusterColor();
 	SetHealthBarPercent();
-	HandleExplodingSound();
+	HandleExploding();
 	UpdatePlayerShipRotation(DeltaTime);
 	SetMovementComponentMaxSpeed();
 }
@@ -117,11 +120,13 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 }
 
 void APlayerShip::HandleFireTimer() {
-	if (bFireCooldownTimerFinished) {
-		GetWorldTimerManager().ClearTimer(FireCooldownTimer);
-		GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.15f);
-		bFireCooldownTimerFinished = false;
-	}
+	if (!PlayerShipAttributes->GetbIsDead()) {
+		if (bFireCooldownTimerFinished) {
+			GetWorldTimerManager().ClearTimer(FireCooldownTimer);
+			GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.15f);
+			bFireCooldownTimerFinished = false;
+		}
+    }
 }
 
 void APlayerShip::Fire() {
@@ -191,13 +196,61 @@ void APlayerShip::PlayBlasterSound() {
 	);
 }
 
-void APlayerShip::HandleExplodingSound() {
+void APlayerShip::HandleExploding() {
 	if (PlayerShipAttributes) {
-		if (!bHasPlayedExplodingSound && PlayerShipAttributes->GetbHasBlownUp()) {
+		if (!bHasHandledExploding && PlayerShipAttributes->GetbIsDead()) {
 			PlayExplodingSound();
-			bHasPlayedExplodingSound = true;
+			DeactivateComponentsAfterExploding();
+			ZeroOutCurrentControlSpeed();
+			SpawnShipPieces();
+			SpawnShipExplodingFieldSystem();
+			SpawnShipExplodingEffect();
+			bHasHandledExploding = true;
 		}
 	}
+}
+
+void APlayerShip::SpawnShipPieces() {
+	if (TObjectPtr<UWorld> World = GetWorld()) {
+		World->SpawnActor<AShipPieces>(
+			ShipPiecesBlueprintClass,
+			GetActorLocation(),
+			GetActorRotation()
+		);
+	}
+}
+
+void APlayerShip::SpawnShipExplodingFieldSystem() {
+	if (TObjectPtr<UWorld> World = GetWorld()) {
+		World->SpawnActor<AFieldSystemActor>(
+			ShipExplodingFieldSystemBlueprintClass,
+			GetActorLocation(),
+			GetActorRotation()
+		);
+	}
+}
+
+void APlayerShip::SpawnShipExplodingEffect() {
+	if (TObjectPtr<UWorld> World = GetWorld()) {
+		World->SpawnActor<AShipExplodingEffect>(
+			ShipExplodingEffectBlueprintClass,
+			GetActorLocation(),
+			GetActorRotation()
+		);
+	}
+}
+
+void APlayerShip::DeactivateComponentsAfterExploding() {
+	if (ShipMeshComponent) ShipMeshComponent->SetVisibility(false);
+	if (EngineThrusterEffect1) EngineThrusterEffect1->Deactivate();
+	if (EngineThrusterEffect2) EngineThrusterEffect2->Deactivate();
+	if (CruisingThrusterSound) CruisingThrusterSound->Deactivate();
+	if (Movement) Movement->Deactivate();
+}
+
+void APlayerShip::ZeroOutCurrentControlSpeed() {
+	CurrentYawControlSpeed = 0.0;
+	CurrentPitchControlSpeed = 0.0;
 }
 
 void APlayerShip::PlayExplodingSound() {
@@ -229,7 +282,7 @@ void APlayerShip::UpdatePlayerShipRotation(const float& DeltaTime) {
 
 void APlayerShip::Look(const FInputActionValue& Value) {
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
-	if (SpringArm) {
+	if (SpringArm && !PlayerShipAttributes->GetbIsDead()) {
 		if (bInViewMode) {
 			View(LookAxisValue, 0.3);
 		}
@@ -269,15 +322,19 @@ void APlayerShip::SetCurrentControlSpeed(const double& ControlSpeedInput, const 
 }
 
 void APlayerShip::RollLeft() {
-	AddActorLocalRotation(
-		FRotator(0, 0, -90 * UGameplayStatics::GetWorldDeltaSeconds(this))
-	);
+	if (!PlayerShipAttributes->GetbIsDead()) {
+		AddActorLocalRotation(
+			FRotator(0, 0, -90 * UGameplayStatics::GetWorldDeltaSeconds(this))
+		);
+	}
 }
 
 void APlayerShip::RollRight() {
-	AddActorLocalRotation(
-		FRotator(0, 0, 90 * UGameplayStatics::GetWorldDeltaSeconds(this))
-	);
+	if (!PlayerShipAttributes->GetbIsDead()) {
+		AddActorLocalRotation(
+			FRotator(0, 0, 90 * UGameplayStatics::GetWorldDeltaSeconds(this))
+		);
+	}
 }
 
 void APlayerShip::Accelerate() {
