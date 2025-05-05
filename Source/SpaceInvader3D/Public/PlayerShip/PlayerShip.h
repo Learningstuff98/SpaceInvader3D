@@ -102,6 +102,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UArrowComponent> GunBarrel4;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UStaticMeshComponent> Skybox;
+
 	// Enhanced Input Varaibles
 
 	UPROPERTY(EditAnywhere, Category = Input)

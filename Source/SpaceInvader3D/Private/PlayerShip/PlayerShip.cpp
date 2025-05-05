@@ -16,6 +16,7 @@
 #include "ShipPieces/ShipPieces.h"
 #include "Field/FieldSystemActor.h"
 #include "ExplodingEffects/ShipExplodingEffect.h"
+#include "Engine/StaticMesh.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -78,6 +79,11 @@ APlayerShip::APlayerShip() {
 
 	CruisingThrusterSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Cruising Thruster Sound"));
 	CruisingThrusterSound->SetVolumeMultiplier(0.02f);
+
+	Skybox = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Skybox Mesh"));
+	Skybox->SetupAttachment(GetRootComponent());
+	Skybox->SetWorldScale3D(FVector(1000000.0, 1000000.0, 1000000.0));
+	Skybox->SetReverseCulling(true);
 }
 
 void APlayerShip::BeginPlay() {
