@@ -17,6 +17,7 @@
 #include "Field/FieldSystemActor.h"
 #include "ExplodingEffects/ShipExplodingEffect.h"
 #include "Engine/StaticMesh.h"
+#include "Components/SpotLightComponent.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -80,10 +81,24 @@ APlayerShip::APlayerShip() {
 	CruisingThrusterSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Cruising Thruster Sound"));
 	CruisingThrusterSound->SetVolumeMultiplier(0.02f);
 
-	Skybox = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Skybox Mesh"));
-	Skybox->SetupAttachment(GetRootComponent());
-	Skybox->SetWorldScale3D(FVector(1000000.0, 1000000.0, 1000000.0));
-	Skybox->SetReverseCulling(true);
+	SkyBox = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Skybox Mesh"));
+	SkyBox->SetupAttachment(GetRootComponent());
+	SkyBox->SetWorldScale3D(FVector(1000000.0, 1000000.0, 1000000.0));
+	SkyBox->SetReverseCulling(true);
+
+	RightHeadLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("Right Head Light"));
+	RightHeadLight->SetupAttachment(GetRootComponent());
+	RightHeadLight->SetIntensityUnits(ELightUnits::EV);
+	RightHeadLight->SetIntensity(17.f);
+	RightHeadLight->SetAttenuationRadius(20000.f);
+	RightHeadLight->SetOuterConeAngle(12.f);
+
+	LeftHeadLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("Left Head Light"));
+	LeftHeadLight->SetupAttachment(GetRootComponent());
+	LeftHeadLight->SetIntensityUnits(ELightUnits::EV);
+	LeftHeadLight->SetIntensity(17.f);
+	LeftHeadLight->SetAttenuationRadius(20000.f);
+	LeftHeadLight->SetOuterConeAngle(12.f);
 }
 
 void APlayerShip::BeginPlay() {

@@ -103,7 +103,13 @@ private:
 	TObjectPtr<class UArrowComponent> GunBarrel4;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UStaticMeshComponent> Skybox;
+	TObjectPtr<class UStaticMeshComponent> SkyBox;
+
+	UPROPERTY(visibleAnywhere)
+	TObjectPtr<class USpotLightComponent> RightHeadLight;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class USpotLightComponent> LeftHeadLight;
 
 	// Enhanced Input Varaibles
 
