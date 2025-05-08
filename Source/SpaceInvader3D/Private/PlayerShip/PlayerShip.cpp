@@ -91,14 +91,14 @@ APlayerShip::APlayerShip() {
 	RightHeadLight->SetIntensityUnits(ELightUnits::EV);
 	RightHeadLight->SetIntensity(17.f);
 	RightHeadLight->SetAttenuationRadius(20000.f);
-	RightHeadLight->SetOuterConeAngle(12.f);
+	RightHeadLight->SetOuterConeAngle(15.f);
 
 	LeftHeadLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("Left Head Light"));
 	LeftHeadLight->SetupAttachment(GetRootComponent());
 	LeftHeadLight->SetIntensityUnits(ELightUnits::EV);
 	LeftHeadLight->SetIntensity(17.f);
 	LeftHeadLight->SetAttenuationRadius(20000.f);
-	LeftHeadLight->SetOuterConeAngle(12.f);
+	LeftHeadLight->SetOuterConeAngle(15.f);
 }
 
 void APlayerShip::BeginPlay() {
@@ -266,6 +266,8 @@ void APlayerShip::DeactivateComponentsAfterExploding() {
 	if (EngineThrusterEffect1) EngineThrusterEffect1->Deactivate();
 	if (EngineThrusterEffect2) EngineThrusterEffect2->Deactivate();
 	if (CruisingThrusterSound) CruisingThrusterSound->Deactivate();
+	if (LeftHeadLight) LeftHeadLight->SetVisibility(false);
+	if (RightHeadLight) RightHeadLight->SetVisibility(false);
 	if (Movement) Movement->Deactivate();
 }
 
