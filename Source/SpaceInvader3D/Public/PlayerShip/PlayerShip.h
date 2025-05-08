@@ -39,6 +39,7 @@ private:
 	void HandleFireTimer();
 	void RollLeft();
 	void RollRight();
+	void ToggleHeadlights();
 
 	// Miscellaneous
 	void SetupMappingContext();
@@ -139,6 +140,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<class UInputAction> RollRightAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<class UInputAction> ToggleHeadlightsAction;
 
 	// Other Variables
 

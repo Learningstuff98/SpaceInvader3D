@@ -137,6 +137,7 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &APlayerShip::HandleFireTimer);
 		EnhancedInputComponent->BindAction(RollLeftAction, ETriggerEvent::Triggered, this, &APlayerShip::RollLeft);
 		EnhancedInputComponent->BindAction(RollRightAction, ETriggerEvent::Triggered, this, &APlayerShip::RollRight);
+		EnhancedInputComponent->BindAction(ToggleHeadlightsAction, ETriggerEvent::Triggered, this, &APlayerShip::ToggleHeadlights);
 	}
 }
 
@@ -357,6 +358,18 @@ void APlayerShip::RollRight() {
 		AddActorLocalRotation(
 			FRotator(0, 0, 90 * UGameplayStatics::GetWorldDeltaSeconds(this))
 		);
+	}
+}
+
+void APlayerShip::ToggleHeadlights() {
+	if (LeftHeadLight && RightHeadLight) {
+		if (LeftHeadLight->IsVisible() && RightHeadLight->IsVisible()) {
+			LeftHeadLight->SetVisibility(false);
+			RightHeadLight->SetVisibility(false);
+		} else {
+			LeftHeadLight->SetVisibility(true);
+			RightHeadLight->SetVisibility(true);
+		}
 	}
 }
 
