@@ -18,8 +18,13 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UProgressBar> HealthProgressBar;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> HeadLightStatus;
+
 public:
 
 	// Setters
 	void SetHealthBarPercent(const float& Percent);
+	void SetHeadLightStatusToOn();
+	void SetHeadLightStatusToOff();
 };

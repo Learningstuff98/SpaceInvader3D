@@ -117,6 +117,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	HandleExploding();
 	UpdatePlayerShipRotation(DeltaTime);
 	SetMovementComponentMaxSpeed();
+	HandleHeadLightStatus();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -193,6 +194,16 @@ TObjectPtr<UArrowComponent> APlayerShip::DeterminWhichBarrelToFireFrom() {
 void APlayerShip::SetHealthBarPercent() {
 	if (PlayerShipOverlay) {
 		PlayerShipOverlay->SetHealthBarPercent(PlayerShipAttributes->GetHealthPercent());
+	}
+}
+
+void APlayerShip::HandleHeadLightStatus() {
+	if (PlayerShipOverlay) {
+		if (LeftHeadLight->IsVisible() && RightHeadLight->IsVisible()) {
+			PlayerShipOverlay->SetHeadLightStatusToOn();
+		} else {
+			PlayerShipOverlay->SetHeadLightStatusToOff();
+		}
 	}
 }
 

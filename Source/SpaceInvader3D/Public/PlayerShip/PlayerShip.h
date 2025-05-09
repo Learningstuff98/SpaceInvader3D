@@ -65,6 +65,7 @@ private:
 	void SpawnShipExplodingFieldSystem();
 	void SpawnShipExplodingEffect();
 	void PlayToggleHeadLightSound();
+	void HandleHeadLightStatus();
 
 	// Component Variables
 
