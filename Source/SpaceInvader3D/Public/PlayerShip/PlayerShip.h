@@ -64,6 +64,7 @@ private:
 	void SpawnShipPieces();
 	void SpawnShipExplodingFieldSystem();
 	void SpawnShipExplodingEffect();
+	void PlayToggleHeadLightSound();
 
 	// Component Variables
 
@@ -160,11 +161,14 @@ private:
 	UPROPERTY()
 	bool bFireCooldownTimerFinished;
 
-	UPROPERTY(EditAnywhere, Category = Blaster)
+	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<class USoundBase> BlasterSound;
 
 	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<class USoundBase> ExplodingSound;
+
+	UPROPERTY(EditAnywhere, Category = Sound)
+	TObjectPtr<class USoundBase> ToggleHeadLightSound;
 
 	UPROPERTY(EditAnywhere, Category = Blaster)
 	TSubclassOf<class ABlasterShot> BlasterShotBlueprintClass;

@@ -277,6 +277,14 @@ void APlayerShip::ZeroOutCurrentControlSpeed() {
 	CurrentPitchControlSpeed = 0.0;
 }
 
+void APlayerShip::PlayToggleHeadLightSound() {
+	UGameplayStatics::PlaySoundAtLocation(
+		this,
+		ToggleHeadLightSound,
+		GetActorLocation()
+	);
+}
+
 void APlayerShip::PlayExplodingSound() {
 	UGameplayStatics::PlaySoundAtLocation(
 		this,
@@ -366,9 +374,11 @@ void APlayerShip::ToggleHeadlights() {
 		if (LeftHeadLight->IsVisible() && RightHeadLight->IsVisible()) {
 			LeftHeadLight->SetVisibility(false);
 			RightHeadLight->SetVisibility(false);
+			PlayToggleHeadLightSound();
 		} else {
 			LeftHeadLight->SetVisibility(true);
 			RightHeadLight->SetVisibility(true);
+			PlayToggleHeadLightSound();
 		}
 	}
 }
