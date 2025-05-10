@@ -200,9 +200,9 @@ void APlayerShip::SetHealthBarPercent() {
 void APlayerShip::HandleHeadLightStatus() {
 	if (PlayerShipOverlay) {
 		if (LeftHeadLight->IsVisible() && RightHeadLight->IsVisible()) {
-			PlayerShipOverlay->SetHeadLightStatusToOn();
+			PlayerShipOverlay->SetHeadLightText(true);
 		} else {
-			PlayerShipOverlay->SetHeadLightStatusToOff();
+			PlayerShipOverlay->SetHeadLightText(false);
 		}
 	}
 }
