@@ -23,3 +23,13 @@ The ship can crash and explode! For this I had to learn how to use field systems
 
 https://github.com/user-attachments/assets/5e730b32-4030-4108-b0e2-62693571833e
 
+5/10/2025
+
+The ship now has a space themed skybox attached to it. This adds a very nice outer space feel.
+
+https://github.com/user-attachments/assets/12996951-83be-45b0-bbb1-5425fcb59dbb
+
+
+
+
+
