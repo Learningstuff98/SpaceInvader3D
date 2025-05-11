@@ -199,11 +199,7 @@ void APlayerShip::SetHealthBarPercent() {
 
 void APlayerShip::HandleHeadLightHUDText() {
 	if (PlayerShipOverlay) {
-		if (HeadLightsAreOn()) {
-			PlayerShipOverlay->SetHeadLightText(true);
-		} else {
-			PlayerShipOverlay->SetHeadLightText(false);
-		}
+		PlayerShipOverlay->SetHeadLightText(HeadLightsAreOn());
 	}
 }
 
@@ -401,11 +397,10 @@ void APlayerShip::ToggleHeadlights() {
 	if (LeftHeadLight && RightHeadLight) {
 		if (HeadLightsAreOn()) {
 			TurnHeadLightsOff();
-			PlayToggleHeadLightSound();
 		} else {
 			TurnHeadLightsOn();
-			PlayToggleHeadLightSound();
 		}
+		PlayToggleHeadLightSound();
 	}
 }
 

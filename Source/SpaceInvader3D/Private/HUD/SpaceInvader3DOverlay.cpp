@@ -11,9 +11,12 @@ void USpaceInvader3DOverlay::SetHealthBarPercent(const float& Percent) {
 }
 
 void USpaceInvader3DOverlay::SetHeadLightText(const bool& HeadLightsAreOn) {
-	if (HeadLightText && HeadLightsAreOn) {
-		HeadLightText->SetText(FText::FromString(TEXT("HeadLights: ON")));
-	} else {
-		HeadLightText->SetText(FText::FromString(TEXT("")));
+	if (HeadLightText) {
+		if (HeadLightsAreOn) {
+			HeadLightText->SetText(FText::FromString(TEXT("HeadLights: ON")));
+		}
+		else {
+			HeadLightText->SetText(FText::FromString(TEXT("")));
+		}
 	}
 }
