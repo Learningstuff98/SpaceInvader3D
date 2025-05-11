@@ -65,8 +65,11 @@ private:
 	void SpawnShipExplodingFieldSystem();
 	void SpawnShipExplodingEffect();
 	void PlayToggleHeadLightSound();
-	void HandleHeadLightStatus();
-
+	void HandleHeadLightHUDText();
+	bool HeadLightsAreOn();
+	void TurnHeadLightsOn();
+	void TurnHeadLightsOff();
+	 
 	// Component Variables
 
 	UPROPERTY(VisibleAnywhere)

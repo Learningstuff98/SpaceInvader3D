@@ -117,7 +117,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	HandleExploding();
 	UpdatePlayerShipRotation(DeltaTime);
 	SetMovementComponentMaxSpeed();
-	HandleHeadLightStatus();
+	HandleHeadLightHUDText();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -197,14 +197,31 @@ void APlayerShip::SetHealthBarPercent() {
 	}
 }
 
-void APlayerShip::HandleHeadLightStatus() {
+void APlayerShip::HandleHeadLightHUDText() {
 	if (PlayerShipOverlay) {
-		if (LeftHeadLight->IsVisible() && RightHeadLight->IsVisible()) {
+		if (HeadLightsAreOn()) {
 			PlayerShipOverlay->SetHeadLightText(true);
 		} else {
 			PlayerShipOverlay->SetHeadLightText(false);
 		}
 	}
+}
+
+bool APlayerShip::HeadLightsAreOn() {
+	if (LeftHeadLight && RightHeadLight) {
+		return LeftHeadLight->IsVisible() && RightHeadLight->IsVisible();
+	}
+	return false;
+}
+
+void APlayerShip::TurnHeadLightsOn() {
+	LeftHeadLight->SetVisibility(true);
+	RightHeadLight->SetVisibility(true);
+}
+
+void APlayerShip::TurnHeadLightsOff() {
+	LeftHeadLight->SetVisibility(false);
+	RightHeadLight->SetVisibility(false);
 }
 
 TObjectPtr<USpaceInvader3DOverlay> APlayerShip::SetOverlay() {
@@ -382,13 +399,11 @@ void APlayerShip::RollRight() {
 
 void APlayerShip::ToggleHeadlights() {
 	if (LeftHeadLight && RightHeadLight) {
-		if (LeftHeadLight->IsVisible() && RightHeadLight->IsVisible()) {
-			LeftHeadLight->SetVisibility(false);
-			RightHeadLight->SetVisibility(false);
+		if (HeadLightsAreOn()) {
+			TurnHeadLightsOff();
 			PlayToggleHeadLightSound();
 		} else {
-			LeftHeadLight->SetVisibility(true);
-			RightHeadLight->SetVisibility(true);
+			TurnHeadLightsOn();
 			PlayToggleHeadLightSound();
 		}
 	}
