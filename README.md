@@ -21,6 +21,8 @@ https://github.com/user-attachments/assets/6cce2580-89fb-47b4-afbf-ea26f8f2e2e6
 
 The ship can crash and explode! For this I had to learn how to use field systems to break apart geometry collections. Also I got more experience using the UE5 niagara system.
 
+[Link to PR #22](https://github.com/Learningstuff98/SpaceInvader3D/pull/22)
+
 https://github.com/user-attachments/assets/5e730b32-4030-4108-b0e2-62693571833e
 
 5/10/2025
