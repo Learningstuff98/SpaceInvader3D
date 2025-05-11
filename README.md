@@ -29,7 +29,7 @@ https://github.com/user-attachments/assets/5e730b32-4030-4108-b0e2-62693571833e
 
 The ship now has a space themed skybox attached to it. This adds a very nice outer space feel.
 
-(Link to PR #23)[https://github.com/Learningstuff98/SpaceInvader3D/pull/23]
+[Link to PR #23](https://github.com/Learningstuff98/SpaceInvader3D/pull/23)
 
 https://github.com/user-attachments/assets/12996951-83be-45b0-bbb1-5425fcb59dbb
 
