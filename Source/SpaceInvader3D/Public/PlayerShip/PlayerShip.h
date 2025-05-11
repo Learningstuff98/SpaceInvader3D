@@ -39,6 +39,7 @@ private:
 	void HandleFireTimer();
 	void RollLeft();
 	void RollRight();
+	void ToggleHeadlights();
 
 	// Miscellaneous
 	void SetupMappingContext();
@@ -63,7 +64,12 @@ private:
 	void SpawnShipPieces();
 	void SpawnShipExplodingFieldSystem();
 	void SpawnShipExplodingEffect();
-
+	void PlayToggleHeadLightSound();
+	void HandleHeadLightHUDText();
+	bool HeadLightsAreOn();
+	void TurnHeadLightsOn();
+	void TurnHeadLightsOff();
+	 
 	// Component Variables
 
 	UPROPERTY(VisibleAnywhere)
@@ -102,6 +108,15 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UArrowComponent> GunBarrel4;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UStaticMeshComponent> SkyBox;
+
+	UPROPERTY(visibleAnywhere)
+	TObjectPtr<class USpotLightComponent> RightHeadLight;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class USpotLightComponent> LeftHeadLight;
+
 	// Enhanced Input Varaibles
 
 	UPROPERTY(EditAnywhere, Category = Input)
@@ -131,6 +146,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<class UInputAction> RollRightAction;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<class UInputAction> ToggleHeadlightsAction;
+
 	// Other Variables
 
 	UPROPERTY()
@@ -147,11 +165,14 @@ private:
 	UPROPERTY()
 	bool bFireCooldownTimerFinished;
 
-	UPROPERTY(EditAnywhere, Category = Blaster)
+	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<class USoundBase> BlasterSound;
 
 	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<class USoundBase> ExplodingSound;
+
+	UPROPERTY(EditAnywhere, Category = Sound)
+	TObjectPtr<class USoundBase> ToggleHeadLightSound;
 
 	UPROPERTY(EditAnywhere, Category = Blaster)
 	TSubclassOf<class ABlasterShot> BlasterShotBlueprintClass;

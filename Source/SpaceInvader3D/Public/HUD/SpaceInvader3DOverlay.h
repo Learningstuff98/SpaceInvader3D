@@ -13,13 +13,17 @@ class SPACEINVADER3D_API USpaceInvader3DOverlay : public UUserWidget
 	
 private:
 
-	// Progress Bars
+	// HUD elements
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UProgressBar> HealthProgressBar;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> HeadLightText;
 
 public:
 
 	// Setters
 	void SetHealthBarPercent(const float& Percent);
+	void SetHeadLightText(const bool& HeadLightsAreOn);
 };

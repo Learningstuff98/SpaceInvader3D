@@ -16,6 +16,8 @@
 #include "ShipPieces/ShipPieces.h"
 #include "Field/FieldSystemActor.h"
 #include "ExplodingEffects/ShipExplodingEffect.h"
+#include "Engine/StaticMesh.h"
+#include "Components/SpotLightComponent.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -78,6 +80,25 @@ APlayerShip::APlayerShip() {
 
 	CruisingThrusterSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Cruising Thruster Sound"));
 	CruisingThrusterSound->SetVolumeMultiplier(0.02f);
+
+	SkyBox = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Skybox Mesh"));
+	SkyBox->SetupAttachment(GetRootComponent());
+	SkyBox->SetWorldScale3D(FVector(1000000.0, 1000000.0, 1000000.0));
+	SkyBox->SetReverseCulling(true);
+
+	RightHeadLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("Right Head Light"));
+	RightHeadLight->SetupAttachment(GetRootComponent());
+	RightHeadLight->SetIntensityUnits(ELightUnits::EV);
+	RightHeadLight->SetIntensity(17.f);
+	RightHeadLight->SetAttenuationRadius(20000.f);
+	RightHeadLight->SetOuterConeAngle(15.f);
+
+	LeftHeadLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("Left Head Light"));
+	LeftHeadLight->SetupAttachment(GetRootComponent());
+	LeftHeadLight->SetIntensityUnits(ELightUnits::EV);
+	LeftHeadLight->SetIntensity(17.f);
+	LeftHeadLight->SetAttenuationRadius(20000.f);
+	LeftHeadLight->SetOuterConeAngle(15.f);
 }
 
 void APlayerShip::BeginPlay() {
@@ -96,6 +117,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	HandleExploding();
 	UpdatePlayerShipRotation(DeltaTime);
 	SetMovementComponentMaxSpeed();
+	HandleHeadLightHUDText();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -116,6 +138,7 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &APlayerShip::HandleFireTimer);
 		EnhancedInputComponent->BindAction(RollLeftAction, ETriggerEvent::Triggered, this, &APlayerShip::RollLeft);
 		EnhancedInputComponent->BindAction(RollRightAction, ETriggerEvent::Triggered, this, &APlayerShip::RollRight);
+		EnhancedInputComponent->BindAction(ToggleHeadlightsAction, ETriggerEvent::Triggered, this, &APlayerShip::ToggleHeadlights);
 	}
 }
 
@@ -172,6 +195,29 @@ void APlayerShip::SetHealthBarPercent() {
 	if (PlayerShipOverlay) {
 		PlayerShipOverlay->SetHealthBarPercent(PlayerShipAttributes->GetHealthPercent());
 	}
+}
+
+void APlayerShip::HandleHeadLightHUDText() {
+	if (PlayerShipOverlay) {
+		PlayerShipOverlay->SetHeadLightText(HeadLightsAreOn());
+	}
+}
+
+bool APlayerShip::HeadLightsAreOn() {
+	if (LeftHeadLight && RightHeadLight) {
+		return LeftHeadLight->IsVisible() && RightHeadLight->IsVisible();
+	}
+	return false;
+}
+
+void APlayerShip::TurnHeadLightsOn() {
+	LeftHeadLight->SetVisibility(true);
+	RightHeadLight->SetVisibility(true);
+}
+
+void APlayerShip::TurnHeadLightsOff() {
+	LeftHeadLight->SetVisibility(false);
+	RightHeadLight->SetVisibility(false);
 }
 
 TObjectPtr<USpaceInvader3DOverlay> APlayerShip::SetOverlay() {
@@ -245,12 +291,22 @@ void APlayerShip::DeactivateComponentsAfterExploding() {
 	if (EngineThrusterEffect1) EngineThrusterEffect1->Deactivate();
 	if (EngineThrusterEffect2) EngineThrusterEffect2->Deactivate();
 	if (CruisingThrusterSound) CruisingThrusterSound->Deactivate();
+	if (LeftHeadLight) LeftHeadLight->SetVisibility(false);
+	if (RightHeadLight) RightHeadLight->SetVisibility(false);
 	if (Movement) Movement->Deactivate();
 }
 
 void APlayerShip::ZeroOutCurrentControlSpeed() {
 	CurrentYawControlSpeed = 0.0;
 	CurrentPitchControlSpeed = 0.0;
+}
+
+void APlayerShip::PlayToggleHeadLightSound() {
+	UGameplayStatics::PlaySoundAtLocation(
+		this,
+		ToggleHeadLightSound,
+		GetActorLocation()
+	);
 }
 
 void APlayerShip::PlayExplodingSound() {
@@ -334,6 +390,17 @@ void APlayerShip::RollRight() {
 		AddActorLocalRotation(
 			FRotator(0, 0, 90 * UGameplayStatics::GetWorldDeltaSeconds(this))
 		);
+	}
+}
+
+void APlayerShip::ToggleHeadlights() {
+	if (LeftHeadLight && RightHeadLight) {
+		if (HeadLightsAreOn()) {
+			TurnHeadLightsOff();
+		} else {
+			TurnHeadLightsOn();
+		}
+		PlayToggleHeadLightSound();
 	}
 }
 
