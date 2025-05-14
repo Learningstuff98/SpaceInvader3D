@@ -21,15 +21,14 @@ private:
 	virtual void BeginPlay() override;
 	// </APawn>
 
-	// Dynamic multicast delegate callbacks
+	// Dynamic Multicast Delegate Callbacks
 
 	UFUNCTION()
 	void PlayerShipDetected(APawn* SeenPawn);
 
 	// Miscellaneous
-	void MoveTowardsTarget();
-	void HandleUpdatingDestination();
 	void SetupPlayerShipDetection();
+	void HandleChasingRotation();
 
 	// Components
 
@@ -37,13 +36,13 @@ private:
 	TObjectPtr<class UStaticMeshComponent> ShipMesh;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class USceneComponent> InitialFollowTarget;
+	TObjectPtr<class UPawnSensingComponent> PawnSensingComponent;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UPawnSensingComponent> PawnSensingComponent;
+	TObjectPtr<class UFloatingPawnMovement> PawnMovementComponent;
 
 	// Other
 
 	UPROPERTY()
-	FVector Destination;
+	APawn* DetectedPlayerShip;
 };
