@@ -29,6 +29,8 @@ private:
 	// Miscellaneous
 	void SetupPlayerShipDetection();
 	void HandleChasingRotation();
+	FRotator GetLookAtRotation();
+	FRotator GetNewChasingRotation(const float& InterpSpeed);
 
 	// Components
 

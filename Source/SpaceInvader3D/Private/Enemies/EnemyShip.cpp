@@ -30,13 +30,24 @@ void AEnemyShip::Tick(float DeltaTime) {
 
 void AEnemyShip::HandleChasingRotation() {
 	if (DetectedPlayerShip) {
-		SetActorRotation(
-			UKismetMathLibrary::FindLookAtRotation(
-				GetActorLocation(),
-				DetectedPlayerShip->GetActorLocation()
-			)
-		);
+		SetActorRotation(GetNewChasingRotation(0.5f));
 	}
+}
+
+FRotator AEnemyShip::GetNewChasingRotation(const float& InterpSpeed) {
+	return UKismetMathLibrary::RInterpTo(
+		GetActorRotation(),
+		GetLookAtRotation(),
+		UGameplayStatics::GetWorldDeltaSeconds(this),
+		InterpSpeed
+	);
+}
+
+FRotator AEnemyShip::GetLookAtRotation() {
+	return UKismetMathLibrary::FindLookAtRotation(
+		GetActorLocation(),
+		DetectedPlayerShip->GetActorLocation()
+	);
 }
 
 void AEnemyShip::SetupPlayerShipDetection() {
