@@ -18,6 +18,8 @@
 #include "ExplodingEffects/ShipExplodingEffect.h"
 #include "Engine/StaticMesh.h"
 #include "Components/SpotLightComponent.h"
+#include "Components/SphereComponent.h"
+#include "Enemies/EnemyShip.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -30,6 +32,7 @@ APlayerShip::APlayerShip() {
 	MaxSpeed = 12000.0f;
 	MinSpeed = 3300.0f;
 	CurrentSpeed = MinSpeed;
+	DetectedEnemyShip = nullptr;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -99,6 +102,10 @@ APlayerShip::APlayerShip() {
 	LeftHeadLight->SetIntensity(17.f);
 	LeftHeadLight->SetAttenuationRadius(20000.f);
 	LeftHeadLight->SetOuterConeAngle(15.f);
+
+	EnemyShipDetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Enemy Ship Detection Sphere"));
+	EnemyShipDetectionSphere->SetupAttachment(GetRootComponent());
+	EnemyShipDetectionSphere->SetSphereRadius(40000.0f);
 }
 
 void APlayerShip::BeginPlay() {
@@ -106,6 +113,7 @@ void APlayerShip::BeginPlay() {
 	SetupMappingContext();
 	PlayerShipOverlay = SetOverlay();
 	SetHealthBarPercent();
+	EnemyShipDetectionSphere->OnComponentBeginOverlap.AddDynamic(this, &APlayerShip::DetectEnemyShip);
 }
 
 void APlayerShip::Tick(float DeltaTime) {
@@ -232,6 +240,12 @@ TObjectPtr<USpaceInvader3DOverlay> APlayerShip::SetOverlay() {
 		}
 	}
 	return Overlay;
+}
+
+void APlayerShip::DetectEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	if (TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
+		DetectedEnemyShip = EnemyShip;
+	}
 }
 
 void APlayerShip::PlayBlasterSound() {
