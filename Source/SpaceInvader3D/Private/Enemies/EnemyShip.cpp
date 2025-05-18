@@ -7,14 +7,16 @@
 AEnemyShip::AEnemyShip() {
 	PrimaryActorTick.bCanEverTick = true;
 	DetectedPlayerShip = nullptr;
+	bDetectedPlayerShipNullOutTimerFinished = true;
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ship Mesh"));
 	SetRootComponent(ShipMesh);
 
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Pawn Sensing Component"));
+	PawnSensingComponent->SetPeripheralVisionAngle(70.0f);
 
 	PawnMovementComponent = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Pawn Movement Component"));
-	PawnMovementComponent->MaxSpeed = 4000.0f;
+	PawnMovementComponent->MaxSpeed = 3300.0f;
 }
 
 void AEnemyShip::BeginPlay() {
@@ -26,6 +28,7 @@ void AEnemyShip::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 	HandleChasingRotation();
 	AddMovementInput(GetActorForwardVector(), 1.0f);
+	HandleDetectedPlayerShipNullOutTimer();
 }
 
 void AEnemyShip::HandleChasingRotation() {
@@ -41,6 +44,19 @@ FRotator AEnemyShip::GetNewChasingRotation(const float& InterpSpeed) {
 		UGameplayStatics::GetWorldDeltaSeconds(this),
 		InterpSpeed
 	);
+}
+
+void AEnemyShip::HandleDetectedPlayerShipNullOutTimer() {
+	if (bDetectedPlayerShipNullOutTimerFinished) {
+		GetWorldTimerManager().ClearTimer(DetectedPlayerShipNullOutTimer);
+		GetWorldTimerManager().SetTimer(DetectedPlayerShipNullOutTimer, this, &AEnemyShip::NullOutDetectedPlayerShip, 0.1f);
+		bDetectedPlayerShipNullOutTimerFinished = false;
+	}
+}
+
+void AEnemyShip::NullOutDetectedPlayerShip() {
+	DetectedPlayerShip = nullptr;
+	bDetectedPlayerShipNullOutTimerFinished = true;
 }
 
 FRotator AEnemyShip::GetLookAtRotation() {

@@ -31,6 +31,8 @@ private:
 	void HandleChasingRotation();
 	FRotator GetLookAtRotation();
 	FRotator GetNewChasingRotation(const float& InterpSpeed);
+	void HandleDetectedPlayerShipNullOutTimer();
+	void NullOutDetectedPlayerShip();
 
 	// Components
 
@@ -47,4 +49,9 @@ private:
 
 	UPROPERTY()
 	APawn* DetectedPlayerShip;
+
+	FTimerHandle DetectedPlayerShipNullOutTimer;
+
+	UPROPERTY()
+	bool bDetectedPlayerShipNullOutTimerFinished;
 };
