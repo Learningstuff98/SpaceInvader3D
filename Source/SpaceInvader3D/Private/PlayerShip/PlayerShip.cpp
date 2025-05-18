@@ -113,8 +113,7 @@ void APlayerShip::BeginPlay() {
 	SetupMappingContext();
 	PlayerShipOverlay = SetOverlay();
 	SetHealthBarPercent();
-	EnemyShipDetectionSphere->OnComponentBeginOverlap.AddDynamic(this, &APlayerShip::DetectEnemyShip);
-	EnemyShipDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &APlayerShip::LoseEnemyShip);
+	SetupEnemyShipDetectionFunctionality();
 }
 
 void APlayerShip::Tick(float DeltaTime) {
@@ -241,6 +240,13 @@ TObjectPtr<USpaceInvader3DOverlay> APlayerShip::SetOverlay() {
 		}
 	}
 	return Overlay;
+}
+
+void APlayerShip::SetupEnemyShipDetectionFunctionality() {
+	if (EnemyShipDetectionSphere) {
+		EnemyShipDetectionSphere->OnComponentBeginOverlap.AddDynamic(this, &APlayerShip::DetectEnemyShip);
+		EnemyShipDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &APlayerShip::LoseEnemyShip);
+	}
 }
 
 void APlayerShip::DetectEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {

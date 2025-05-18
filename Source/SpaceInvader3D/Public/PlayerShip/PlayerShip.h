@@ -77,6 +77,7 @@ private:
 	bool HeadLightsAreOn();
 	void TurnHeadLightsOn();
 	void TurnHeadLightsOff();
+	void SetupEnemyShipDetectionFunctionality();
 	 
 	// Component Variables
 
