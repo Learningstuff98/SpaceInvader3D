@@ -20,6 +20,7 @@
 #include "Components/SpotLightComponent.h"
 #include "Components/SphereComponent.h"
 #include "Enemies/EnemyShip.h"
+#include "Kismet/KismetMathLibrary.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -105,7 +106,7 @@ APlayerShip::APlayerShip() {
 
 	EnemyShipDetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Enemy Ship Detection Sphere"));
 	EnemyShipDetectionSphere->SetupAttachment(GetRootComponent());
-	EnemyShipDetectionSphere->SetSphereRadius(40000.0f);
+	EnemyShipDetectionSphere->SetSphereRadius(180000.0f);
 }
 
 void APlayerShip::BeginPlay() {
@@ -126,6 +127,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	UpdatePlayerShipRotation(DeltaTime);
 	SetMovementComponentMaxSpeed();
 	HandleHeadLightHUDText();
+	HandleAutomaticallyLookingAtEnemyShip();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -246,6 +248,20 @@ void APlayerShip::SetupEnemyShipDetectionFunctionality() {
 	if (EnemyShipDetectionSphere) {
 		EnemyShipDetectionSphere->OnComponentBeginOverlap.AddDynamic(this, &APlayerShip::DetectEnemyShip);
 		EnemyShipDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &APlayerShip::LoseEnemyShip);
+	}
+}
+
+void APlayerShip::HandleAutomaticallyLookingAtEnemyShip() {
+	if (TObjectPtr<AController> PlayerShipController = GetController()) {
+		if (DetectedEnemyShip && bInViewMode && SpringArm) {
+			SpringArm->bUsePawnControlRotation = true;
+			PlayerShipController->SetControlRotation(
+				UKismetMathLibrary::FindLookAtRotation(
+					GetActorLocation(),
+					DetectedEnemyShip->GetActorLocation()
+				)
+			);
+		}
 	}
 }
 
