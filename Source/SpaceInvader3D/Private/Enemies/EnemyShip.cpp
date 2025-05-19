@@ -9,6 +9,7 @@ AEnemyShip::AEnemyShip() {
 	PrimaryActorTick.bCanEverTick = true;
 	DetectedPlayerShip = nullptr;
 	bDetectedPlayerShipNullOutTimerFinished = true;
+	TurnSpeed = 0.5f;
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ship Mesh"));
 	SetRootComponent(ShipMesh);
@@ -34,28 +35,32 @@ void AEnemyShip::Tick(float DeltaTime) {
 
 void AEnemyShip::HandleChasingRotation() {
 	if (DetectedPlayerShip) {
-		SetActorRotation(GetNewChasingRotation(0.5f));
+		SetActorRotation(GetChasingRotation(GetPlayerShipLookAtRotation()));
 	} else if (PatrolTargets.Num() > 0) {
-		SetActorRotation(
-			UKismetMathLibrary::RInterpTo(
-				GetActorRotation(),
-				UKismetMathLibrary::FindLookAtRotation(
-					GetActorLocation(),
-					PatrolTargets[0]->GetActorLocation()
-				),
-				UGameplayStatics::GetWorldDeltaSeconds(this),
-				0.5f
-			)
-		);
+		SetActorRotation(GetChasingRotation(GetPatrolTargetLookAtRotation()));
 	}
 }
 
-FRotator AEnemyShip::GetNewChasingRotation(const float& InterpSpeed) {
+FRotator AEnemyShip::GetChasingRotation(const FRotator& LookAtRotation) {
 	return UKismetMathLibrary::RInterpTo(
 		GetActorRotation(),
-		GetLookAtRotation(),
+		LookAtRotation,
 		UGameplayStatics::GetWorldDeltaSeconds(this),
-		InterpSpeed
+		TurnSpeed
+	);
+}
+
+FRotator AEnemyShip::GetPatrolTargetLookAtRotation() {
+	return UKismetMathLibrary::FindLookAtRotation(
+		GetActorLocation(),
+		PatrolTargets[0]->GetActorLocation()
+	);
+}
+
+FRotator AEnemyShip::GetPlayerShipLookAtRotation() {
+	return UKismetMathLibrary::FindLookAtRotation(
+		GetActorLocation(),
+		DetectedPlayerShip->GetActorLocation()
 	);
 }
 
@@ -70,13 +75,6 @@ void AEnemyShip::HandleDetectedPlayerShipNullOutTimer() {
 void AEnemyShip::NullOutDetectedPlayerShip() {
 	DetectedPlayerShip = nullptr;
 	bDetectedPlayerShipNullOutTimerFinished = true;
-}
-
-FRotator AEnemyShip::GetLookAtRotation() {
-	return UKismetMathLibrary::FindLookAtRotation(
-		GetActorLocation(),
-		DetectedPlayerShip->GetActorLocation()
-	);
 }
 
 void AEnemyShip::SetupPlayerShipDetection() {

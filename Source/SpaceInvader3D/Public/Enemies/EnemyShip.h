@@ -29,8 +29,9 @@ private:
 	// Miscellaneous
 	void SetupPlayerShipDetection();
 	void HandleChasingRotation();
-	FRotator GetLookAtRotation();
-	FRotator GetNewChasingRotation(const float& InterpSpeed);
+	FRotator GetChasingRotation(const FRotator& LookAtRotation);
+	FRotator GetPlayerShipLookAtRotation();
+	FRotator GetPatrolTargetLookAtRotation();
 	void HandleDetectedPlayerShipNullOutTimer();
 	void NullOutDetectedPlayerShip();
 
@@ -57,4 +58,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Patrolling)
 	TArray<TObjectPtr<class APatrolTarget>> PatrolTargets;
+
+	UPROPERTY()
+	float TurnSpeed;
 };
