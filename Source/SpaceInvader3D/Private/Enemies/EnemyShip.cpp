@@ -3,6 +3,7 @@
 #include "Perception/PawnSensingComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "PatrolTargets/PatrolTarget.h"
 
 AEnemyShip::AEnemyShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -16,7 +17,7 @@ AEnemyShip::AEnemyShip() {
 	PawnSensingComponent->SetPeripheralVisionAngle(70.0f);
 
 	PawnMovementComponent = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Pawn Movement Component"));
-	PawnMovementComponent->MaxSpeed = 3300.0f;
+	PawnMovementComponent->MaxSpeed = 5000.0f;
 }
 
 void AEnemyShip::BeginPlay() {
@@ -34,6 +35,18 @@ void AEnemyShip::Tick(float DeltaTime) {
 void AEnemyShip::HandleChasingRotation() {
 	if (DetectedPlayerShip) {
 		SetActorRotation(GetNewChasingRotation(0.5f));
+	} else if (PatrolTargets.Num() > 0) {
+		SetActorRotation(
+			UKismetMathLibrary::RInterpTo(
+				GetActorRotation(),
+				UKismetMathLibrary::FindLookAtRotation(
+					GetActorLocation(),
+					PatrolTargets[0]->GetActorLocation()
+				),
+				UGameplayStatics::GetWorldDeltaSeconds(this),
+				0.5f
+			)
+		);
 	}
 }
 

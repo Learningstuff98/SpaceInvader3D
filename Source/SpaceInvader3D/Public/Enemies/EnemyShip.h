@@ -54,4 +54,7 @@ private:
 
 	UPROPERTY()
 	bool bDetectedPlayerShipNullOutTimerFinished;
+
+	UPROPERTY(EditAnywhere, Category = Patrolling)
+	TArray<TObjectPtr<class APatrolTarget>> PatrolTargets;
 };
