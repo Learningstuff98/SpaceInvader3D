@@ -20,4 +20,18 @@ private:
 	// <AActor>
 	virtual void BeginPlay() override;
 	// </AActor>
+
+	// Dynamic Multicast Delegate Callbacks
+
+	UFUNCTION()
+	void TellEnemyShiptoFindANewPatrolTarget(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	// Miscellaneous
+
+	void SetupSphereInteractionsFunctionality();
+
+	// Components
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class USphereComponent> EnemyShipDetectionSphere;
 };

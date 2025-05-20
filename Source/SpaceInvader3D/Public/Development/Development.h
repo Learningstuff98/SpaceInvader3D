@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -10,4 +8,5 @@ public:
 	static void LogMessage(const FString& Message);
 	static void LogNumber(const float& Float);
 	static void LogNumber(const double& Double);
+	static void LogNumber(const int32& Integer);
 };

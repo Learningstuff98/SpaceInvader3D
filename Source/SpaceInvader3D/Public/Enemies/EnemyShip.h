@@ -16,6 +16,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	//</AActor>
 
+	// Miscellaneous
+
+	void GetRandomPatrolTargetIndex();
+
 private:
 	// <APawn>
 	virtual void BeginPlay() override;
@@ -58,6 +62,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Patrolling)
 	TArray<TObjectPtr<class APatrolTarget>> PatrolTargets;
+
+	UPROPERTY()
+	int32 NewPatrolTargetIndex;
+
+	UPROPERTY()
+	int32 CurrentPatrolTargetIndex;
 
 	UPROPERTY()
 	float TurnSpeed;

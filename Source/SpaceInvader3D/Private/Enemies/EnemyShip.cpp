@@ -9,7 +9,9 @@ AEnemyShip::AEnemyShip() {
 	PrimaryActorTick.bCanEverTick = true;
 	DetectedPlayerShip = nullptr;
 	bDetectedPlayerShipNullOutTimerFinished = true;
-	TurnSpeed = 0.5f;
+	TurnSpeed = 0.7f;
+	NewPatrolTargetIndex = 0;
+	CurrentPatrolTargetIndex = 0;
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ship Mesh"));
 	SetRootComponent(ShipMesh);
@@ -53,7 +55,7 @@ FRotator AEnemyShip::GetChasingRotation(const FRotator& LookAtRotation) {
 FRotator AEnemyShip::GetPatrolTargetLookAtRotation() {
 	return UKismetMathLibrary::FindLookAtRotation(
 		GetActorLocation(),
-		PatrolTargets[0]->GetActorLocation()
+		PatrolTargets[CurrentPatrolTargetIndex]->GetActorLocation()
 	);
 }
 
@@ -75,6 +77,13 @@ void AEnemyShip::HandleDetectedPlayerShipNullOutTimer() {
 void AEnemyShip::NullOutDetectedPlayerShip() {
 	DetectedPlayerShip = nullptr;
 	bDetectedPlayerShipNullOutTimerFinished = true;
+}
+
+void AEnemyShip::GetRandomPatrolTargetIndex() {
+	while (CurrentPatrolTargetIndex == NewPatrolTargetIndex) {
+		NewPatrolTargetIndex = FMath::RandRange(0, PatrolTargets.Num() - 1);
+	}
+	CurrentPatrolTargetIndex = NewPatrolTargetIndex;
 }
 
 void AEnemyShip::SetupPlayerShipDetection() {
