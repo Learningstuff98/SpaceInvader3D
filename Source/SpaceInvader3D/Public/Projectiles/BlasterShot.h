@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -32,7 +30,6 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class USphereComponent> BlasterShotSphere;
 
-	// https://dev.epicgames.com/documentation/en-us/unreal-engine/implementing-projectiles-in-unreal-engine
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UProjectileMovementComponent> Movement;
 

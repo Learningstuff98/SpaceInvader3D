@@ -41,6 +41,14 @@ private:
 	void RollRight();
 	void ToggleHeadlights();
 
+	// Dynamic Multicast Delegate Callbacks
+
+	UFUNCTION()
+	void DetectEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void LoseEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 	// Miscellaneous
 	void SetupMappingContext();
 	void SetThrusterPitch();
@@ -69,6 +77,8 @@ private:
 	bool HeadLightsAreOn();
 	void TurnHeadLightsOn();
 	void TurnHeadLightsOff();
+	void SetupEnemyShipDetectionFunctionality();
+	void HandleAutomaticallyLookingAtEnemyShip();
 	 
 	// Component Variables
 
@@ -116,6 +126,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class USpotLightComponent> LeftHeadLight;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class USphereComponent> EnemyShipDetectionSphere;
 
 	// Enhanced Input Varaibles
 
@@ -203,4 +216,7 @@ private:
 
 	UPROPERTY()
 	float CurrentSpeed;
+
+	UPROPERTY(EditAnywhere, Category = Enemies)
+	TObjectPtr<class AEnemyShip> DetectedEnemyShip;
 };

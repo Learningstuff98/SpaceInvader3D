@@ -18,6 +18,9 @@
 #include "ExplodingEffects/ShipExplodingEffect.h"
 #include "Engine/StaticMesh.h"
 #include "Components/SpotLightComponent.h"
+#include "Components/SphereComponent.h"
+#include "Enemies/EnemyShip.h"
+#include "Kismet/KismetMathLibrary.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -30,6 +33,7 @@ APlayerShip::APlayerShip() {
 	MaxSpeed = 12000.0f;
 	MinSpeed = 3300.0f;
 	CurrentSpeed = MinSpeed;
+	DetectedEnemyShip = nullptr;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -99,6 +103,10 @@ APlayerShip::APlayerShip() {
 	LeftHeadLight->SetIntensity(17.f);
 	LeftHeadLight->SetAttenuationRadius(20000.f);
 	LeftHeadLight->SetOuterConeAngle(15.f);
+
+	EnemyShipDetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Enemy Ship Detection Sphere"));
+	EnemyShipDetectionSphere->SetupAttachment(GetRootComponent());
+	EnemyShipDetectionSphere->SetSphereRadius(180000.0f);
 }
 
 void APlayerShip::BeginPlay() {
@@ -106,6 +114,7 @@ void APlayerShip::BeginPlay() {
 	SetupMappingContext();
 	PlayerShipOverlay = SetOverlay();
 	SetHealthBarPercent();
+	SetupEnemyShipDetectionFunctionality();
 }
 
 void APlayerShip::Tick(float DeltaTime) {
@@ -118,6 +127,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	UpdatePlayerShipRotation(DeltaTime);
 	SetMovementComponentMaxSpeed();
 	HandleHeadLightHUDText();
+	HandleAutomaticallyLookingAtEnemyShip();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -232,6 +242,39 @@ TObjectPtr<USpaceInvader3DOverlay> APlayerShip::SetOverlay() {
 		}
 	}
 	return Overlay;
+}
+
+void APlayerShip::SetupEnemyShipDetectionFunctionality() {
+	if (EnemyShipDetectionSphere) {
+		EnemyShipDetectionSphere->OnComponentBeginOverlap.AddDynamic(this, &APlayerShip::DetectEnemyShip);
+		EnemyShipDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &APlayerShip::LoseEnemyShip);
+	}
+}
+
+void APlayerShip::HandleAutomaticallyLookingAtEnemyShip() {
+	if (const TObjectPtr<AController> PlayerShipController = GetController()) {
+		if (DetectedEnemyShip && bInViewMode && SpringArm) {
+			SpringArm->bUsePawnControlRotation = true;
+			PlayerShipController->SetControlRotation(
+				UKismetMathLibrary::FindLookAtRotation(
+					GetActorLocation(),
+					DetectedEnemyShip->GetActorLocation()
+				)
+			);
+		}
+	}
+}
+
+void APlayerShip::DetectEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
+		DetectedEnemyShip = EnemyShip;
+	}
+}
+
+void APlayerShip::LoseEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
+		DetectedEnemyShip = nullptr;
+	}
 }
 
 void APlayerShip::PlayBlasterSound() {
