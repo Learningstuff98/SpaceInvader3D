@@ -38,5 +38,12 @@ Adding the outer space theme made things a little dark so I decided to add some 
 https://github.com/user-attachments/assets/942d3a5f-26ed-43d3-82d8-c4abf8e6c164
 
 
+5/22/2025
+
+There are now enemy ships which have the ability to follow the player ship. If no player ship is detected, then enemy ships
+fly between hand placed patrol targets.
+
+[Linto to PR #24](https://github.com/Learningstuff98/SpaceInvader3D/pull/24)
+
 
 
