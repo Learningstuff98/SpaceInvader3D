@@ -3,8 +3,6 @@
 #include "Components/SphereComponent.h"
 #include "Enemies/EnemyShip.h"
 
-#include "Development/Development.h"
-
 APatrolTarget::APatrolTarget() {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -22,15 +20,14 @@ void APatrolTarget::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 }
 
-void APatrolTarget::TellEnemyShiptoFindANewPatrolTarget(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+void APatrolTarget::TellEnemyShipToFindANewPatrolTarget(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
 	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
 		EnemyShip->GetRandomPatrolTargetIndex();
-		Development::LogMessage("End Overlap was called");
 	}
 }
 
 void APatrolTarget::SetupSphereInteractionsFunctionality() {
 	if (EnemyShipDetectionSphere) {
-		EnemyShipDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &APatrolTarget::TellEnemyShiptoFindANewPatrolTarget);
+		EnemyShipDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &APatrolTarget::TellEnemyShipToFindANewPatrolTarget);
 	}
 }

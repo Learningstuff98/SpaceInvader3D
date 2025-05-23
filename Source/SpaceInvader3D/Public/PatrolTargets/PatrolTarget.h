@@ -24,7 +24,7 @@ private:
 	// Dynamic Multicast Delegate Callbacks
 
 	UFUNCTION()
-	void TellEnemyShiptoFindANewPatrolTarget(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	void TellEnemyShipToFindANewPatrolTarget(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	// Miscellaneous
 

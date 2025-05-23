@@ -252,7 +252,7 @@ void APlayerShip::SetupEnemyShipDetectionFunctionality() {
 }
 
 void APlayerShip::HandleAutomaticallyLookingAtEnemyShip() {
-	if (TObjectPtr<AController> PlayerShipController = GetController()) {
+	if (const TObjectPtr<AController> PlayerShipController = GetController()) {
 		if (DetectedEnemyShip && bInViewMode && SpringArm) {
 			SpringArm->bUsePawnControlRotation = true;
 			PlayerShipController->SetControlRotation(
@@ -266,13 +266,13 @@ void APlayerShip::HandleAutomaticallyLookingAtEnemyShip() {
 }
 
 void APlayerShip::DetectEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
-	if (TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
+	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
 		DetectedEnemyShip = EnemyShip;
 	}
 }
 
 void APlayerShip::LoseEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
-	if (TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
+	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
 		DetectedEnemyShip = nullptr;
 	}
 }

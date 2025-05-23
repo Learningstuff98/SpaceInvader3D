@@ -88,11 +88,11 @@ void AEnemyShip::GetRandomPatrolTargetIndex() {
 
 void AEnemyShip::SetupPlayerShipDetection() {
 	if (PawnSensingComponent) {
-		PawnSensingComponent->OnSeePawn.AddDynamic(this, &AEnemyShip::PlayerShipDetected);
+		PawnSensingComponent->OnSeePawn.AddDynamic(this, &AEnemyShip::SetDetectedPlayerShip);
 	}
 }
 
-void AEnemyShip::PlayerShipDetected(APawn* SeenPawn) {
+void AEnemyShip::SetDetectedPlayerShip(APawn* SeenPawn) {
 	if (SeenPawn) {
 		DetectedPlayerShip = SeenPawn;
 	}

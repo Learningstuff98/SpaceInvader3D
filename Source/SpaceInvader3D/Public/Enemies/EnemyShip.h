@@ -28,7 +28,7 @@ private:
 	// Dynamic Multicast Delegate Callbacks
 
 	UFUNCTION()
-	void PlayerShipDetected(APawn* SeenPawn);
+	void SetDetectedPlayerShip(APawn* SeenPawn);
 
 	// Miscellaneous
 	void SetupPlayerShipDetection();
