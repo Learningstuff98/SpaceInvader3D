@@ -22,6 +22,7 @@ AEnemyShip::AEnemyShip() {
 	ShipMesh->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
 	ShipMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	ShipMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Destructible, ECollisionResponse::ECR_Block);
+	ShipMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
 
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Pawn Sensing Component"));
 	PawnSensingComponent->SetPeripheralVisionAngle(70.0f);
