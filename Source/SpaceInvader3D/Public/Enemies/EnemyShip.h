@@ -42,6 +42,7 @@ private:
 	void HandleDetectedPlayerShipNullOutTimer();
 	void NullOutDetectedPlayerShip();
 	void TakeBlasterShotHit(const TObjectPtr<class ABlasterShot> BlasterShot);
+	void HandleBlowingUp();
 
 	// Components
 
@@ -75,4 +76,7 @@ private:
 
 	UPROPERTY()
 	float TurnSpeed;
+
+	UPROPERTY()
+	int32 Health;
 };
