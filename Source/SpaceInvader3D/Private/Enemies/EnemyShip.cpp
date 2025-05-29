@@ -16,7 +16,7 @@ AEnemyShip::AEnemyShip() {
 	TurnSpeed = 0.7f;
 	NewPatrolTargetIndex = 0;
 	CurrentPatrolTargetIndex = 0;
-	Health = 100;
+	Health = 500;
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ship Mesh"));
 	SetRootComponent(ShipMesh);
@@ -119,8 +119,8 @@ void AEnemyShip::TakeHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 
 void AEnemyShip::TakeBlasterShotHit(const TObjectPtr<ABlasterShot> BlasterShot) {
 	BlasterShot->SpawnImpactBurst();
+	Health -= BlasterShot->Damage;
 	BlasterShot->Destroy();
-	Health -= 100;
 }
 
 void AEnemyShip::HandleBlowingUp() {
