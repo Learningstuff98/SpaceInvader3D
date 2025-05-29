@@ -43,6 +43,7 @@ private:
 	void NullOutDetectedPlayerShip();
 	void TakeBlasterShotHit(const TObjectPtr<class ABlasterShot> BlasterShot);
 	void HandleBlowingUp();
+	void SpawnShipExplodingEffect();
 
 	// Components
 
@@ -79,4 +80,13 @@ private:
 
 	UPROPERTY()
 	int32 Health;
+
+	UPROPERTY(EditAnywhere, Category = Pieces)
+	TSubclassOf<class AShipPieces> ShipPiecesBlueprintClass;
+
+	UPROPERTY(EditAnywhere, Category = "Field Systems")
+	TSubclassOf<class AFieldSystemActor> ShipExplodingFieldSystemBlueprintClass;
+
+	UPROPERTY(EditAnywhere, Category = "Explosion Effect")
+	TSubclassOf<class AShipExplodingEffect> ShipExplodingEffectBlueprintClass;
 };

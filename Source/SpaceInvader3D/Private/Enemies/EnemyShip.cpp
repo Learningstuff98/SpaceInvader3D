@@ -5,6 +5,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "PatrolTargets/PatrolTarget.h"
 #include "Projectiles/BlasterShot.h"
+#include "ExplodingEffects/ShipExplodingEffect.h"
 
 AEnemyShip::AEnemyShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -122,6 +123,17 @@ void AEnemyShip::TakeBlasterShotHit(const TObjectPtr<ABlasterShot> BlasterShot) 
 
 void AEnemyShip::HandleBlowingUp() {
 	if (Health <= 0) {
+		SpawnShipExplodingEffect();
 		Destroy();
+	}
+}
+
+void AEnemyShip::SpawnShipExplodingEffect() {
+	if (TObjectPtr<UWorld> World = GetWorld()) {
+		World->SpawnActor<AShipExplodingEffect>(
+			ShipExplodingEffectBlueprintClass,
+			GetActorLocation(),
+			GetActorRotation()
+		);
 	}
 }
