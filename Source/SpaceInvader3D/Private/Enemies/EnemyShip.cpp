@@ -16,7 +16,7 @@ AEnemyShip::AEnemyShip() {
 	TurnSpeed = 0.7f;
 	NewPatrolTargetIndex = 0;
 	CurrentPatrolTargetIndex = 0;
-	Health = 500;
+	Health = 100;
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ship Mesh"));
 	SetRootComponent(ShipMesh);
@@ -128,6 +128,7 @@ void AEnemyShip::HandleBlowingUp() {
 		SpawnShipExplodingEffect();
 		SpawnShipPieces();
 		SpawnShipExplodingFieldSystem();
+		PlayExplodingSound();
 		Destroy();
 	}
 }
@@ -160,4 +161,12 @@ void AEnemyShip::SpawnShipExplodingFieldSystem() {
 			GetActorRotation()
 		);
 	}
+}
+
+void AEnemyShip::PlayExplodingSound() {
+	UGameplayStatics::PlaySoundAtLocation(
+		this,
+		ExplodingSound,
+		GetActorLocation()
+	);
 }

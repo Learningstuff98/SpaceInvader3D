@@ -46,6 +46,7 @@ private:
 	void SpawnShipExplodingEffect();
 	void SpawnShipPieces();
 	void SpawnShipExplodingFieldSystem();
+	void PlayExplodingSound();
 
 	// Components
 
@@ -91,4 +92,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Explosion Effect")
 	TSubclassOf<class AShipExplodingEffect> ShipExplodingEffectBlueprintClass;
+
+	UPROPERTY(EditAnywhere, Category = Sound)
+	TObjectPtr<class USoundBase> ExplodingSound;
 };
