@@ -4,8 +4,7 @@
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PatrolTargets/PatrolTarget.h"
-
-#include "Development/Development.h"
+#include "Projectiles/BlasterShot.h"
 
 AEnemyShip::AEnemyShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -108,5 +107,12 @@ void AEnemyShip::SetDetectedPlayerShip(APawn* SeenPawn) {
 }
 
 void AEnemyShip::TakeHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
-	Development::LogMessage("TakeHit WAS CALLED");
+	if (const TObjectPtr<ABlasterShot> BlasterShot = Cast<ABlasterShot>(OtherActor)) {
+		TakeBlasterShotHit(BlasterShot);
+	}
+}
+
+void AEnemyShip::TakeBlasterShotHit(const TObjectPtr<ABlasterShot> BlasterShot) {
+	BlasterShot->SpawnImpactBurst();
+	BlasterShot->Destroy();
 }

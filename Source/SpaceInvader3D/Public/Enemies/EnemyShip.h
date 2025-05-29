@@ -41,6 +41,7 @@ private:
 	FRotator GetPatrolTargetLookAtRotation();
 	void HandleDetectedPlayerShipNullOutTimer();
 	void NullOutDetectedPlayerShip();
+	void TakeBlasterShotHit(const TObjectPtr<class ABlasterShot> BlasterShot);
 
 	// Components
 
