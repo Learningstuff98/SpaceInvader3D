@@ -30,6 +30,9 @@ private:
 	UFUNCTION()
 	void SetDetectedPlayerShip(APawn* SeenPawn);
 
+	UFUNCTION()
+	void TakeHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 	// Miscellaneous
 	void SetupPlayerShipDetection();
 	void HandleChasingRotation();

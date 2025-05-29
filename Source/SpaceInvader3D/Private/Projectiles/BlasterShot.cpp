@@ -17,6 +17,7 @@ ABlasterShot::ABlasterShot() {
 	BlasterShotSphere->SetCollisionObjectType(ECollisionChannel::ECC_Destructible);
 	BlasterShotSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	BlasterShotSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
+	BlasterShotSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
 
 	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
 	Movement->ProjectileGravityScale = 0.0f;

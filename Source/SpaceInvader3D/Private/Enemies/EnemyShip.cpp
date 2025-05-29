@@ -5,6 +5,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "PatrolTargets/PatrolTarget.h"
 
+#include "Development/Development.h"
+
 AEnemyShip::AEnemyShip() {
 	PrimaryActorTick.bCanEverTick = true;
 	DetectedPlayerShip = nullptr;
@@ -15,6 +17,11 @@ AEnemyShip::AEnemyShip() {
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ship Mesh"));
 	SetRootComponent(ShipMesh);
+	ShipMesh->SetNotifyRigidBodyCollision(true);
+	ShipMesh->SetCollisionProfileName(FName("Custom"));
+	ShipMesh->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
+	ShipMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	ShipMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Destructible, ECollisionResponse::ECR_Block);
 
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Pawn Sensing Component"));
 	PawnSensingComponent->SetPeripheralVisionAngle(70.0f);
@@ -26,6 +33,7 @@ AEnemyShip::AEnemyShip() {
 void AEnemyShip::BeginPlay() {
 	Super::BeginPlay();
 	SetupPlayerShipDetection();
+	if(ShipMesh) ShipMesh->OnComponentHit.AddDynamic(this, &AEnemyShip::TakeHit);
 }
 
 void AEnemyShip::Tick(float DeltaTime) {
@@ -96,4 +104,8 @@ void AEnemyShip::SetDetectedPlayerShip(APawn* SeenPawn) {
 	if (SeenPawn) {
 		DetectedPlayerShip = SeenPawn;
 	}
+}
+
+void AEnemyShip::TakeHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
+	Development::LogMessage("TakeHit WAS CALLED");
 }
