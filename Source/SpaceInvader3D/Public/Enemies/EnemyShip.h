@@ -44,6 +44,8 @@ private:
 	void TakeBlasterShotHit(const TObjectPtr<class ABlasterShot> BlasterShot);
 	void HandleBlowingUp();
 	void SpawnShipExplodingEffect();
+	void SpawnShipPieces();
+	void SpawnShipExplodingFieldSystem();
 
 	// Components
 
