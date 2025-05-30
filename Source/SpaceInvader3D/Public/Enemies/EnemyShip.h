@@ -43,6 +43,7 @@ private:
 	void NullOutDetectedPlayerShip();
 	void TakeBlasterShotHit(const TObjectPtr<class ABlasterShot> BlasterShot);
 	void HandleBlowingUp();
+	void SetupTakingHitsFunctionality();
 
 	// Components
 

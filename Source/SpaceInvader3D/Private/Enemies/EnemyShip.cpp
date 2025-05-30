@@ -35,7 +35,7 @@ AEnemyShip::AEnemyShip() {
 void AEnemyShip::BeginPlay() {
 	Super::BeginPlay();
 	SetupPlayerShipDetection();
-	if(ShipMesh) ShipMesh->OnComponentHit.AddDynamic(this, &AEnemyShip::TakeHit);
+	SetupTakingHitsFunctionality();
 }
 
 void AEnemyShip::Tick(float DeltaTime) {
@@ -107,6 +107,10 @@ void AEnemyShip::SetDetectedPlayerShip(APawn* SeenPawn) {
 	if (SeenPawn) {
 		DetectedPlayerShip = SeenPawn;
 	}
+}
+
+void AEnemyShip::SetupTakingHitsFunctionality() {
+	if (ShipMesh) ShipMesh->OnComponentHit.AddDynamic(this, &AEnemyShip::TakeHit);
 }
 
 void AEnemyShip::TakeHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
