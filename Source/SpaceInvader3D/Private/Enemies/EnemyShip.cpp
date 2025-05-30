@@ -5,9 +5,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "PatrolTargets/PatrolTarget.h"
 #include "Projectiles/BlasterShot.h"
-#include "ExplodingEffects/ShipExplodingEffect.h"
-#include "ShipPieces/ShipPieces.h"
-#include "Field/FieldSystemActor.h"
+#include "Statics/ShipStatics.h"
 
 AEnemyShip::AEnemyShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -125,48 +123,10 @@ void AEnemyShip::TakeBlasterShotHit(const TObjectPtr<ABlasterShot> BlasterShot) 
 
 void AEnemyShip::HandleBlowingUp() {
 	if (Health <= 0) {
-		SpawnShipExplodingEffect();
-		SpawnShipPieces();
-		SpawnShipExplodingFieldSystem();
-		PlayExplodingSound();
+		ShipStatics::SpawnShipExplodingEffect(ShipExplodingEffectBlueprintClass, this);
+		ShipStatics::SpawnShipPieces(ShipPiecesBlueprintClass, this);
+		ShipStatics::SpawnShipExplodingFieldSystem(ShipExplodingFieldSystemBlueprintClass, this);
+		ShipStatics::PlayExplodingSound(ExplodingSound, this);
 		Destroy();
 	}
-}
-
-void AEnemyShip::SpawnShipExplodingEffect() {
-	if (TObjectPtr<UWorld> World = GetWorld()) {
-		World->SpawnActor<AShipExplodingEffect>(
-			ShipExplodingEffectBlueprintClass,
-			GetActorLocation(),
-			GetActorRotation()
-		);
-	}
-}
-
-void AEnemyShip::SpawnShipPieces() {
-	if (TObjectPtr<UWorld> World = GetWorld()) {
-		World->SpawnActor<AShipPieces>(
-			ShipPiecesBlueprintClass,
-			GetActorLocation(),
-			GetActorRotation()
-		);
-	}
-}
-
-void AEnemyShip::SpawnShipExplodingFieldSystem() {
-	if (TObjectPtr<UWorld> World = GetWorld()) {
-		World->SpawnActor<AFieldSystemActor>(
-			ShipExplodingFieldSystemBlueprintClass,
-			GetActorLocation(),
-			GetActorRotation()
-		);
-	}
-}
-
-void AEnemyShip::PlayExplodingSound() {
-	UGameplayStatics::PlaySoundAtLocation(
-		this,
-		ExplodingSound,
-		GetActorLocation()
-	);
 }
