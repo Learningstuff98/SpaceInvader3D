@@ -13,14 +13,12 @@
 #include "Attributes/PlayerShipAttributes.h"
 #include "HUD/SpaceInvader3DHUD.h"
 #include "HUD/SpaceInvader3DOverlay.h"
-#include "ShipPieces/ShipPieces.h"
-#include "Field/FieldSystemActor.h"
-#include "ExplodingEffects/ShipExplodingEffect.h"
 #include "Engine/StaticMesh.h"
 #include "Components/SpotLightComponent.h"
 #include "Components/SphereComponent.h"
 #include "Enemies/EnemyShip.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Statics/ShipStatics.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -288,44 +286,14 @@ void APlayerShip::PlayBlasterSound() {
 void APlayerShip::HandleExploding() {
 	if (PlayerShipAttributes) {
 		if (!bHasHandledExploding && PlayerShipAttributes->GetbIsDead()) {
-			PlayExplodingSound();
 			DeactivateComponentsAfterExploding();
 			ZeroOutCurrentControlSpeed();
-			SpawnShipPieces();
-			SpawnShipExplodingFieldSystem();
-			SpawnShipExplodingEffect();
+			ShipStatics::PlayExplodingSound(ExplodingSound, this);
+			ShipStatics::SpawnShipPieces(ShipPiecesBlueprintClass, this);
+			ShipStatics::SpawnShipExplodingFieldSystem(ShipExplodingFieldSystemBlueprintClass, this);
+			ShipStatics::SpawnShipExplodingEffect(ShipExplodingEffectBlueprintClass, this);
 			bHasHandledExploding = true;
 		}
-	}
-}
-
-void APlayerShip::SpawnShipPieces() {
-	if (TObjectPtr<UWorld> World = GetWorld()) {
-		World->SpawnActor<AShipPieces>(
-			ShipPiecesBlueprintClass,
-			GetActorLocation(),
-			GetActorRotation()
-		);
-	}
-}
-
-void APlayerShip::SpawnShipExplodingFieldSystem() {
-	if (TObjectPtr<UWorld> World = GetWorld()) {
-		World->SpawnActor<AFieldSystemActor>(
-			ShipExplodingFieldSystemBlueprintClass,
-			GetActorLocation(),
-			GetActorRotation()
-		);
-	}
-}
-
-void APlayerShip::SpawnShipExplodingEffect() {
-	if (TObjectPtr<UWorld> World = GetWorld()) {
-		World->SpawnActor<AShipExplodingEffect>(
-			ShipExplodingEffectBlueprintClass,
-			GetActorLocation(),
-			GetActorRotation()
-		);
 	}
 }
 
@@ -348,14 +316,6 @@ void APlayerShip::PlayToggleHeadLightSound() {
 	UGameplayStatics::PlaySoundAtLocation(
 		this,
 		ToggleHeadLightSound,
-		GetActorLocation()
-	);
-}
-
-void APlayerShip::PlayExplodingSound() {
-	UGameplayStatics::PlaySoundAtLocation(
-		this,
-		ExplodingSound,
 		GetActorLocation()
 	);
 }

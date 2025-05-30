@@ -59,7 +59,6 @@ private:
 	TObjectPtr<class UArrowComponent> DeterminWhichBarrelToFireFrom();
 	TObjectPtr<class USpaceInvader3DOverlay> SetOverlay();
 	void SetHealthBarPercent();
-	void PlayExplodingSound();
 	void HandleExploding();
 	void UpdatePlayerShipRotation(const float& DeltaTime);
 	void SetCurrentControlSpeed(const double& ControlSpeedInput, const double& DeadZone, const double& MaxTurnSpeed, const double& Sensitivity, double& CurrentControlSpeed);
@@ -69,9 +68,6 @@ private:
 	void SetMovementComponentMaxSpeed();
 	void DeactivateComponentsAfterExploding();
 	void ZeroOutCurrentControlSpeed();
-	void SpawnShipPieces();
-	void SpawnShipExplodingFieldSystem();
-	void SpawnShipExplodingEffect();
 	void PlayToggleHeadLightSound();
 	void HandleHeadLightHUDText();
 	bool HeadLightsAreOn();
