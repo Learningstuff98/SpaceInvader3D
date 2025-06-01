@@ -16,6 +16,11 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	//</AActor>
 
+	// Components
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class USceneComponent> FieldSystemSpawnLocation;
+
 	// Miscellaneous
 
 	void GetRandomPatrolTargetIndex();

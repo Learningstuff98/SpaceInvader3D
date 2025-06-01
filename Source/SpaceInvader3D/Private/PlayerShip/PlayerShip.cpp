@@ -105,6 +105,9 @@ APlayerShip::APlayerShip() {
 	EnemyShipDetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Enemy Ship Detection Sphere"));
 	EnemyShipDetectionSphere->SetupAttachment(GetRootComponent());
 	EnemyShipDetectionSphere->SetSphereRadius(180000.0f);
+
+	FieldSystemSpawnLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Field System Spawn Location"));
+	FieldSystemSpawnLocation->SetupAttachment(GetRootComponent());
 }
 
 void APlayerShip::BeginPlay() {

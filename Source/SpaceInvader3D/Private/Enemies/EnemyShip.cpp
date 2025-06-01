@@ -30,6 +30,9 @@ AEnemyShip::AEnemyShip() {
 
 	PawnMovementComponent = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Pawn Movement Component"));
 	PawnMovementComponent->MaxSpeed = 5000.0f;
+
+	FieldSystemSpawnLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Field System Spawn Location"));
+	FieldSystemSpawnLocation->SetupAttachment(GetRootComponent());
 }
 
 void AEnemyShip::BeginPlay() {
