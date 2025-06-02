@@ -289,22 +289,26 @@ void APlayerShip::PlayBlasterSound() {
 void APlayerShip::HandleExploding() {
 	if (PlayerShipAttributes) {
 		if (!bHasHandledExploding && PlayerShipAttributes->GetbIsDead()) {
+			Explode();
 			DeactivateComponentsAfterExploding();
 			ZeroOutCurrentControlSpeed();
-			ShipStatics::SpawnShipExplodingEffect(ShipExplodingEffectBlueprintClass, this);
-			ShipStatics::SpawnShipPieces(ShipPiecesBlueprintClass, this);
-			if (FieldSystemSpawnLocation && GetWorld()) {
-				ShipStatics::SpawnShipExplodingFieldSystem(
-					ShipExplodingFieldSystemBlueprintClass,
-					GetWorld(),
-					FieldSystemSpawnLocation->GetComponentLocation(),
-					FieldSystemSpawnLocation->GetComponentRotation()
-				);
-			}
-			if (ExplodingSound) ShipStatics::PlayExplodingSound(ExplodingSound, this);
 			bHasHandledExploding = true;
 		}
 	}
+}
+
+void APlayerShip::Explode() {
+	ShipStatics::SpawnShipExplodingEffect(ShipExplodingEffectBlueprintClass, this);
+	ShipStatics::SpawnShipPieces(ShipPiecesBlueprintClass, this);
+	if (FieldSystemSpawnLocation && GetWorld()) {
+		ShipStatics::SpawnShipExplodingFieldSystem(
+			ShipExplodingFieldSystemBlueprintClass,
+			GetWorld(),
+			FieldSystemSpawnLocation->GetComponentLocation(),
+			FieldSystemSpawnLocation->GetComponentRotation()
+		);
+	}
+	if (ExplodingSound) ShipStatics::PlayExplodingSound(ExplodingSound, this);
 }
 
 void APlayerShip::DeactivateComponentsAfterExploding() {

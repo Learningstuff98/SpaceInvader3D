@@ -46,7 +46,7 @@ void AEnemyShip::Tick(float DeltaTime) {
 	HandleChasingRotation();
 	AddMovementInput(GetActorForwardVector(), 1.0f);
 	HandleDetectedPlayerShipNullOutTimer();
-	HandleBlowingUp();
+	HandleExploding();
 }
 
 void AEnemyShip::HandleChasingRotation() {
@@ -128,19 +128,23 @@ void AEnemyShip::TakeBlasterShotHit(const TObjectPtr<ABlasterShot> BlasterShot) 
 	BlasterShot->Destroy();
 }
 
-void AEnemyShip::HandleBlowingUp() {
+void AEnemyShip::HandleExploding() {
 	if (Health <= 0) {
-		ShipStatics::SpawnShipExplodingEffect(ShipExplodingEffectBlueprintClass, this);
-		ShipStatics::SpawnShipPieces(ShipPiecesBlueprintClass, this);
-		if (FieldSystemSpawnLocation && GetWorld()) {
-			ShipStatics::SpawnShipExplodingFieldSystem(
-				ShipExplodingFieldSystemBlueprintClass,
-				GetWorld(),
-				FieldSystemSpawnLocation->GetComponentLocation(),
-				FieldSystemSpawnLocation->GetComponentRotation()
-			);
-		}
-		if (ExplodingSound) ShipStatics::PlayExplodingSound(ExplodingSound, this);
+		Explode();
 		Destroy();
 	}
+}
+
+void AEnemyShip::Explode() {
+	ShipStatics::SpawnShipExplodingEffect(ShipExplodingEffectBlueprintClass, this);
+	ShipStatics::SpawnShipPieces(ShipPiecesBlueprintClass, this);
+	if (FieldSystemSpawnLocation && GetWorld()) {
+		ShipStatics::SpawnShipExplodingFieldSystem(
+			ShipExplodingFieldSystemBlueprintClass,
+			GetWorld(),
+			FieldSystemSpawnLocation->GetComponentLocation(),
+			FieldSystemSpawnLocation->GetComponentRotation()
+		);
+	}
+	if (ExplodingSound) ShipStatics::PlayExplodingSound(ExplodingSound, this);
 }

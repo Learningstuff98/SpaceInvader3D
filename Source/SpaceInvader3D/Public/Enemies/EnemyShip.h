@@ -47,7 +47,8 @@ private:
 	void HandleDetectedPlayerShipNullOutTimer();
 	void NullOutDetectedPlayerShip();
 	void TakeBlasterShotHit(const TObjectPtr<class ABlasterShot> BlasterShot);
-	void HandleBlowingUp();
+	void HandleExploding();
+	void Explode();
 	void SetupTakingHitsFunctionality();
 
 	// Components

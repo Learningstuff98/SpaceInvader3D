@@ -63,6 +63,7 @@ private:
 	TObjectPtr<class USpaceInvader3DOverlay> SetOverlay();
 	void SetHealthBarPercent();
 	void HandleExploding();
+	void Explode();
 	void UpdatePlayerShipRotation(const float& DeltaTime);
 	void SetCurrentControlSpeed(const double& ControlSpeedInput, const double& DeadZone, const double& MaxTurnSpeed, const double& Sensitivity, double& CurrentControlSpeed);
 	void View(const FVector2D& LookAxisValue, const double& Sensitivity);
