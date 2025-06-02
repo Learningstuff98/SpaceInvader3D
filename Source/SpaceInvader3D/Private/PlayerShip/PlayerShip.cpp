@@ -291,10 +291,17 @@ void APlayerShip::HandleExploding() {
 		if (!bHasHandledExploding && PlayerShipAttributes->GetbIsDead()) {
 			DeactivateComponentsAfterExploding();
 			ZeroOutCurrentControlSpeed();
-			ShipStatics::PlayExplodingSound(ExplodingSound, this);
-			ShipStatics::SpawnShipPieces(ShipPiecesBlueprintClass, this);
-			ShipStatics::SpawnShipExplodingFieldSystem(ShipExplodingFieldSystemBlueprintClass, this);
 			ShipStatics::SpawnShipExplodingEffect(ShipExplodingEffectBlueprintClass, this);
+			ShipStatics::SpawnShipPieces(ShipPiecesBlueprintClass, this);
+			if (FieldSystemSpawnLocation && GetWorld()) {
+				ShipStatics::SpawnShipExplodingFieldSystem(
+					ShipExplodingFieldSystemBlueprintClass,
+					GetWorld(),
+					FieldSystemSpawnLocation->GetComponentLocation(),
+					FieldSystemSpawnLocation->GetComponentRotation()
+				);
+			}
+			if (ExplodingSound) ShipStatics::PlayExplodingSound(ExplodingSound, this);
 			bHasHandledExploding = true;
 		}
 	}

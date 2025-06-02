@@ -132,8 +132,15 @@ void AEnemyShip::HandleBlowingUp() {
 	if (Health <= 0) {
 		ShipStatics::SpawnShipExplodingEffect(ShipExplodingEffectBlueprintClass, this);
 		ShipStatics::SpawnShipPieces(ShipPiecesBlueprintClass, this);
-		ShipStatics::SpawnShipExplodingFieldSystem(ShipExplodingFieldSystemBlueprintClass, this);
-		ShipStatics::PlayExplodingSound(ExplodingSound, this);
+		if (FieldSystemSpawnLocation && GetWorld()) {
+			ShipStatics::SpawnShipExplodingFieldSystem(
+				ShipExplodingFieldSystemBlueprintClass,
+				GetWorld(),
+				FieldSystemSpawnLocation->GetComponentLocation(),
+				FieldSystemSpawnLocation->GetComponentRotation()
+			);
+		}
+		if (ExplodingSound) ShipStatics::PlayExplodingSound(ExplodingSound, this);
 		Destroy();
 	}
 }
