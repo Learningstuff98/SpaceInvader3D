@@ -411,13 +411,15 @@ void APlayerShip::RollRight() {
 }
 
 void APlayerShip::ToggleHeadlights() {
-	if (LeftHeadLight && RightHeadLight) {
-		if (HeadLightsAreOn()) {
-			TurnHeadLightsOff();
-		} else {
-			TurnHeadLightsOn();
+	if (!PlayerShipAttributes->GetbIsDead()) {
+		if (LeftHeadLight && RightHeadLight) {
+			if (HeadLightsAreOn()) {
+				TurnHeadLightsOff();
+			} else {
+				TurnHeadLightsOn();
+			}
+			PlayToggleHeadLightSound();
 		}
-		PlayToggleHeadLightSound();
 	}
 }
 
