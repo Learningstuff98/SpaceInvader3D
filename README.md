@@ -50,3 +50,11 @@ https://github.com/user-attachments/assets/3bf13bad-74a0-47f2-989b-89ecca1ffa78
 
 https://github.com/user-attachments/assets/6954ae09-8e46-4562-a2cb-bbf7976f8791
 
+6/3/2025
+
+Enemy ships can be blown up! Hooray!
+
+[Link to PR #25](https://github.com/Learningstuff98/SpaceInvader3D/pull/25)
+
+https://github.com/user-attachments/assets/19d0fadb-f5f2-40f0-806f-f6919e58b229
+
