@@ -168,7 +168,7 @@ void APlayerShip::Fire() {
 		BlasterShot->FireInDirection(GetActorRotation().Vector());
 	}
 	bFireCooldownTimerFinished = true;
-	PlayBlasterSound();
+	if(BlasterSound) ShipStatics::PlaySound(BlasterSound, this);
 }
 
 TObjectPtr<ABlasterShot> APlayerShip::SpawnBlasterShot() {
@@ -278,14 +278,6 @@ void APlayerShip::LoseEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor
 	}
 }
 
-void APlayerShip::PlayBlasterSound() {
-	UGameplayStatics::PlaySoundAtLocation(
-		this,
-		BlasterSound,
-		GetActorLocation()
-	);
-}
-
 void APlayerShip::HandleExploding() {
 	if (PlayerShipAttributes) {
 		if (!bHasHandledExploding && PlayerShipAttributes->GetbIsDead()) {
@@ -308,7 +300,7 @@ void APlayerShip::Explode() {
 			FieldSystemSpawnLocation->GetComponentRotation()
 		);
 	}
-	if (ExplodingSound) ShipStatics::PlayExplodingSound(ExplodingSound, this);
+	if (ExplodingSound) ShipStatics::PlaySound(ExplodingSound, this);
 }
 
 void APlayerShip::DeactivateComponentsAfterExploding() {
@@ -324,14 +316,6 @@ void APlayerShip::DeactivateComponentsAfterExploding() {
 void APlayerShip::ZeroOutCurrentControlSpeed() {
 	CurrentYawControlSpeed = 0.0;
 	CurrentPitchControlSpeed = 0.0;
-}
-
-void APlayerShip::PlayToggleHeadLightSound() {
-	UGameplayStatics::PlaySoundAtLocation(
-		this,
-		ToggleHeadLightSound,
-		GetActorLocation()
-	);
 }
 
 void APlayerShip::SetMovementComponentMaxSpeed() {
@@ -418,7 +402,7 @@ void APlayerShip::ToggleHeadlights() {
 			} else {
 				TurnHeadLightsOn();
 			}
-			PlayToggleHeadLightSound();
+			if(ToggleHeadLightSound) ShipStatics::PlaySound(ToggleHeadLightSound, this);
 		}
 	}
 }

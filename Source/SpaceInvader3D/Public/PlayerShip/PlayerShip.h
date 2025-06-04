@@ -53,7 +53,6 @@ private:
 	void SetupMappingContext();
 	void SetThrusterPitch();
 	void SetThrusterColor();
-	void PlayBlasterSound();
 	void Fire();
 	TObjectPtr<class ABlasterShot> SpawnBlasterShot();
 	TObjectPtr<class UArrowComponent> DeterminWhichBarrelToFireFrom();
@@ -69,7 +68,6 @@ private:
 	void SetMovementComponentMaxSpeed();
 	void DeactivateComponentsAfterExploding();
 	void ZeroOutCurrentControlSpeed();
-	void PlayToggleHeadLightSound();
 	void HandleHeadLightHUDText();
 	bool HeadLightsAreOn();
 	void TurnHeadLightsOn();

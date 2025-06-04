@@ -146,5 +146,5 @@ void AEnemyShip::Explode() {
 			FieldSystemSpawnLocation->GetComponentRotation()
 		);
 	}
-	if (ExplodingSound) ShipStatics::PlayExplodingSound(ExplodingSound, this);
+	if (ExplodingSound) ShipStatics::PlaySound(ExplodingSound, this);
 }
