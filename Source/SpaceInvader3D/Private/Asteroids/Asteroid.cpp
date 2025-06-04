@@ -22,12 +22,18 @@ AAsteroid::AAsteroid() {
 
 void AAsteroid::BeginPlay() {
 	Super::BeginPlay();
-	AsteroidMeshComponent->OnComponentHit.AddDynamic(this, &AAsteroid::OnMeshHit);
+	SetupCollisionFunctionality();
 }
 
 void AAsteroid::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 	Rotate(DeltaTime);
+}
+
+void AAsteroid::SetupCollisionFunctionality() {
+	if (AsteroidMeshComponent) {
+		AsteroidMeshComponent->OnComponentHit.AddDynamic(this, &AAsteroid::OnMeshHit);
+	}
 }
 
 void AAsteroid::OnMeshHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
@@ -44,7 +50,7 @@ void AAsteroid::OnMeshHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 void AAsteroid::HandleBlasterShotImpact(const TObjectPtr<ABlasterShot> BlasterShot) {
 	BlasterShot->SpawnImpactBurst();
 	BlasterShot->Destroy();
-	PlayImpactSound(BlasterShotImpactSound);
+	PlayImpactSound();
 }
 
 void AAsteroid::HandlePlayerShipImpact(const TObjectPtr<APlayerShip> PlayerShip) {
@@ -53,10 +59,10 @@ void AAsteroid::HandlePlayerShipImpact(const TObjectPtr<APlayerShip> PlayerShip)
 	}
 }
 
-void AAsteroid::PlayImpactSound(const TObjectPtr<USoundBase> ImpactSound) {
+void AAsteroid::PlayImpactSound() {
 	UGameplayStatics::PlaySoundAtLocation(
 		this,
-		ImpactSound,
+		BlasterShotImpactSound,
 		GetActorLocation()
 	);
 }

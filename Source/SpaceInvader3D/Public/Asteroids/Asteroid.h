@@ -27,11 +27,12 @@ private:
 	UFUNCTION()
 	void OnMeshHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
-	void PlayImpactSound(const TObjectPtr<USoundBase> ImpactSound);
+	void PlayImpactSound();
 	void HandlePlayerShipImpact(const TObjectPtr<class APlayerShip> PlayerShip);
 	void HandleBlasterShotImpact(const TObjectPtr<class ABlasterShot> BlasterShot);
 	void Rotate(const float& DeltaTime);
 	double GetNewRotationRoll(const FRotator& OldRotation, const float& DeltaTime);
+	void SetupCollisionFunctionality();
 
 	// Component Variables
 
