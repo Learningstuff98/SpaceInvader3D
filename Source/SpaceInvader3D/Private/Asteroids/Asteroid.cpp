@@ -8,7 +8,7 @@
 
 AAsteroid::AAsteroid() {
 	PrimaryActorTick.bCanEverTick = true;
-	bHasPositiveRotation = false;
+	HasPositiveRotation = false;
 	RotationalDrift = 0.0;
 
 	AsteroidMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Asteroid Mesh"));
@@ -79,7 +79,7 @@ void AAsteroid::Rotate(const float& DeltaTime) {
 }
 
 double AAsteroid::GetNewRotationRoll(const FRotator& OldRotation, const float& DeltaTime) {
-	if (bHasPositiveRotation) {
+	if (HasPositiveRotation) {
 		return OldRotation.Roll + (RotationalDrift * DeltaTime);
 	}
 	else {

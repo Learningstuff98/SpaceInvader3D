@@ -154,7 +154,7 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 }
 
 void APlayerShip::HandleFireTimer() {
-	if (!PlayerShipAttributes->GetbIsDead()) {
+	if (!PlayerShipAttributes->GetIsDead()) {
 		if (bFireCooldownTimerFinished) {
 			GetWorldTimerManager().ClearTimer(FireCooldownTimer);
 			GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.15f);
@@ -280,7 +280,7 @@ void APlayerShip::LoseEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor
 
 void APlayerShip::HandleExploding() {
 	if (PlayerShipAttributes) {
-		if (!bHasHandledExploding && PlayerShipAttributes->GetbIsDead()) {
+		if (!bHasHandledExploding && PlayerShipAttributes->GetIsDead()) {
 			Explode();
 			DeactivateComponentsAfterExploding();
 			ZeroOutCurrentControlSpeed();
@@ -339,11 +339,10 @@ void APlayerShip::UpdatePlayerShipRotation(const float& DeltaTime) {
 
 void APlayerShip::Look(const FInputActionValue& Value) {
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
-	if (SpringArm && !PlayerShipAttributes->GetbIsDead()) {
+	if (SpringArm && !PlayerShipAttributes->GetIsDead()) {
 		if (bInViewMode) {
 			View(LookAxisValue, 0.3);
-		}
-		else {
+		} else {
 			Steer(LookAxisValue);
 		}
 	}
@@ -379,7 +378,7 @@ void APlayerShip::SetCurrentControlSpeed(const double& ControlSpeedInput, const 
 }
 
 void APlayerShip::RollLeft() {
-	if (!PlayerShipAttributes->GetbIsDead()) {
+	if (!PlayerShipAttributes->GetIsDead()) {
 		AddActorLocalRotation(
 			FRotator(0, 0, -90 * UGameplayStatics::GetWorldDeltaSeconds(this))
 		);
@@ -387,7 +386,7 @@ void APlayerShip::RollLeft() {
 }
 
 void APlayerShip::RollRight() {
-	if (!PlayerShipAttributes->GetbIsDead()) {
+	if (!PlayerShipAttributes->GetIsDead()) {
 		AddActorLocalRotation(
 			FRotator(0, 0, 90 * UGameplayStatics::GetWorldDeltaSeconds(this))
 		);
@@ -395,7 +394,7 @@ void APlayerShip::RollRight() {
 }
 
 void APlayerShip::ToggleHeadlights() {
-	if (!PlayerShipAttributes->GetbIsDead()) {
+	if (!PlayerShipAttributes->GetIsDead()) {
 		if (LeftHeadLight && RightHeadLight) {
 			if (HeadLightsAreOn()) {
 				TurnHeadLightsOff();

@@ -4,7 +4,7 @@
 
 UPlayerShipAttributes::UPlayerShipAttributes() {
 	PrimaryComponentTick.bCanEverTick = true;
-	bIsDead = false;
+	IsDead = false;
 	Health = 500.0f;
 	MaxHealth = 500.0f;
 }
@@ -19,13 +19,7 @@ void UPlayerShipAttributes::TickComponent(float DeltaTime, ELevelTick TickType, 
 
 void UPlayerShipAttributes::ApplyCollisionDamage() {
 	Health = 0.f;
-	HandlebIsDeadStatus();
-}
-
-void UPlayerShipAttributes::HandlebIsDeadStatus() {
-	if (Health <= 0.f) {
-		bIsDead = true;
-	}
+	IsDead = true;
 }
 
 float UPlayerShipAttributes::GetHealthPercent() {

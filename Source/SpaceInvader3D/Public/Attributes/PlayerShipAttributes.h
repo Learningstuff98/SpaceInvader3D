@@ -18,13 +18,14 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	// </UActorComponent>
 
+	// Miscellaneous
+
+	void ApplyCollisionDamage();
+
 private:
 	// <UActorComponent>
 	virtual void BeginPlay() override;
 	// </UActorComponent>
-
-	// Functions
-	void HandlebIsDeadStatus();
 
 	// Variables
 
@@ -35,11 +36,10 @@ private:
 	float MaxHealth;
 
 	UPROPERTY()
-	bool bIsDead;
+	bool IsDead;
 
 public:
 	// Public Setters and getters
-	void ApplyCollisionDamage();
 	float GetHealthPercent();
-	FORCEINLINE bool GetbIsDead() const { return bIsDead; }
+	FORCEINLINE bool GetIsDead() const { return IsDead; }
 };

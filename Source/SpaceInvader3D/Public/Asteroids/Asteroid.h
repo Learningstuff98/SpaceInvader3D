@@ -51,5 +51,5 @@ private:
 	double RotationalDrift;
 
 	UPROPERTY(EditAnywhere, Category = "Rotational Drift")
-	bool bHasPositiveRotation;
+	bool HasPositiveRotation;
 };
