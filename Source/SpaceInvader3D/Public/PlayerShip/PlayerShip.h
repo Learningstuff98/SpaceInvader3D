@@ -74,6 +74,7 @@ private:
 	void TurnHeadLightsOff();
 	void SetupEnemyShipDetectionFunctionality();
 	void HandleAutomaticallyLookingAtEnemyShip();
+	void ExitViewModeAfterExploding();
 	 
 	// Component Variables
 

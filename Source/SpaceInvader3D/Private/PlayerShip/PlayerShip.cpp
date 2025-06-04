@@ -266,6 +266,11 @@ void APlayerShip::HandleAutomaticallyLookingAtEnemyShip() {
 	}
 }
 
+void APlayerShip::ExitViewModeAfterExploding() {
+	bInViewMode = false;
+	GetController()->SetControlRotation(CameraResetTarget->GetComponentRotation());
+}
+
 void APlayerShip::DetectEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
 		DetectedEnemyShip = EnemyShip;
@@ -283,6 +288,7 @@ void APlayerShip::HandleExploding() {
 		if (!bHasHandledExploding && PlayerShipAttributes->GetIsDead()) {
 			Explode();
 			DeactivateComponentsAfterExploding();
+			ExitViewModeAfterExploding();
 			ZeroOutCurrentControlSpeed();
 			bHasHandledExploding = true;
 		}
@@ -428,7 +434,7 @@ void APlayerShip::ToggleViewMode() {
 			bInViewMode = false;
 			GetController()->SetControlRotation(CameraResetTarget->GetComponentRotation());
 		}
-		else {
+		else if(PlayerShipAttributes && !PlayerShipAttributes->GetIsDead()) {
 			bInViewMode = true;
 		}
 	}
