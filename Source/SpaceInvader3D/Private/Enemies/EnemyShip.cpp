@@ -4,6 +4,8 @@
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PatrolTargets/PatrolTarget.h"
+#include "Projectiles/BlasterShot.h"
+#include "Statics/ShipStatics.h"
 
 AEnemyShip::AEnemyShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -12,20 +14,31 @@ AEnemyShip::AEnemyShip() {
 	TurnSpeed = 0.7f;
 	NewPatrolTargetIndex = 0;
 	CurrentPatrolTargetIndex = 0;
+	Health = 500;
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ship Mesh"));
 	SetRootComponent(ShipMesh);
+	ShipMesh->SetNotifyRigidBodyCollision(true);
+	ShipMesh->SetCollisionProfileName(FName("Custom"));
+	ShipMesh->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
+	ShipMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	ShipMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Destructible, ECollisionResponse::ECR_Block);
+	ShipMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
 
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Pawn Sensing Component"));
 	PawnSensingComponent->SetPeripheralVisionAngle(70.0f);
 
 	PawnMovementComponent = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Pawn Movement Component"));
 	PawnMovementComponent->MaxSpeed = 5000.0f;
+
+	FieldSystemSpawnLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Field System Spawn Location"));
+	FieldSystemSpawnLocation->SetupAttachment(GetRootComponent());
 }
 
 void AEnemyShip::BeginPlay() {
 	Super::BeginPlay();
 	SetupPlayerShipDetection();
+	SetupTakingHitsFunctionality();
 }
 
 void AEnemyShip::Tick(float DeltaTime) {
@@ -33,6 +46,7 @@ void AEnemyShip::Tick(float DeltaTime) {
 	HandleChasingRotation();
 	AddMovementInput(GetActorForwardVector(), 1.0f);
 	HandleDetectedPlayerShipNullOutTimer();
+	HandleExploding();
 }
 
 void AEnemyShip::HandleChasingRotation() {
@@ -96,4 +110,41 @@ void AEnemyShip::SetDetectedPlayerShip(APawn* SeenPawn) {
 	if (SeenPawn) {
 		DetectedPlayerShip = SeenPawn;
 	}
+}
+
+void AEnemyShip::SetupTakingHitsFunctionality() {
+	if (ShipMesh) ShipMesh->OnComponentHit.AddDynamic(this, &AEnemyShip::TakeHit);
+}
+
+void AEnemyShip::TakeHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
+	if (const TObjectPtr<ABlasterShot> BlasterShot = Cast<ABlasterShot>(OtherActor)) {
+		TakeBlasterShotHit(BlasterShot);
+	}
+}
+
+void AEnemyShip::TakeBlasterShotHit(const TObjectPtr<ABlasterShot> BlasterShot) {
+	BlasterShot->SpawnImpactBurst();
+	Health -= BlasterShot->Damage;
+	BlasterShot->Destroy();
+}
+
+void AEnemyShip::HandleExploding() {
+	if (Health <= 0) {
+		Explode();
+		Destroy();
+	}
+}
+
+void AEnemyShip::Explode() {
+	ShipStatics::SpawnShipExplodingEffect(ShipExplodingEffectBlueprintClass, this);
+	ShipStatics::SpawnShipPieces(ShipPiecesBlueprintClass, this);
+	if (FieldSystemSpawnLocation && GetWorld()) {
+		ShipStatics::SpawnShipExplodingFieldSystem(
+			ShipExplodingFieldSystemBlueprintClass,
+			GetWorld(),
+			FieldSystemSpawnLocation->GetComponentLocation(),
+			FieldSystemSpawnLocation->GetComponentRotation()
+		);
+	}
+	if (ExplodingSound) ShipStatics::PlayExplodingSound(ExplodingSound, this);
 }

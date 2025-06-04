@@ -13,14 +13,12 @@
 #include "Attributes/PlayerShipAttributes.h"
 #include "HUD/SpaceInvader3DHUD.h"
 #include "HUD/SpaceInvader3DOverlay.h"
-#include "ShipPieces/ShipPieces.h"
-#include "Field/FieldSystemActor.h"
-#include "ExplodingEffects/ShipExplodingEffect.h"
 #include "Engine/StaticMesh.h"
 #include "Components/SpotLightComponent.h"
 #include "Components/SphereComponent.h"
 #include "Enemies/EnemyShip.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Statics/ShipStatics.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -107,6 +105,9 @@ APlayerShip::APlayerShip() {
 	EnemyShipDetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Enemy Ship Detection Sphere"));
 	EnemyShipDetectionSphere->SetupAttachment(GetRootComponent());
 	EnemyShipDetectionSphere->SetSphereRadius(180000.0f);
+
+	FieldSystemSpawnLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Field System Spawn Location"));
+	FieldSystemSpawnLocation->SetupAttachment(GetRootComponent());
 }
 
 void APlayerShip::BeginPlay() {
@@ -288,45 +289,26 @@ void APlayerShip::PlayBlasterSound() {
 void APlayerShip::HandleExploding() {
 	if (PlayerShipAttributes) {
 		if (!bHasHandledExploding && PlayerShipAttributes->GetbIsDead()) {
-			PlayExplodingSound();
+			Explode();
 			DeactivateComponentsAfterExploding();
 			ZeroOutCurrentControlSpeed();
-			SpawnShipPieces();
-			SpawnShipExplodingFieldSystem();
-			SpawnShipExplodingEffect();
 			bHasHandledExploding = true;
 		}
 	}
 }
 
-void APlayerShip::SpawnShipPieces() {
-	if (TObjectPtr<UWorld> World = GetWorld()) {
-		World->SpawnActor<AShipPieces>(
-			ShipPiecesBlueprintClass,
-			GetActorLocation(),
-			GetActorRotation()
-		);
-	}
-}
-
-void APlayerShip::SpawnShipExplodingFieldSystem() {
-	if (TObjectPtr<UWorld> World = GetWorld()) {
-		World->SpawnActor<AFieldSystemActor>(
+void APlayerShip::Explode() {
+	ShipStatics::SpawnShipExplodingEffect(ShipExplodingEffectBlueprintClass, this);
+	ShipStatics::SpawnShipPieces(ShipPiecesBlueprintClass, this);
+	if (FieldSystemSpawnLocation && GetWorld()) {
+		ShipStatics::SpawnShipExplodingFieldSystem(
 			ShipExplodingFieldSystemBlueprintClass,
-			GetActorLocation(),
-			GetActorRotation()
+			GetWorld(),
+			FieldSystemSpawnLocation->GetComponentLocation(),
+			FieldSystemSpawnLocation->GetComponentRotation()
 		);
 	}
-}
-
-void APlayerShip::SpawnShipExplodingEffect() {
-	if (TObjectPtr<UWorld> World = GetWorld()) {
-		World->SpawnActor<AShipExplodingEffect>(
-			ShipExplodingEffectBlueprintClass,
-			GetActorLocation(),
-			GetActorRotation()
-		);
-	}
+	if (ExplodingSound) ShipStatics::PlayExplodingSound(ExplodingSound, this);
 }
 
 void APlayerShip::DeactivateComponentsAfterExploding() {
@@ -348,14 +330,6 @@ void APlayerShip::PlayToggleHeadLightSound() {
 	UGameplayStatics::PlaySoundAtLocation(
 		this,
 		ToggleHeadLightSound,
-		GetActorLocation()
-	);
-}
-
-void APlayerShip::PlayExplodingSound() {
-	UGameplayStatics::PlaySoundAtLocation(
-		this,
-		ExplodingSound,
 		GetActorLocation()
 	);
 }
@@ -437,13 +411,15 @@ void APlayerShip::RollRight() {
 }
 
 void APlayerShip::ToggleHeadlights() {
-	if (LeftHeadLight && RightHeadLight) {
-		if (HeadLightsAreOn()) {
-			TurnHeadLightsOff();
-		} else {
-			TurnHeadLightsOn();
+	if (!PlayerShipAttributes->GetbIsDead()) {
+		if (LeftHeadLight && RightHeadLight) {
+			if (HeadLightsAreOn()) {
+				TurnHeadLightsOff();
+			} else {
+				TurnHeadLightsOn();
+			}
+			PlayToggleHeadLightSound();
 		}
-		PlayToggleHeadLightSound();
 	}
 }
 

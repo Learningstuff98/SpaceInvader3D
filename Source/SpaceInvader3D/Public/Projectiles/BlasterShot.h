@@ -16,9 +16,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// </AActor>
 
-	// Miscellaneous
+	// Miscellaneous Functions
 	void FireInDirection(const FVector& ShootDirection);
 	void SpawnImpactBurst();
+
+	// Variables
+
+	UPROPERTY()
+	int32 Damage;
 
 private:
 	// <AActor>
@@ -36,7 +41,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UNiagaraComponent> BlasterShotEffect;
 
-	// Other Varibles
+	// Varibles
 
 	UPROPERTY(EditAnywhere, Category = Niagara)
 	TObjectPtr<class UNiagaraSystem> ImpactBurst;

@@ -59,8 +59,8 @@ private:
 	TObjectPtr<class UArrowComponent> DeterminWhichBarrelToFireFrom();
 	TObjectPtr<class USpaceInvader3DOverlay> SetOverlay();
 	void SetHealthBarPercent();
-	void PlayExplodingSound();
 	void HandleExploding();
+	void Explode();
 	void UpdatePlayerShipRotation(const float& DeltaTime);
 	void SetCurrentControlSpeed(const double& ControlSpeedInput, const double& DeadZone, const double& MaxTurnSpeed, const double& Sensitivity, double& CurrentControlSpeed);
 	void View(const FVector2D& LookAxisValue, const double& Sensitivity);
@@ -69,9 +69,6 @@ private:
 	void SetMovementComponentMaxSpeed();
 	void DeactivateComponentsAfterExploding();
 	void ZeroOutCurrentControlSpeed();
-	void SpawnShipPieces();
-	void SpawnShipExplodingFieldSystem();
-	void SpawnShipExplodingEffect();
 	void PlayToggleHeadLightSound();
 	void HandleHeadLightHUDText();
 	bool HeadLightsAreOn();
@@ -129,6 +126,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class USphereComponent> EnemyShipDetectionSphere;
+	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class USceneComponent> FieldSystemSpawnLocation;
 
 	// Enhanced Input Varaibles
 

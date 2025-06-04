@@ -30,6 +30,9 @@ private:
 	UFUNCTION()
 	void SetDetectedPlayerShip(APawn* SeenPawn);
 
+	UFUNCTION()
+	void TakeHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 	// Miscellaneous
 	void SetupPlayerShipDetection();
 	void HandleChasingRotation();
@@ -38,6 +41,10 @@ private:
 	FRotator GetPatrolTargetLookAtRotation();
 	void HandleDetectedPlayerShipNullOutTimer();
 	void NullOutDetectedPlayerShip();
+	void TakeBlasterShotHit(const TObjectPtr<class ABlasterShot> BlasterShot);
+	void HandleExploding();
+	void Explode();
+	void SetupTakingHitsFunctionality();
 
 	// Components
 
@@ -49,6 +56,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UFloatingPawnMovement> PawnMovementComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class USceneComponent> FieldSystemSpawnLocation;
 
 	// Other
 
@@ -71,4 +81,19 @@ private:
 
 	UPROPERTY()
 	float TurnSpeed;
+
+	UPROPERTY()
+	int32 Health;
+
+	UPROPERTY(EditAnywhere, Category = Pieces)
+	TSubclassOf<class AShipPieces> ShipPiecesBlueprintClass;
+
+	UPROPERTY(EditAnywhere, Category = "Field Systems")
+	TSubclassOf<class AFieldSystemActor> ShipExplodingFieldSystemBlueprintClass;
+
+	UPROPERTY(EditAnywhere, Category = "Explosion Effect")
+	TSubclassOf<class AShipExplodingEffect> ShipExplodingEffectBlueprintClass;
+
+	UPROPERTY(EditAnywhere, Category = Sound)
+	TObjectPtr<class USoundBase> ExplodingSound;
 };

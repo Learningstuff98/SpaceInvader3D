@@ -3,6 +3,7 @@
 
 AShipPieces::AShipPieces() {
 	PrimaryActorTick.bCanEverTick = true;
+	InitialLifeSpan = 6.0f;
 
 	Pieces = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("Pieces"));
 	SetRootComponent(Pieces);
