@@ -22,9 +22,9 @@
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
-	bFireCooldownTimerFinished = true;
-	bHasHandledExploding = false;
-	bInViewMode = false;
+	FireCooldownTimerFinished = true;
+	HasHandledExploding = false;
+	InViewMode = false;
 	CurrentPitchControlSpeed = 0.0;
 	CurrentYawControlSpeed = 0.0;
 	BarrelNumberToFireFrom = 1;
@@ -155,10 +155,10 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void APlayerShip::HandleFireTimer() {
 	if (!PlayerShipAttributes->GetIsDead()) {
-		if (bFireCooldownTimerFinished) {
+		if (FireCooldownTimerFinished) {
 			GetWorldTimerManager().ClearTimer(FireCooldownTimer);
 			GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.15f);
-			bFireCooldownTimerFinished = false;
+			FireCooldownTimerFinished = false;
 		}
     }
 }
@@ -167,7 +167,7 @@ void APlayerShip::Fire() {
 	if (const TObjectPtr<ABlasterShot> BlasterShot = SpawnBlasterShot()) {
 		BlasterShot->FireInDirection(GetActorRotation().Vector());
 	}
-	bFireCooldownTimerFinished = true;
+	FireCooldownTimerFinished = true;
 	if(BlasterSound) ShipStatics::PlaySound(BlasterSound, this);
 }
 
@@ -254,7 +254,7 @@ void APlayerShip::SetupEnemyShipDetectionFunctionality() {
 
 void APlayerShip::HandleAutomaticallyLookingAtEnemyShip() {
 	if (const TObjectPtr<AController> PlayerShipController = GetController()) {
-		if (DetectedEnemyShip && bInViewMode && SpringArm) {
+		if (DetectedEnemyShip && InViewMode && SpringArm) {
 			SpringArm->bUsePawnControlRotation = true;
 			PlayerShipController->SetControlRotation(
 				UKismetMathLibrary::FindLookAtRotation(
@@ -267,7 +267,7 @@ void APlayerShip::HandleAutomaticallyLookingAtEnemyShip() {
 }
 
 void APlayerShip::ExitViewModeAfterExploding() {
-	bInViewMode = false;
+	InViewMode = false;
 	GetController()->SetControlRotation(CameraResetTarget->GetComponentRotation());
 }
 
@@ -285,12 +285,12 @@ void APlayerShip::LoseEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor
 
 void APlayerShip::HandleExploding() {
 	if (PlayerShipAttributes) {
-		if (!bHasHandledExploding && PlayerShipAttributes->GetIsDead()) {
+		if (!HasHandledExploding && PlayerShipAttributes->GetIsDead()) {
 			Explode();
 			DeactivateComponentsAfterExploding();
 			ExitViewModeAfterExploding();
 			ZeroOutCurrentControlSpeed();
-			bHasHandledExploding = true;
+			HasHandledExploding = true;
 		}
 	}
 }
@@ -346,7 +346,7 @@ void APlayerShip::UpdatePlayerShipRotation(const float& DeltaTime) {
 void APlayerShip::Look(const FInputActionValue& Value) {
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
 	if (SpringArm && !PlayerShipAttributes->GetIsDead()) {
-		if (bInViewMode) {
+		if (InViewMode) {
 			View(LookAxisValue, 0.3);
 		} else {
 			Steer(LookAxisValue);
@@ -430,12 +430,12 @@ void APlayerShip::Decelerate() {
 
 void APlayerShip::ToggleViewMode() {
 	if (GetController() && CameraResetTarget) {
-		if (bInViewMode) {
-			bInViewMode = false;
+		if (InViewMode) {
+			InViewMode = false;
 			GetController()->SetControlRotation(CameraResetTarget->GetComponentRotation());
 		}
 		else if(PlayerShipAttributes && !PlayerShipAttributes->GetIsDead()) {
-			bInViewMode = true;
+			InViewMode = true;
 		}
 	}
 }

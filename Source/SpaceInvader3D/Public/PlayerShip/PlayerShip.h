@@ -175,7 +175,7 @@ private:
 	FTimerHandle FireCooldownTimer;
 
 	UPROPERTY()
-	bool bFireCooldownTimerFinished;
+	bool FireCooldownTimerFinished;
 
 	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<class USoundBase> BlasterSound;
@@ -202,7 +202,7 @@ private:
 	TObjectPtr<class USpaceInvader3DOverlay> PlayerShipOverlay;
 
 	UPROPERTY()
-	bool bHasHandledExploding;
+	bool HasHandledExploding;
 
 	UPROPERTY()
 	double CurrentPitchControlSpeed;
@@ -211,7 +211,7 @@ private:
 	double CurrentYawControlSpeed;
 
 	UPROPERTY()
-	bool bInViewMode;
+	bool InViewMode;
 
 	UPROPERTY()
 	float CurrentSpeed;
