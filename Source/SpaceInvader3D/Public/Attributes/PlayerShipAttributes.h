@@ -18,7 +18,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	// </UActorComponent>
 
-	// Miscellaneous
+	// Functions
 
 	void ApplyCollisionDamage();
 
@@ -39,7 +39,7 @@ private:
 	bool IsDead;
 
 public:
-	// Public Setters and getters
+	// Public setters and getters
 	float GetHealthPercent();
 	FORCEINLINE bool GetIsDead() const { return IsDead; }
 };

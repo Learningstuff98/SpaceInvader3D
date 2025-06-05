@@ -32,6 +32,7 @@ private:
 	// </APawn>
 
 	// Callbacks for input
+
 	void Look(const FInputActionValue& Value);
 	void Accelerate();
 	void Decelerate();
@@ -41,7 +42,7 @@ private:
 	void RollRight();
 	void ToggleHeadlights();
 
-	// Dynamic Multicast Delegate Callbacks
+	// Delegate Callbacks
 
 	UFUNCTION()
 	void DetectEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -49,7 +50,8 @@ private:
 	UFUNCTION()
 	void LoseEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	// Miscellaneous
+	// Functions
+
 	void SetupMappingContext();
 	void SetThrusterPitch();
 	void SetThrusterColor();
@@ -161,7 +163,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<class UInputAction> ToggleHeadlightsAction;
 
-	// Other Variables
+	// Other
 
 	UPROPERTY()
 	int32 BarrelNumberToFireFrom;

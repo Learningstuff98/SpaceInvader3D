@@ -21,12 +21,12 @@ private:
 	virtual void BeginPlay() override;
 	// </AActor>
 
-	// Dynamic Multicast Delegate Callbacks
+	// Delegate Callbacks
 
 	UFUNCTION()
 	void TellEnemyShipToFindANewPatrolTarget(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	// Miscellaneous
+	// Functions
 
 	void SetupSphereInteractionsFunctionality();
 

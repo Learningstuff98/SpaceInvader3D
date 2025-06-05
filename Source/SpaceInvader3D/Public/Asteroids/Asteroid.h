@@ -23,9 +23,12 @@ private:
 	virtual void BeginPlay() override;
 	// </AActor>
 
-	// Functions
+	// Delegate Callbacks
+
 	UFUNCTION()
 	void OnMeshHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	// Functions
 
 	void PlayImpactSound();
 	void HandlePlayerShipImpact(const TObjectPtr<class APlayerShip> PlayerShip);
