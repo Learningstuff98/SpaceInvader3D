@@ -68,7 +68,7 @@ private:
 	FTimerHandle DetectedPlayerShipNullOutTimer;
 
 	UPROPERTY()
-	bool bDetectedPlayerShipNullOutTimerFinished;
+	bool DetectedPlayerShipNullOutTimerFinished;
 
 	UPROPERTY(EditAnywhere, Category = Patrolling)
 	TArray<TObjectPtr<class APatrolTarget>> PatrolTargets;
