@@ -16,7 +16,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// </AActor>
 
-	// Miscellaneous Functions
+	// Functions
+
 	void FireInDirection(const FVector& ShootDirection);
 	void SpawnImpactBurst();
 

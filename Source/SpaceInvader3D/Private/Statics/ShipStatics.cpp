@@ -34,11 +34,11 @@ void ShipStatics::SpawnShipExplodingFieldSystem(const TSubclassOf<AFieldSystemAc
 	}
 }
 
-void ShipStatics::PlayExplodingSound(const TObjectPtr<USoundBase> ExplodingSound, const TObjectPtr<AActor> Ship) {
-	if (ExplodingSound) {
+void ShipStatics::PlaySound(const TObjectPtr<USoundBase> Sound, const TObjectPtr<AActor> Ship) {
+	if (Sound) {
 		UGameplayStatics::PlaySoundAtLocation(
 			Ship,
-			ExplodingSound,
+			Sound,
 			Ship->GetActorLocation()
 		);
 	}

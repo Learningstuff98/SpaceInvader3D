@@ -10,7 +10,7 @@
 AEnemyShip::AEnemyShip() {
 	PrimaryActorTick.bCanEverTick = true;
 	DetectedPlayerShip = nullptr;
-	bDetectedPlayerShipNullOutTimerFinished = true;
+	DetectedPlayerShipNullOutTimerFinished = true;
 	TurnSpeed = 0.7f;
 	NewPatrolTargetIndex = 0;
 	CurrentPatrolTargetIndex = 0;
@@ -81,16 +81,16 @@ FRotator AEnemyShip::GetPlayerShipLookAtRotation() {
 }
 
 void AEnemyShip::HandleDetectedPlayerShipNullOutTimer() {
-	if (bDetectedPlayerShipNullOutTimerFinished) {
+	if (DetectedPlayerShipNullOutTimerFinished) {
 		GetWorldTimerManager().ClearTimer(DetectedPlayerShipNullOutTimer);
 		GetWorldTimerManager().SetTimer(DetectedPlayerShipNullOutTimer, this, &AEnemyShip::NullOutDetectedPlayerShip, 0.1f);
-		bDetectedPlayerShipNullOutTimerFinished = false;
+		DetectedPlayerShipNullOutTimerFinished = false;
 	}
 }
 
 void AEnemyShip::NullOutDetectedPlayerShip() {
 	DetectedPlayerShip = nullptr;
-	bDetectedPlayerShipNullOutTimerFinished = true;
+	DetectedPlayerShipNullOutTimerFinished = true;
 }
 
 void AEnemyShip::GetRandomPatrolTargetIndex() {
@@ -146,5 +146,5 @@ void AEnemyShip::Explode() {
 			FieldSystemSpawnLocation->GetComponentRotation()
 		);
 	}
-	if (ExplodingSound) ShipStatics::PlayExplodingSound(ExplodingSound, this);
+	if (ExplodingSound) ShipStatics::PlaySound(ExplodingSound, this);
 }

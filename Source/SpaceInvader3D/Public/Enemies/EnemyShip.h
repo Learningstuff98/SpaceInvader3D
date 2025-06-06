@@ -16,7 +16,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	//</AActor>
 
-	// Miscellaneous
+	// Functions
 
 	void GetRandomPatrolTargetIndex();
 
@@ -25,7 +25,7 @@ private:
 	virtual void BeginPlay() override;
 	// </APawn>
 
-	// Dynamic Multicast Delegate Callbacks
+	// Delegate Callbacks
 
 	UFUNCTION()
 	void SetDetectedPlayerShip(APawn* SeenPawn);
@@ -33,7 +33,8 @@ private:
 	UFUNCTION()
 	void TakeHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
-	// Miscellaneous
+	// Functions
+
 	void SetupPlayerShipDetection();
 	void HandleChasingRotation();
 	FRotator GetChasingRotation(const FRotator& LookAtRotation);
@@ -68,7 +69,7 @@ private:
 	FTimerHandle DetectedPlayerShipNullOutTimer;
 
 	UPROPERTY()
-	bool bDetectedPlayerShipNullOutTimerFinished;
+	bool DetectedPlayerShipNullOutTimerFinished;
 
 	UPROPERTY(EditAnywhere, Category = Patrolling)
 	TArray<TObjectPtr<class APatrolTarget>> PatrolTargets;

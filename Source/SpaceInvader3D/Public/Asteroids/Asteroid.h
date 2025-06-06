@@ -23,15 +23,19 @@ private:
 	virtual void BeginPlay() override;
 	// </AActor>
 
-	// Functions
+	// Delegate Callbacks
+
 	UFUNCTION()
 	void OnMeshHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
-	void PlayImpactSound(const TObjectPtr<USoundBase> ImpactSound);
+	// Functions
+
+	void PlayImpactSound();
 	void HandlePlayerShipImpact(const TObjectPtr<class APlayerShip> PlayerShip);
 	void HandleBlasterShotImpact(const TObjectPtr<class ABlasterShot> BlasterShot);
 	void Rotate(const float& DeltaTime);
 	double GetNewRotationRoll(const FRotator& OldRotation, const float& DeltaTime);
+	void SetupCollisionFunctionality();
 
 	// Component Variables
 
@@ -50,5 +54,5 @@ private:
 	double RotationalDrift;
 
 	UPROPERTY(EditAnywhere, Category = "Rotational Drift")
-	bool bHasPositiveRotation;
+	bool HasPositiveRotation;
 };

@@ -22,9 +22,9 @@
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
-	bFireCooldownTimerFinished = true;
-	bHasHandledExploding = false;
-	bInViewMode = false;
+	FireCooldownTimerFinished = true;
+	HasHandledExploding = false;
+	InViewMode = false;
 	CurrentPitchControlSpeed = 0.0;
 	CurrentYawControlSpeed = 0.0;
 	BarrelNumberToFireFrom = 1;
@@ -154,11 +154,11 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 }
 
 void APlayerShip::HandleFireTimer() {
-	if (!PlayerShipAttributes->GetbIsDead()) {
-		if (bFireCooldownTimerFinished) {
+	if (!PlayerShipAttributes->GetIsDead()) {
+		if (FireCooldownTimerFinished) {
 			GetWorldTimerManager().ClearTimer(FireCooldownTimer);
 			GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.15f);
-			bFireCooldownTimerFinished = false;
+			FireCooldownTimerFinished = false;
 		}
     }
 }
@@ -167,8 +167,8 @@ void APlayerShip::Fire() {
 	if (const TObjectPtr<ABlasterShot> BlasterShot = SpawnBlasterShot()) {
 		BlasterShot->FireInDirection(GetActorRotation().Vector());
 	}
-	bFireCooldownTimerFinished = true;
-	PlayBlasterSound();
+	FireCooldownTimerFinished = true;
+	if(BlasterSound) ShipStatics::PlaySound(BlasterSound, this);
 }
 
 TObjectPtr<ABlasterShot> APlayerShip::SpawnBlasterShot() {
@@ -254,7 +254,7 @@ void APlayerShip::SetupEnemyShipDetectionFunctionality() {
 
 void APlayerShip::HandleAutomaticallyLookingAtEnemyShip() {
 	if (const TObjectPtr<AController> PlayerShipController = GetController()) {
-		if (DetectedEnemyShip && bInViewMode && SpringArm) {
+		if (DetectedEnemyShip && InViewMode && SpringArm) {
 			SpringArm->bUsePawnControlRotation = true;
 			PlayerShipController->SetControlRotation(
 				UKismetMathLibrary::FindLookAtRotation(
@@ -264,6 +264,11 @@ void APlayerShip::HandleAutomaticallyLookingAtEnemyShip() {
 			);
 		}
 	}
+}
+
+void APlayerShip::ExitViewModeAfterExploding() {
+	InViewMode = false;
+	GetController()->SetControlRotation(CameraResetTarget->GetComponentRotation());
 }
 
 void APlayerShip::DetectEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
@@ -278,21 +283,14 @@ void APlayerShip::LoseEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor
 	}
 }
 
-void APlayerShip::PlayBlasterSound() {
-	UGameplayStatics::PlaySoundAtLocation(
-		this,
-		BlasterSound,
-		GetActorLocation()
-	);
-}
-
 void APlayerShip::HandleExploding() {
 	if (PlayerShipAttributes) {
-		if (!bHasHandledExploding && PlayerShipAttributes->GetbIsDead()) {
+		if (!HasHandledExploding && PlayerShipAttributes->GetIsDead()) {
 			Explode();
 			DeactivateComponentsAfterExploding();
+			ExitViewModeAfterExploding();
 			ZeroOutCurrentControlSpeed();
-			bHasHandledExploding = true;
+			HasHandledExploding = true;
 		}
 	}
 }
@@ -308,7 +306,7 @@ void APlayerShip::Explode() {
 			FieldSystemSpawnLocation->GetComponentRotation()
 		);
 	}
-	if (ExplodingSound) ShipStatics::PlayExplodingSound(ExplodingSound, this);
+	if (ExplodingSound) ShipStatics::PlaySound(ExplodingSound, this);
 }
 
 void APlayerShip::DeactivateComponentsAfterExploding() {
@@ -324,14 +322,6 @@ void APlayerShip::DeactivateComponentsAfterExploding() {
 void APlayerShip::ZeroOutCurrentControlSpeed() {
 	CurrentYawControlSpeed = 0.0;
 	CurrentPitchControlSpeed = 0.0;
-}
-
-void APlayerShip::PlayToggleHeadLightSound() {
-	UGameplayStatics::PlaySoundAtLocation(
-		this,
-		ToggleHeadLightSound,
-		GetActorLocation()
-	);
 }
 
 void APlayerShip::SetMovementComponentMaxSpeed() {
@@ -355,11 +345,10 @@ void APlayerShip::UpdatePlayerShipRotation(const float& DeltaTime) {
 
 void APlayerShip::Look(const FInputActionValue& Value) {
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
-	if (SpringArm && !PlayerShipAttributes->GetbIsDead()) {
-		if (bInViewMode) {
+	if (SpringArm && !PlayerShipAttributes->GetIsDead()) {
+		if (InViewMode) {
 			View(LookAxisValue, 0.3);
-		}
-		else {
+		} else {
 			Steer(LookAxisValue);
 		}
 	}
@@ -395,7 +384,7 @@ void APlayerShip::SetCurrentControlSpeed(const double& ControlSpeedInput, const 
 }
 
 void APlayerShip::RollLeft() {
-	if (!PlayerShipAttributes->GetbIsDead()) {
+	if (!PlayerShipAttributes->GetIsDead()) {
 		AddActorLocalRotation(
 			FRotator(0, 0, -90 * UGameplayStatics::GetWorldDeltaSeconds(this))
 		);
@@ -403,7 +392,7 @@ void APlayerShip::RollLeft() {
 }
 
 void APlayerShip::RollRight() {
-	if (!PlayerShipAttributes->GetbIsDead()) {
+	if (!PlayerShipAttributes->GetIsDead()) {
 		AddActorLocalRotation(
 			FRotator(0, 0, 90 * UGameplayStatics::GetWorldDeltaSeconds(this))
 		);
@@ -411,14 +400,14 @@ void APlayerShip::RollRight() {
 }
 
 void APlayerShip::ToggleHeadlights() {
-	if (!PlayerShipAttributes->GetbIsDead()) {
+	if (!PlayerShipAttributes->GetIsDead()) {
 		if (LeftHeadLight && RightHeadLight) {
 			if (HeadLightsAreOn()) {
 				TurnHeadLightsOff();
 			} else {
 				TurnHeadLightsOn();
 			}
-			PlayToggleHeadLightSound();
+			if(ToggleHeadLightSound) ShipStatics::PlaySound(ToggleHeadLightSound, this);
 		}
 	}
 }
@@ -441,12 +430,12 @@ void APlayerShip::Decelerate() {
 
 void APlayerShip::ToggleViewMode() {
 	if (GetController() && CameraResetTarget) {
-		if (bInViewMode) {
-			bInViewMode = false;
+		if (InViewMode) {
+			InViewMode = false;
 			GetController()->SetControlRotation(CameraResetTarget->GetComponentRotation());
 		}
-		else {
-			bInViewMode = true;
+		else if(PlayerShipAttributes && !PlayerShipAttributes->GetIsDead()) {
+			InViewMode = true;
 		}
 	}
 }

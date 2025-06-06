@@ -32,6 +32,7 @@ private:
 	// </APawn>
 
 	// Callbacks for input
+
 	void Look(const FInputActionValue& Value);
 	void Accelerate();
 	void Decelerate();
@@ -41,7 +42,7 @@ private:
 	void RollRight();
 	void ToggleHeadlights();
 
-	// Dynamic Multicast Delegate Callbacks
+	// Delegate Callbacks
 
 	UFUNCTION()
 	void DetectEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -49,11 +50,11 @@ private:
 	UFUNCTION()
 	void LoseEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	// Miscellaneous
+	// Functions
+
 	void SetupMappingContext();
 	void SetThrusterPitch();
 	void SetThrusterColor();
-	void PlayBlasterSound();
 	void Fire();
 	TObjectPtr<class ABlasterShot> SpawnBlasterShot();
 	TObjectPtr<class UArrowComponent> DeterminWhichBarrelToFireFrom();
@@ -69,13 +70,13 @@ private:
 	void SetMovementComponentMaxSpeed();
 	void DeactivateComponentsAfterExploding();
 	void ZeroOutCurrentControlSpeed();
-	void PlayToggleHeadLightSound();
 	void HandleHeadLightHUDText();
 	bool HeadLightsAreOn();
 	void TurnHeadLightsOn();
 	void TurnHeadLightsOff();
 	void SetupEnemyShipDetectionFunctionality();
 	void HandleAutomaticallyLookingAtEnemyShip();
+	void ExitViewModeAfterExploding();
 	 
 	// Component Variables
 
@@ -162,7 +163,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<class UInputAction> ToggleHeadlightsAction;
 
-	// Other Variables
+	// Other
 
 	UPROPERTY()
 	int32 BarrelNumberToFireFrom;
@@ -176,7 +177,7 @@ private:
 	FTimerHandle FireCooldownTimer;
 
 	UPROPERTY()
-	bool bFireCooldownTimerFinished;
+	bool FireCooldownTimerFinished;
 
 	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<class USoundBase> BlasterSound;
@@ -203,7 +204,7 @@ private:
 	TObjectPtr<class USpaceInvader3DOverlay> PlayerShipOverlay;
 
 	UPROPERTY()
-	bool bHasHandledExploding;
+	bool HasHandledExploding;
 
 	UPROPERTY()
 	double CurrentPitchControlSpeed;
@@ -212,7 +213,7 @@ private:
 	double CurrentYawControlSpeed;
 
 	UPROPERTY()
-	bool bInViewMode;
+	bool InViewMode;
 
 	UPROPERTY()
 	float CurrentSpeed;
