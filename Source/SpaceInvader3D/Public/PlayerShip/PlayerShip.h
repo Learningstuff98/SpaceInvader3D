@@ -41,6 +41,7 @@ private:
 	void RollLeft();
 	void RollRight();
 	void ToggleHeadlights();
+	void SetTargetedEnemyShip();
 
 	// Delegate Callbacks
 
@@ -75,8 +76,8 @@ private:
 	void TurnHeadLightsOn();
 	void TurnHeadLightsOff();
 	void SetupEnemyShipDetectionFunctionality();
-	void HandleAutomaticallyLookingAtEnemyShip();
 	void ExitViewModeAfterExploding();
+	void UpdateEnemyShipDirectionArrowRotation();
 	 
 	// Component Variables
 
@@ -131,6 +132,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class USceneComponent> FieldSystemSpawnLocation;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UArrowComponent> EnemyShipDirectionArrow;
+
 	// Enhanced Input Varaibles
 
 	UPROPERTY(EditAnywhere, Category = Input)
@@ -162,6 +166,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<class UInputAction> ToggleHeadlightsAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<class UInputAction> SetTargetedEnemyShipAction;
 
 	// Other
 
@@ -219,5 +226,8 @@ private:
 	float CurrentSpeed;
 
 	UPROPERTY(EditAnywhere, Category = Enemies)
-	TObjectPtr<class AEnemyShip> DetectedEnemyShip;
+	TObjectPtr<class AEnemyShip> TargetedEnemyShip;
+
+	UPROPERTY(EditAnywhere, Category = Enemies)
+	TArray<TObjectPtr<class AEnemyShip>> DetectedEnemyShips;
 };
