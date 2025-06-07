@@ -134,6 +134,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	UpdatePlayerShipRotation(DeltaTime);
 	SetMovementComponentMaxSpeed();
 	HandleHeadLightHUDText();
+	HandleEnemyShipDirectionArrowVisibility();
 	UpdateEnemyShipDirectionArrowRotation();
 }
 
@@ -272,6 +273,16 @@ void APlayerShip::UpdateEnemyShipDirectionArrowRotation() {
 				TargetedEnemyShip->GetActorLocation()
 			)
 		);
+	}
+}
+
+void APlayerShip::HandleEnemyShipDirectionArrowVisibility() {
+	if (EnemyShipDirectionArrow) {
+		if (TargetedEnemyShip) {
+			EnemyShipDirectionArrow->SetVisibility(true);
+		} else {
+			EnemyShipDirectionArrow->SetVisibility(false);
+		}
 	}
 }
 

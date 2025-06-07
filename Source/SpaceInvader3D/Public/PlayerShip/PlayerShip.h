@@ -78,6 +78,7 @@ private:
 	void SetupEnemyShipDetectionFunctionality();
 	void ExitViewModeAfterExploding();
 	void UpdateEnemyShipDirectionArrowRotation();
+	void HandleEnemyShipDirectionArrowVisibility();
 	 
 	// Component Variables
 
