@@ -136,6 +136,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	HandleHeadLightHUDText();
 	HandleEnemyShipDirectionArrowVisibility();
 	UpdateEnemyShipDirectionArrowRotation();
+	HandleTargetedEnemyShipStatus();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -283,6 +284,12 @@ void APlayerShip::HandleEnemyShipDirectionArrowVisibility() {
 		} else {
 			EnemyShipDirectionArrow->SetVisibility(false);
 		}
+	}
+}
+
+void APlayerShip::HandleTargetedEnemyShipStatus() {
+	if (!IsValid(TargetedEnemyShip)) {
+		TargetedEnemyShip = nullptr;
 	}
 }
 

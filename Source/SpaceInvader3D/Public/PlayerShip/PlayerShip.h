@@ -79,6 +79,7 @@ private:
 	void ExitViewModeAfterExploding();
 	void UpdateEnemyShipDirectionArrowRotation();
 	void HandleEnemyShipDirectionArrowVisibility();
+	void HandleTargetedEnemyShipStatus();
 	 
 	// Component Variables
 
