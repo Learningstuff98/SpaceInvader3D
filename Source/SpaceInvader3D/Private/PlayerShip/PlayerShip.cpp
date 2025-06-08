@@ -302,6 +302,7 @@ void APlayerShip::DetectEnemyShip(UPrimitiveComponent* OverlappedComponent, AAct
 void APlayerShip::LoseEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
 	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
 		DetectedEnemyShips.Remove(EnemyShip);
+		if (EnemyShip == TargetedEnemyShip) TargetedEnemyShip = nullptr;
 	}
 }
 
