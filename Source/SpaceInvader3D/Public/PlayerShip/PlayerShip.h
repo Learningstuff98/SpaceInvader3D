@@ -120,10 +120,16 @@ private:
 	TObjectPtr<class UArrowComponent> GunBarrel4;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class USpringArmComponent> SightSpringArm;
+	TObjectPtr<class USpringArmComponent> OuterSightSpringArm;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UBoxComponent> Sight;
+	TObjectPtr<class UBoxComponent> OuterSight;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class USpringArmComponent> InnerSightSpringArm;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UBoxComponent> InnerSight;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UStaticMeshComponent> SkyBox;

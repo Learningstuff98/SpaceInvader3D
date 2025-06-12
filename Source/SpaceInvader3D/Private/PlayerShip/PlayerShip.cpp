@@ -73,17 +73,29 @@ APlayerShip::APlayerShip() {
 	GunBarrel4 = CreateDefaultSubobject<UArrowComponent>(TEXT("Gun Barrel 4"));
 	GunBarrel4->SetupAttachment(GetRootComponent());
 
-	SightSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Sight SpringArm"));
-	SightSpringArm->SetupAttachment(GetRootComponent());
+	OuterSightSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Outer Sight Spring Arm"));
+	OuterSightSpringArm->SetupAttachment(GetRootComponent());
 
-	Sight = CreateDefaultSubobject<UBoxComponent>(TEXT("Sight"));
-	Sight->SetupAttachment(SightSpringArm);
-	Sight->bHiddenInGame = false;
-	Sight->SetCollisionProfileName(FName("Custom"));
-	Sight->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	Sight->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
-	Sight->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	Sight->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
+	OuterSight = CreateDefaultSubobject<UBoxComponent>(TEXT("Outer Sight"));
+	OuterSight->SetupAttachment(OuterSightSpringArm);
+	OuterSight->bHiddenInGame = false;
+	OuterSight->SetCollisionProfileName(FName("Custom"));
+	OuterSight->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	OuterSight->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	OuterSight->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	OuterSight->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
+
+	InnerSightSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Inner Sight Spring Arm"));
+	InnerSightSpringArm->SetupAttachment(GetRootComponent());
+
+	InnerSight = CreateDefaultSubobject<UBoxComponent>(TEXT("Inner Sight"));
+	InnerSight->SetupAttachment(InnerSightSpringArm);
+	InnerSight->bHiddenInGame = false;
+	InnerSight->SetCollisionProfileName(FName("Custom"));
+	InnerSight->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	InnerSight->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	InnerSight->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	InnerSight->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
 
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 
@@ -353,7 +365,8 @@ void APlayerShip::DeactivateComponentsAfterExploding() {
 	if (LeftHeadLight) LeftHeadLight->SetVisibility(false);
 	if (RightHeadLight) RightHeadLight->SetVisibility(false);
 	if (Movement) Movement->Deactivate();
-	if (Sight) Sight->SetVisibility(false);
+	if (InnerSight) InnerSight->SetVisibility(false);
+	if (OuterSight) OuterSight->SetVisibility(false);
 }
 
 void APlayerShip::ZeroOutCurrentControlSpeed() {
