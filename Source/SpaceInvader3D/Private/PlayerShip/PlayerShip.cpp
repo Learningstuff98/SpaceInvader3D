@@ -19,6 +19,7 @@
 #include "Enemies/EnemyShip.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Statics/ShipStatics.h"
+#include "Components/BoxComponent.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -31,7 +32,7 @@ APlayerShip::APlayerShip() {
 	MaxSpeed = 12000.0f;
 	MinSpeed = 3300.0f;
 	CurrentSpeed = MinSpeed;
-	DetectedEnemyShip = nullptr;
+	TargetedEnemyShip = nullptr;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -72,6 +73,30 @@ APlayerShip::APlayerShip() {
 	GunBarrel4 = CreateDefaultSubobject<UArrowComponent>(TEXT("Gun Barrel 4"));
 	GunBarrel4->SetupAttachment(GetRootComponent());
 
+	OuterSightSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Outer Sight Spring Arm"));
+	OuterSightSpringArm->SetupAttachment(GetRootComponent());
+
+	OuterSight = CreateDefaultSubobject<UBoxComponent>(TEXT("Outer Sight"));
+	OuterSight->SetupAttachment(OuterSightSpringArm);
+	OuterSight->bHiddenInGame = false;
+	OuterSight->SetCollisionProfileName(FName("Custom"));
+	OuterSight->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	OuterSight->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	OuterSight->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	OuterSight->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
+
+	InnerSightSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Inner Sight Spring Arm"));
+	InnerSightSpringArm->SetupAttachment(GetRootComponent());
+
+	InnerSight = CreateDefaultSubobject<UBoxComponent>(TEXT("Inner Sight"));
+	InnerSight->SetupAttachment(InnerSightSpringArm);
+	InnerSight->bHiddenInGame = false;
+	InnerSight->SetCollisionProfileName(FName("Custom"));
+	InnerSight->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	InnerSight->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	InnerSight->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	InnerSight->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
+
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 
 	EngineThrusterEffect1 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect 1"));
@@ -108,6 +133,11 @@ APlayerShip::APlayerShip() {
 
 	FieldSystemSpawnLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Field System Spawn Location"));
 	FieldSystemSpawnLocation->SetupAttachment(GetRootComponent());
+
+	EnemyShipDirectionArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Enemy Ship Direction Arrow"));
+	EnemyShipDirectionArrow->SetupAttachment(GetRootComponent());
+	EnemyShipDirectionArrow->bHiddenInGame = false;
+	EnemyShipDirectionArrow->SetArrowSize(4.0f);
 }
 
 void APlayerShip::BeginPlay() {
@@ -116,6 +146,7 @@ void APlayerShip::BeginPlay() {
 	PlayerShipOverlay = SetOverlay();
 	SetHealthBarPercent();
 	SetupEnemyShipDetectionFunctionality();
+	TurnHeadLightsOff();
 }
 
 void APlayerShip::Tick(float DeltaTime) {
@@ -128,7 +159,9 @@ void APlayerShip::Tick(float DeltaTime) {
 	UpdatePlayerShipRotation(DeltaTime);
 	SetMovementComponentMaxSpeed();
 	HandleHeadLightHUDText();
-	HandleAutomaticallyLookingAtEnemyShip();
+	HandleEnemyShipDirectionArrowVisibility();
+	UpdateEnemyShipDirectionArrowRotation();
+	HandleTargetedEnemyShipStatus();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -150,6 +183,7 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(RollLeftAction, ETriggerEvent::Triggered, this, &APlayerShip::RollLeft);
 		EnhancedInputComponent->BindAction(RollRightAction, ETriggerEvent::Triggered, this, &APlayerShip::RollRight);
 		EnhancedInputComponent->BindAction(ToggleHeadlightsAction, ETriggerEvent::Triggered, this, &APlayerShip::ToggleHeadlights);
+		EnhancedInputComponent->BindAction(SetTargetedEnemyShipAction, ETriggerEvent::Triggered, this, &APlayerShip::SetTargetedEnemyShip);
 	}
 }
 
@@ -252,34 +286,48 @@ void APlayerShip::SetupEnemyShipDetectionFunctionality() {
 	}
 }
 
-void APlayerShip::HandleAutomaticallyLookingAtEnemyShip() {
-	if (const TObjectPtr<AController> PlayerShipController = GetController()) {
-		if (DetectedEnemyShip && InViewMode && SpringArm) {
-			SpringArm->bUsePawnControlRotation = true;
-			PlayerShipController->SetControlRotation(
-				UKismetMathLibrary::FindLookAtRotation(
-					GetActorLocation(),
-					DetectedEnemyShip->GetActorLocation()
-				)
-			);
-		}
-	}
-}
-
 void APlayerShip::ExitViewModeAfterExploding() {
 	InViewMode = false;
 	GetController()->SetControlRotation(CameraResetTarget->GetComponentRotation());
 }
 
+void APlayerShip::UpdateEnemyShipDirectionArrowRotation() {
+	if (TargetedEnemyShip && EnemyShipDirectionArrow) {
+		EnemyShipDirectionArrow->SetWorldRotation(
+			UKismetMathLibrary::FindLookAtRotation(
+				EnemyShipDirectionArrow->GetComponentLocation(),
+				TargetedEnemyShip->GetActorLocation()
+			)
+		);
+	}
+}
+
+void APlayerShip::HandleEnemyShipDirectionArrowVisibility() {
+	if (EnemyShipDirectionArrow) {
+		if (TargetedEnemyShip) {
+			EnemyShipDirectionArrow->SetVisibility(true);
+		} else {
+			EnemyShipDirectionArrow->SetVisibility(false);
+		}
+	}
+}
+
+void APlayerShip::HandleTargetedEnemyShipStatus() {
+	if (!IsValid(TargetedEnemyShip)) {
+		TargetedEnemyShip = nullptr;
+	}
+}
+
 void APlayerShip::DetectEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
-		DetectedEnemyShip = EnemyShip;
+		DetectedEnemyShips.Add(EnemyShip);
 	}
 }
 
 void APlayerShip::LoseEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
 	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
-		DetectedEnemyShip = nullptr;
+		DetectedEnemyShips.Remove(EnemyShip);
+		if (EnemyShip == TargetedEnemyShip) TargetedEnemyShip = nullptr;
 	}
 }
 
@@ -317,6 +365,8 @@ void APlayerShip::DeactivateComponentsAfterExploding() {
 	if (LeftHeadLight) LeftHeadLight->SetVisibility(false);
 	if (RightHeadLight) RightHeadLight->SetVisibility(false);
 	if (Movement) Movement->Deactivate();
+	if (InnerSight) InnerSight->SetVisibility(false);
+	if (OuterSight) OuterSight->SetVisibility(false);
 }
 
 void APlayerShip::ZeroOutCurrentControlSpeed() {
@@ -408,6 +458,15 @@ void APlayerShip::ToggleHeadlights() {
 				TurnHeadLightsOn();
 			}
 			if(ToggleHeadLightSound) ShipStatics::PlaySound(ToggleHeadLightSound, this);
+		}
+	}
+}
+
+void APlayerShip::SetTargetedEnemyShip() {
+	for (const TObjectPtr<AEnemyShip> EnemyShip : DetectedEnemyShips) {
+		if (TargetedEnemyShip != EnemyShip) {
+			TargetedEnemyShip = EnemyShip;
+			break;
 		}
 	}
 }

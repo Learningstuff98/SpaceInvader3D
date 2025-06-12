@@ -41,6 +41,7 @@ private:
 	void RollLeft();
 	void RollRight();
 	void ToggleHeadlights();
+	void SetTargetedEnemyShip();
 
 	// Delegate Callbacks
 
@@ -75,8 +76,10 @@ private:
 	void TurnHeadLightsOn();
 	void TurnHeadLightsOff();
 	void SetupEnemyShipDetectionFunctionality();
-	void HandleAutomaticallyLookingAtEnemyShip();
 	void ExitViewModeAfterExploding();
+	void UpdateEnemyShipDirectionArrowRotation();
+	void HandleEnemyShipDirectionArrowVisibility();
+	void HandleTargetedEnemyShipStatus();
 	 
 	// Component Variables
 
@@ -117,6 +120,18 @@ private:
 	TObjectPtr<class UArrowComponent> GunBarrel4;
 
 	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class USpringArmComponent> OuterSightSpringArm;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UBoxComponent> OuterSight;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class USpringArmComponent> InnerSightSpringArm;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UBoxComponent> InnerSight;
+
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UStaticMeshComponent> SkyBox;
 
 	UPROPERTY(visibleAnywhere)
@@ -130,6 +145,9 @@ private:
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class USceneComponent> FieldSystemSpawnLocation;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UArrowComponent> EnemyShipDirectionArrow;
 
 	// Enhanced Input Varaibles
 
@@ -162,6 +180,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<class UInputAction> ToggleHeadlightsAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<class UInputAction> SetTargetedEnemyShipAction;
 
 	// Other
 
@@ -219,5 +240,8 @@ private:
 	float CurrentSpeed;
 
 	UPROPERTY(EditAnywhere, Category = Enemies)
-	TObjectPtr<class AEnemyShip> DetectedEnemyShip;
+	TObjectPtr<class AEnemyShip> TargetedEnemyShip;
+
+	UPROPERTY(EditAnywhere, Category = Enemies)
+	TArray<TObjectPtr<class AEnemyShip>> DetectedEnemyShips;
 };
