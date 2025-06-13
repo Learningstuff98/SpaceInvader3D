@@ -36,6 +36,7 @@ APlayerShip::APlayerShip() {
 	TargetedEnemyShip = nullptr;
 	PotentiallyLockedOnEnemyShip = nullptr;
 	LockedOnEnemyShip = nullptr;
+	SingleLockOnBeepSoundTimerFinished = true;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -169,6 +170,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	HandleEnemyShipDirectionArrowVisibility();
 	UpdateEnemyShipDirectionArrowRotation();
 	HandleTargetedEnemyShipStatus();
+	HandleLockOnBeepSounds();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -304,7 +306,7 @@ void APlayerShip::HandleLockingOnToEnemyShips(UPrimitiveComponent* OverlappedCom
 	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
 		PotentiallyLockedOnEnemyShip = EnemyShip;
 		if (PotentiallyLockedOnEnemyShip) {
-			GetWorldTimerManager().SetTimer(LockOnTimer, this, &APlayerShip::LockOnToEnemyShip, 2.5f);
+			GetWorldTimerManager().SetTimer(LockOnTimer, this, &APlayerShip::LockOnToEnemyShip, 2.0f);
 		}
 	}
 }
@@ -319,6 +321,27 @@ void APlayerShip::HandleLosingLockedEnemyShips(UPrimitiveComponent* OverlappedCo
 
 void APlayerShip::LockOnToEnemyShip() {
 	LockedOnEnemyShip = PotentiallyLockedOnEnemyShip;
+}
+
+void APlayerShip::HandleLockOnBeepSounds() {
+	if (PotentiallyLockedOnEnemyShip) {
+		HandleLockingOnToEnemyShipBeepSound();
+	}
+}
+
+void APlayerShip::HandleLockingOnToEnemyShipBeepSound() {
+	if (SingleLockOnBeepSoundTimerFinished) {
+		GetWorldTimerManager().ClearTimer(SingleLockOnBeepSoundTimer);
+		GetWorldTimerManager().SetTimer(SingleLockOnBeepSoundTimer, this, &APlayerShip::PlayLockingOnBeepSound, 0.45f);
+		SingleLockOnBeepSoundTimerFinished = false;
+	}
+}
+
+void APlayerShip::PlayLockingOnBeepSound() {
+	if (PotentiallyLockedOnEnemyShip) {
+		if (SingleLockOnBeep) ShipStatics::PlaySound(SingleLockOnBeep, this);
+	}
+	SingleLockOnBeepSoundTimerFinished = true;
 }
 
 void APlayerShip::ExitViewModeAfterExploding() {

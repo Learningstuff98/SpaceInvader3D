@@ -88,6 +88,9 @@ private:
 	void HandleTargetedEnemyShipStatus();
 	void SetupEnemyShipLockOnFunctionality();
 	void LockOnToEnemyShip();
+	void HandleLockOnBeepSounds();
+	void HandleLockingOnToEnemyShipBeepSound();
+	void PlayLockingOnBeepSound();
 	 
 	// Component Variables
 
@@ -220,6 +223,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<class USoundBase> ToggleHeadLightSound;
 
+	UPROPERTY(EditAnywhere, Category = Sound)
+	TObjectPtr<class USoundBase> SingleLockOnBeep;
+
 	UPROPERTY(EditAnywhere, Category = Blaster)
 	TSubclassOf<class ABlasterShot> BlasterShotBlueprintClass;
 
@@ -254,6 +260,11 @@ private:
 
 	UPROPERTY()
 	bool LockOnTimerFinished;
+
+	FTimerHandle SingleLockOnBeepSoundTimer;
+
+	UPROPERTY()
+	bool SingleLockOnBeepSoundTimerFinished;
 
 	UPROPERTY(EditAnywhere, Category = Enemies)
 	TObjectPtr<class AEnemyShip> TargetedEnemyShip;
