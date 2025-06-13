@@ -294,12 +294,12 @@ void APlayerShip::SetupEnemyShipDetectionFunctionality() {
 
 void APlayerShip::SetupEnemyShipLockOnFunctionality() {
 	if (MissleLockOnDetectionCapsule) {
-		MissleLockOnDetectionCapsule->OnComponentBeginOverlap.AddDynamic(this, &APlayerShip::HandleLockingOnToEnemyShip);
+		MissleLockOnDetectionCapsule->OnComponentBeginOverlap.AddDynamic(this, &APlayerShip::HandleLockingOnToEnemyShips);
 		MissleLockOnDetectionCapsule->OnComponentEndOverlap.AddDynamic(this, &APlayerShip::HandleLosingLockedEnemyShips);
 	}
 }
 
-void APlayerShip::HandleLockingOnToEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+void APlayerShip::HandleLockingOnToEnemyShips(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
 		PotentiallyLockedOnEnemyShip = EnemyShip;
 	}
