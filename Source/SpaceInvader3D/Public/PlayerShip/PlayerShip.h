@@ -51,6 +51,12 @@ private:
 	UFUNCTION()
 	void LoseEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UFUNCTION()
+	void HandleLockingOnToEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void HandleLosingLockedEnemyShips(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 	// Functions
 
 	void SetupMappingContext();
@@ -80,6 +86,7 @@ private:
 	void UpdateEnemyShipDirectionArrowRotation();
 	void HandleEnemyShipDirectionArrowVisibility();
 	void HandleTargetedEnemyShipStatus();
+	void SetupEnemyShipLockOnFunctionality();
 	 
 	// Component Variables
 
@@ -148,6 +155,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UArrowComponent> EnemyShipDirectionArrow;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UCapsuleComponent> MissleLockOnDetectionCapsule;
 
 	// Enhanced Input Varaibles
 
@@ -244,4 +254,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Enemies)
 	TArray<TObjectPtr<class AEnemyShip>> DetectedEnemyShips;
+
+	UPROPERTY(EditAnywhere, Category = Enemies)
+	TObjectPtr<class AEnemyShip> PotentiallyLockedOnEnemyShip;
 };

@@ -20,6 +20,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Statics/ShipStatics.h"
 #include "Components/BoxComponent.h"
+#include "Components/CapsuleComponent.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -33,6 +34,7 @@ APlayerShip::APlayerShip() {
 	MinSpeed = 3300.0f;
 	CurrentSpeed = MinSpeed;
 	TargetedEnemyShip = nullptr;
+	PotentiallyLockedOnEnemyShip = nullptr;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -138,6 +140,9 @@ APlayerShip::APlayerShip() {
 	EnemyShipDirectionArrow->SetupAttachment(GetRootComponent());
 	EnemyShipDirectionArrow->bHiddenInGame = false;
 	EnemyShipDirectionArrow->SetArrowSize(4.0f);
+
+	MissleLockOnDetectionCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Missle Lock On Detection Capsule"));
+	MissleLockOnDetectionCapsule->SetupAttachment(GetRootComponent());
 }
 
 void APlayerShip::BeginPlay() {
@@ -146,6 +151,7 @@ void APlayerShip::BeginPlay() {
 	PlayerShipOverlay = SetOverlay();
 	SetHealthBarPercent();
 	SetupEnemyShipDetectionFunctionality();
+	SetupEnemyShipLockOnFunctionality();
 	TurnHeadLightsOff();
 }
 
@@ -283,6 +289,25 @@ void APlayerShip::SetupEnemyShipDetectionFunctionality() {
 	if (EnemyShipDetectionSphere) {
 		EnemyShipDetectionSphere->OnComponentBeginOverlap.AddDynamic(this, &APlayerShip::DetectEnemyShip);
 		EnemyShipDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &APlayerShip::LoseEnemyShip);
+	}
+}
+
+void APlayerShip::SetupEnemyShipLockOnFunctionality() {
+	if (MissleLockOnDetectionCapsule) {
+		MissleLockOnDetectionCapsule->OnComponentBeginOverlap.AddDynamic(this, &APlayerShip::HandleLockingOnToEnemyShip);
+		MissleLockOnDetectionCapsule->OnComponentEndOverlap.AddDynamic(this, &APlayerShip::HandleLosingLockedEnemyShips);
+	}
+}
+
+void APlayerShip::HandleLockingOnToEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
+		PotentiallyLockedOnEnemyShip = EnemyShip;
+	}
+}
+
+void APlayerShip::HandleLosingLockedEnemyShips(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
+		PotentiallyLockedOnEnemyShip = nullptr;
 	}
 }
 
