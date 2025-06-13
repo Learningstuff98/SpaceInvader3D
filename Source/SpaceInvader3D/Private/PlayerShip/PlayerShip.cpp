@@ -35,6 +35,7 @@ APlayerShip::APlayerShip() {
 	CurrentSpeed = MinSpeed;
 	TargetedEnemyShip = nullptr;
 	PotentiallyLockedOnEnemyShip = nullptr;
+	LockedOnEnemyShip = nullptr;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -302,13 +303,22 @@ void APlayerShip::SetupEnemyShipLockOnFunctionality() {
 void APlayerShip::HandleLockingOnToEnemyShips(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
 		PotentiallyLockedOnEnemyShip = EnemyShip;
+		if (PotentiallyLockedOnEnemyShip) {
+			GetWorldTimerManager().SetTimer(LockOnTimer, this, &APlayerShip::LockOnToEnemyShip, 2.5f);
+		}
 	}
 }
 
 void APlayerShip::HandleLosingLockedEnemyShips(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
 	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
 		PotentiallyLockedOnEnemyShip = nullptr;
+		LockedOnEnemyShip = nullptr;
+		GetWorldTimerManager().ClearTimer(LockOnTimer);
 	}
+}
+
+void APlayerShip::LockOnToEnemyShip() {
+	LockedOnEnemyShip = PotentiallyLockedOnEnemyShip;
 }
 
 void APlayerShip::ExitViewModeAfterExploding() {

@@ -87,6 +87,7 @@ private:
 	void HandleEnemyShipDirectionArrowVisibility();
 	void HandleTargetedEnemyShipStatus();
 	void SetupEnemyShipLockOnFunctionality();
+	void LockOnToEnemyShip();
 	 
 	// Component Variables
 
@@ -249,6 +250,11 @@ private:
 	UPROPERTY()
 	float CurrentSpeed;
 
+	FTimerHandle LockOnTimer;
+
+	UPROPERTY()
+	bool LockOnTimerFinished;
+
 	UPROPERTY(EditAnywhere, Category = Enemies)
 	TObjectPtr<class AEnemyShip> TargetedEnemyShip;
 
@@ -257,4 +263,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Enemies)
 	TObjectPtr<class AEnemyShip> PotentiallyLockedOnEnemyShip;
+
+	UPROPERTY(EditAnywhere, Category = Enemies)
+	TObjectPtr<class AEnemyShip> LockedOnEnemyShip;
 };
