@@ -36,7 +36,7 @@ APlayerShip::APlayerShip() {
 	TargetedEnemyShip = nullptr;
 	PotentiallyLockedOnEnemyShip = nullptr;
 	LockedOnEnemyShip = nullptr;
-	SingleLockOnBeepSoundTimerFinished = true;
+	LockingOnBeepSoundTimerFinished = true;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -330,18 +330,18 @@ void APlayerShip::HandleLockOnBeepSounds() {
 }
 
 void APlayerShip::HandleLockingOnToEnemyShipBeepSound() {
-	if (SingleLockOnBeepSoundTimerFinished) {
-		GetWorldTimerManager().ClearTimer(SingleLockOnBeepSoundTimer);
-		GetWorldTimerManager().SetTimer(SingleLockOnBeepSoundTimer, this, &APlayerShip::PlayLockingOnBeepSound, 0.45f);
-		SingleLockOnBeepSoundTimerFinished = false;
+	if (LockingOnBeepSoundTimerFinished) {
+		GetWorldTimerManager().ClearTimer(LockingOnBeepSoundTimer);
+		GetWorldTimerManager().SetTimer(LockingOnBeepSoundTimer, this, &APlayerShip::PlayLockingOnBeepSound, 0.45f);
+		LockingOnBeepSoundTimerFinished = false;
 	}
 }
 
 void APlayerShip::PlayLockingOnBeepSound() {
 	if (PotentiallyLockedOnEnemyShip) {
-		if (SingleLockOnBeep) ShipStatics::PlaySound(SingleLockOnBeep, this);
+		if (LockingOnBeepSound) ShipStatics::PlaySound(LockingOnBeepSound, this);
 	}
-	SingleLockOnBeepSoundTimerFinished = true;
+	LockingOnBeepSoundTimerFinished = true;
 }
 
 void APlayerShip::ExitViewModeAfterExploding() {

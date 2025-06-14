@@ -224,7 +224,7 @@ private:
 	TObjectPtr<class USoundBase> ToggleHeadLightSound;
 
 	UPROPERTY(EditAnywhere, Category = Sound)
-	TObjectPtr<class USoundBase> SingleLockOnBeep;
+	TObjectPtr<class USoundBase> LockingOnBeepSound;
 
 	UPROPERTY(EditAnywhere, Category = Blaster)
 	TSubclassOf<class ABlasterShot> BlasterShotBlueprintClass;
@@ -261,10 +261,10 @@ private:
 	UPROPERTY()
 	bool LockOnTimerFinished;
 
-	FTimerHandle SingleLockOnBeepSoundTimer;
+	FTimerHandle LockingOnBeepSoundTimer;
 
 	UPROPERTY()
-	bool SingleLockOnBeepSoundTimerFinished;
+	bool LockingOnBeepSoundTimerFinished;
 
 	UPROPERTY(EditAnywhere, Category = Enemies)
 	TObjectPtr<class AEnemyShip> TargetedEnemyShip;
