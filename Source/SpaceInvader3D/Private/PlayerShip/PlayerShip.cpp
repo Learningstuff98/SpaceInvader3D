@@ -145,6 +145,8 @@ APlayerShip::APlayerShip() {
 
 	MissleLockOnDetectionCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Missle Lock On Detection Capsule"));
 	MissleLockOnDetectionCapsule->SetupAttachment(GetRootComponent());
+
+	LockedOnBeepingSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Locked On Beeping Sound"));
 }
 
 void APlayerShip::BeginPlay() {
@@ -324,8 +326,14 @@ void APlayerShip::LockOnToEnemyShip() {
 }
 
 void APlayerShip::HandleLockOnBeepSounds() {
-	if (PotentiallyLockedOnEnemyShip) {
-		HandleLockingOnToEnemyShipBeepSound();
+	if (LockedOnBeepingSound) {
+		if (PotentiallyLockedOnEnemyShip && !LockedOnEnemyShip) {
+			HandleLockingOnToEnemyShipBeepSound();
+		} else if (LockedOnEnemyShip) {
+			LockedOnBeepingSound->SetVolumeMultiplier(1.0f);
+		} else if (!LockedOnEnemyShip) {
+			LockedOnBeepingSound->SetVolumeMultiplier(0.0f);
+		}
 	}
 }
 

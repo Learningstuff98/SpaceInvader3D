@@ -163,6 +163,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UCapsuleComponent> MissleLockOnDetectionCapsule;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UAudioComponent> LockedOnBeepingSound;
+
 	// Enhanced Input Varaibles
 
 	UPROPERTY(EditAnywhere, Category = Input)
