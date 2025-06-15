@@ -46,7 +46,7 @@ void AEnemyShip::BeginPlay() {
 	Super::BeginPlay();
 	SetupPlayerShipDetection();
 	SetupTakingHitsFunctionality();
-	if(MissleLockOnUIBox) MissleLockOnUIBox->SetVisibility(false);
+	SetMissleLockOnUIBoxVisibility(false);
 }
 
 void AEnemyShip::Tick(float DeltaTime) {
