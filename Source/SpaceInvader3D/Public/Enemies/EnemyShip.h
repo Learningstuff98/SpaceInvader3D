@@ -46,6 +46,7 @@ private:
 	void HandleExploding();
 	void Explode();
 	void SetupTakingHitsFunctionality();
+	void UpdateMissleLockOnUIBoxRotation();
 
 	// Components
 
@@ -60,6 +61,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class USceneComponent> FieldSystemSpawnLocation;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UBoxComponent> MissleLockOnUIBox;
 
 	// Other
 
@@ -97,4 +101,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<class USoundBase> ExplodingSound;
+
+	UPROPERTY()
+	TObjectPtr<class APlayerShip> PlayerShip;
+
+public:
+	// Setters
+	FORCEINLINE void SetPlayerShip(const TObjectPtr<class APlayerShip> Ship) { PlayerShip = Ship; }
+	void SetMissleLockOnUIBoxVisibility(const bool& Value);
 };

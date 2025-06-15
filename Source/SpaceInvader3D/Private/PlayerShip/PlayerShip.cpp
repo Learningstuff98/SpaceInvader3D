@@ -316,6 +316,7 @@ void APlayerShip::HandleLockingOnToEnemyShips(UPrimitiveComponent* OverlappedCom
 
 void APlayerShip::HandleLosingLockedEnemyShips(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
 	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
+		if(LockedOnEnemyShip) LockedOnEnemyShip->SetMissleLockOnUIBoxVisibility(false);
 		PotentiallyLockedOnEnemyShip = nullptr;
 		LockedOnEnemyShip = nullptr;
 		GetWorldTimerManager().ClearTimer(LockOnTimer);
@@ -324,6 +325,8 @@ void APlayerShip::HandleLosingLockedEnemyShips(UPrimitiveComponent* OverlappedCo
 
 void APlayerShip::LockOnToEnemyShip() {
 	LockedOnEnemyShip = PotentiallyLockedOnEnemyShip;
+	LockedOnEnemyShip->SetPlayerShip(this);
+	LockedOnEnemyShip->SetMissleLockOnUIBoxVisibility(true);
 }
 
 void APlayerShip::HandleLockOnBeepSounds() {
@@ -340,6 +343,11 @@ void APlayerShip::HandleLockOnBeepSounds() {
 			LockingOnBeepingSound->SetVolumeMultiplier(0.0f);
 		}
 	}
+}
+
+FVector APlayerShip::GetCameraLocation() {
+	if (Camera) return Camera->GetComponentLocation();
+	return GetActorLocation();
 }
 
 void APlayerShip::ExitViewModeAfterExploding() {

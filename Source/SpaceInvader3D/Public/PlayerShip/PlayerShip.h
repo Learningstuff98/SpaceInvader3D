@@ -273,4 +273,8 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Enemies)
 	TObjectPtr<class AEnemyShip> LockedOnEnemyShip;
+
+public:
+    // Getters and setters
+	FVector GetCameraLocation();
 };

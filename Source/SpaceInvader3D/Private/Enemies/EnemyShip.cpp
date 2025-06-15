@@ -6,6 +6,9 @@
 #include "PatrolTargets/PatrolTarget.h"
 #include "Projectiles/BlasterShot.h"
 #include "Statics/ShipStatics.h"
+#include "Components/BoxComponent.h"
+#include "PlayerShip/PlayerShip.h"
+#include "Camera/CameraComponent.h"
 
 AEnemyShip::AEnemyShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -33,12 +36,17 @@ AEnemyShip::AEnemyShip() {
 
 	FieldSystemSpawnLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Field System Spawn Location"));
 	FieldSystemSpawnLocation->SetupAttachment(GetRootComponent());
+
+	MissleLockOnUIBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Missle Lock On UI Box"));
+	MissleLockOnUIBox->SetupAttachment(GetRootComponent());
+	MissleLockOnUIBox->bHiddenInGame = false;
 }
 
 void AEnemyShip::BeginPlay() {
 	Super::BeginPlay();
 	SetupPlayerShipDetection();
 	SetupTakingHitsFunctionality();
+	if(MissleLockOnUIBox) MissleLockOnUIBox->SetVisibility(false);
 }
 
 void AEnemyShip::Tick(float DeltaTime) {
@@ -47,6 +55,7 @@ void AEnemyShip::Tick(float DeltaTime) {
 	AddMovementInput(GetActorForwardVector(), 1.0f);
 	HandleDetectedPlayerShipNullOutTimer();
 	HandleExploding();
+	UpdateMissleLockOnUIBoxRotation();
 }
 
 void AEnemyShip::HandleChasingRotation() {
@@ -147,4 +156,19 @@ void AEnemyShip::Explode() {
 		);
 	}
 	if (ExplodingSound) ShipStatics::PlaySound(ExplodingSound, this);
+}
+
+void AEnemyShip::UpdateMissleLockOnUIBoxRotation() {
+	if (MissleLockOnUIBox && PlayerShip) {
+		MissleLockOnUIBox->SetWorldRotation(
+			UKismetMathLibrary::FindLookAtRotation(
+				GetActorLocation(),
+				PlayerShip->GetCameraLocation()
+			)
+		);
+	}
+}
+
+void AEnemyShip::SetMissleLockOnUIBoxVisibility(const bool& Value) {
+	if (MissleLockOnUIBox) MissleLockOnUIBox->SetVisibility(Value);
 }
