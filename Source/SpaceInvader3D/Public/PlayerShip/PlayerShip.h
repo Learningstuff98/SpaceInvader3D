@@ -167,6 +167,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UAudioComponent> LockedOnBeepingSound;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UArrowComponent> MissleSpawnLocation;
+
 	// Enhanced Input Varaibles
 
 	UPROPERTY(EditAnywhere, Category = Input)

@@ -148,6 +148,9 @@ APlayerShip::APlayerShip() {
 	LockingOnBeepingSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Locking On Beeping Sound"));
 
 	LockedOnBeepingSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Locked On Beeping Sound"));
+
+	MissleSpawnLocation = CreateDefaultSubobject<UArrowComponent>(TEXT("Missle Spawn Location"));
+	MissleSpawnLocation->SetupAttachment(GetRootComponent());
 }
 
 void APlayerShip::BeginPlay() {
