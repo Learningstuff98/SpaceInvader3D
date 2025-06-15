@@ -89,8 +89,6 @@ private:
 	void SetupEnemyShipLockOnFunctionality();
 	void LockOnToEnemyShip();
 	void HandleLockOnBeepSounds();
-	void HandleLockingOnToEnemyShipBeepSound();
-	void PlayLockingOnBeepSound();
 	 
 	// Component Variables
 
@@ -164,6 +162,9 @@ private:
 	TObjectPtr<class UCapsuleComponent> MissleLockOnDetectionCapsule;
 
 	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UAudioComponent> LockingOnBeepingSound;
+
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UAudioComponent> LockedOnBeepingSound;
 
 	// Enhanced Input Varaibles
@@ -226,9 +227,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<class USoundBase> ToggleHeadLightSound;
 
-	UPROPERTY(EditAnywhere, Category = Sound)
-	TObjectPtr<class USoundBase> LockingOnBeepSound;
-
 	UPROPERTY(EditAnywhere, Category = Blaster)
 	TSubclassOf<class ABlasterShot> BlasterShotBlueprintClass;
 
@@ -263,11 +261,6 @@ private:
 
 	UPROPERTY()
 	bool LockOnTimerFinished;
-
-	FTimerHandle LockingOnBeepSoundTimer;
-
-	UPROPERTY()
-	bool LockingOnBeepSoundTimerFinished;
 
 	UPROPERTY(EditAnywhere, Category = Enemies)
 	TObjectPtr<class AEnemyShip> TargetedEnemyShip;

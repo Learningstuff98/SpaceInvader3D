@@ -36,7 +36,6 @@ APlayerShip::APlayerShip() {
 	TargetedEnemyShip = nullptr;
 	PotentiallyLockedOnEnemyShip = nullptr;
 	LockedOnEnemyShip = nullptr;
-	LockingOnBeepSoundTimerFinished = true;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -145,6 +144,8 @@ APlayerShip::APlayerShip() {
 
 	MissleLockOnDetectionCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Missle Lock On Detection Capsule"));
 	MissleLockOnDetectionCapsule->SetupAttachment(GetRootComponent());
+
+	LockingOnBeepingSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Locking On Beeping Sound"));
 
 	LockedOnBeepingSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Locked On Beeping Sound"));
 }
@@ -326,30 +327,19 @@ void APlayerShip::LockOnToEnemyShip() {
 }
 
 void APlayerShip::HandleLockOnBeepSounds() {
-	if (LockedOnBeepingSound) {
-		if (PotentiallyLockedOnEnemyShip && !LockedOnEnemyShip) {
-			HandleLockingOnToEnemyShipBeepSound();
-		} else if (LockedOnEnemyShip) {
-			LockedOnBeepingSound->SetVolumeMultiplier(1.0f);
-		} else if (!LockedOnEnemyShip) {
+	if (LockedOnBeepingSound && LockingOnBeepingSound) {
+		if (!LockedOnEnemyShip && !PotentiallyLockedOnEnemyShip) {
+			LockingOnBeepingSound->SetVolumeMultiplier(0.0f);
 			LockedOnBeepingSound->SetVolumeMultiplier(0.0f);
 		}
+		if (!LockedOnEnemyShip && PotentiallyLockedOnEnemyShip) {
+			LockingOnBeepingSound->SetVolumeMultiplier(1.0f);
+		}
+		if (LockedOnEnemyShip) {
+			LockedOnBeepingSound->SetVolumeMultiplier(1.0f);
+			LockingOnBeepingSound->SetVolumeMultiplier(0.0f);
+		}
 	}
-}
-
-void APlayerShip::HandleLockingOnToEnemyShipBeepSound() {
-	if (LockingOnBeepSoundTimerFinished) {
-		GetWorldTimerManager().ClearTimer(LockingOnBeepSoundTimer);
-		GetWorldTimerManager().SetTimer(LockingOnBeepSoundTimer, this, &APlayerShip::PlayLockingOnBeepSound, 0.45f);
-		LockingOnBeepSoundTimerFinished = false;
-	}
-}
-
-void APlayerShip::PlayLockingOnBeepSound() {
-	if (PotentiallyLockedOnEnemyShip) {
-		if (LockingOnBeepSound) ShipStatics::PlaySound(LockingOnBeepSound, this);
-	}
-	LockingOnBeepSoundTimerFinished = true;
 }
 
 void APlayerShip::ExitViewModeAfterExploding() {
