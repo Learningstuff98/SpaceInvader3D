@@ -7,7 +7,9 @@
 
 AMissle::AMissle() {
 	PrimaryActorTick.bCanEverTick = true;
-	Speed = 13000.f;
+	Speed = 20000.f;
+	RotationSpeed = 1.f;
+	InitialLifeSpan = 5.f;
 	Target = nullptr;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
@@ -35,9 +37,18 @@ void AMissle::Move() {
 
 void AMissle::UpdateRotation() {
 	SetActorRotation(
-	    UKismetMathLibrary::FindLookAtRotation(
-		    GetActorLocation(),
-			Target->GetActorLocation()
+		UKismetMathLibrary::RInterpTo(
+			GetActorRotation(),
+			FindTargetLookAtRotation(),
+			UGameplayStatics::GetWorldDeltaSeconds(this),
+			RotationSpeed
 		)
+	);
+}
+
+FRotator AMissle::FindTargetLookAtRotation() {
+	return UKismetMathLibrary::FindLookAtRotation(
+		GetActorLocation(),
+		Target->GetActorLocation()
 	);
 }

@@ -25,6 +25,7 @@ private:
 	// Functions
 	void Move();
 	void UpdateRotation();
+	FRotator FindTargetLookAtRotation();
 
 	// Components
 
@@ -41,6 +42,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<class AEnemyShip> Target;
+
+	UPROPERTY()
+	float RotationSpeed;
 
 public:
 
