@@ -21,4 +21,27 @@ private:
 	// <AActor>
 	virtual void BeginPlay() override;
 	// </AActor>
+
+	// Functions
+	void Move();
+
+	// Components
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UStaticMeshComponent> Mesh;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UNiagaraComponent> MissileThusterEffect;
+
+	// Other
+
+	UPROPERTY()
+	FVector MovementDirection;
+
+	UPROPERTY()
+	float Speed;
+
+public:
+	// Setters and getters
+	FORCEINLINE void SetDirection(const FVector& Direction) { MovementDirection = Direction; }
 };

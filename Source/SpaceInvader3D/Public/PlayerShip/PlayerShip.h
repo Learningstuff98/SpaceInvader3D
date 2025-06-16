@@ -234,8 +234,11 @@ private:
 	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<class USoundBase> ToggleHeadLightSound;
 
-	UPROPERTY(EditAnywhere, Category = Blaster)
+	UPROPERTY(EditAnywhere, Category = Projectiles)
 	TSubclassOf<class ABlasterShot> BlasterShotBlueprintClass;
+
+	UPROPERTY(EditAnywhere, Category = Projectiles)
+	TSubclassOf<class AMissle> MissleBlueprintClass;
 
 	UPROPERTY(EditAnywhere, Category = Pieces)
 	TSubclassOf<class AShipPieces> ShipPiecesBlueprintClass;

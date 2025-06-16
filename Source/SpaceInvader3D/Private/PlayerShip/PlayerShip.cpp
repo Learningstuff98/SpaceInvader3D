@@ -10,6 +10,7 @@
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Projectiles/BlasterShot.h"
+#include "Projectiles/Missle.h"
 #include "Attributes/PlayerShipAttributes.h"
 #include "HUD/SpaceInvader3DHUD.h"
 #include "HUD/SpaceInvader3DOverlay.h"
@@ -21,8 +22,6 @@
 #include "Statics/ShipStatics.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
-
-#include "Development/Development.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -226,7 +225,7 @@ void APlayerShip::Fire() {
 TObjectPtr<ABlasterShot> APlayerShip::SpawnBlasterShot() {
 	const TObjectPtr<UArrowComponent> BarrelToFireFrom = DeterminWhichBarrelToFireFrom();
 	TObjectPtr<ABlasterShot> BlasterShot {};
-	if (TObjectPtr<UWorld> World = GetWorld()) {
+	if (const TObjectPtr<UWorld> World = GetWorld()) {
 		BlasterShot = World->SpawnActor<ABlasterShot>(
 			BlasterShotBlueprintClass,
 			BarrelToFireFrom->GetComponentLocation(),
@@ -542,7 +541,16 @@ void APlayerShip::SetTargetedEnemyShip() {
 }
 
 void APlayerShip::FireMissle() {
-	Development::LogMessage("FireMissle WAS CALLED");
+	if (MissleSpawnLocation) {
+		if (const TObjectPtr<UWorld> World = GetWorld()) {
+			const TObjectPtr<AMissle> Missle = World->SpawnActor<AMissle>(
+				MissleBlueprintClass,
+				MissleSpawnLocation->GetComponentLocation(),
+				MissleSpawnLocation->GetComponentRotation()
+			);
+			Missle->SetDirection(MissleSpawnLocation->GetComponentRotation().Vector());
+		}
+	}
 }
 
 void APlayerShip::Accelerate() {
