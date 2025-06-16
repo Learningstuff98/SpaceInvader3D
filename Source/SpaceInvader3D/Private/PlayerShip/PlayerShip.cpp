@@ -541,14 +541,14 @@ void APlayerShip::SetTargetedEnemyShip() {
 }
 
 void APlayerShip::FireMissle() {
-	if (MissleSpawnLocation) {
+	if (LockedOnEnemyShip && MissleSpawnLocation) {
 		if (const TObjectPtr<UWorld> World = GetWorld()) {
 			const TObjectPtr<AMissle> Missle = World->SpawnActor<AMissle>(
 				MissleBlueprintClass,
 				MissleSpawnLocation->GetComponentLocation(),
 				MissleSpawnLocation->GetComponentRotation()
 			);
-			Missle->SetDirection(MissleSpawnLocation->GetComponentRotation().Vector());
+			Missle->SetTarget(LockedOnEnemyShip);
 		}
 	}
 }

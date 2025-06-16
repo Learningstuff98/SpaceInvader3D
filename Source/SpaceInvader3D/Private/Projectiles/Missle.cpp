@@ -1,10 +1,14 @@
 #include "Projectiles/Missle.h"
 #include "Components/StaticMeshComponent.h"
 #include "NiagaraComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Enemies/EnemyShip.h"
+#include "Kismet/GameplayStatics.h"
 
 AMissle::AMissle() {
 	PrimaryActorTick.bCanEverTick = true;
-	Speed = 300.f;
+	Speed = 13000.f;
+	Target = nullptr;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	SetRootComponent(Mesh);
@@ -20,8 +24,20 @@ void AMissle::BeginPlay() {
 void AMissle::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 	Move();
+	UpdateRotation();
 }
 
 void AMissle::Move() {
-	AddActorWorldOffset(MovementDirection * Speed);
+	AddActorWorldOffset(
+		GetActorForwardVector() * Speed * UGameplayStatics::GetWorldDeltaSeconds(this)
+	);
+}
+
+void AMissle::UpdateRotation() {
+	SetActorRotation(
+	    UKismetMathLibrary::FindLookAtRotation(
+		    GetActorLocation(),
+			Target->GetActorLocation()
+		)
+	);
 }

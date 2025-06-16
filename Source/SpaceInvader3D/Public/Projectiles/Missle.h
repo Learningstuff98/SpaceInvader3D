@@ -24,6 +24,7 @@ private:
 
 	// Functions
 	void Move();
+	void UpdateRotation();
 
 	// Components
 
@@ -36,12 +37,13 @@ private:
 	// Other
 
 	UPROPERTY()
-	FVector MovementDirection;
-
-	UPROPERTY()
 	float Speed;
 
+	UPROPERTY()
+	TObjectPtr<class AEnemyShip> Target;
+
 public:
+
 	// Setters and getters
-	FORCEINLINE void SetDirection(const FVector& Direction) { MovementDirection = Direction; }
+	FORCEINLINE void SetTarget(const TObjectPtr<class AEnemyShip> EnemyShip) { Target = EnemyShip; }
 };
