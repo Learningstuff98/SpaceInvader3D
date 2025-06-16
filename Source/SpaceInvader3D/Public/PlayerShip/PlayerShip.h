@@ -42,6 +42,7 @@ private:
 	void RollRight();
 	void ToggleHeadlights();
 	void SetTargetedEnemyShip();
+	void FireMissle();
 
 	// Delegate Callbacks
 
@@ -204,6 +205,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<class UInputAction> SetTargetedEnemyShipAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<class UInputAction> FireMissleAction;
 
 	// Other
 

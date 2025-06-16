@@ -22,6 +22,8 @@
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 
+#include "Development/Development.h"
+
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
 	FireCooldownTimerFinished = true;
@@ -199,6 +201,7 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(RollRightAction, ETriggerEvent::Triggered, this, &APlayerShip::RollRight);
 		EnhancedInputComponent->BindAction(ToggleHeadlightsAction, ETriggerEvent::Triggered, this, &APlayerShip::ToggleHeadlights);
 		EnhancedInputComponent->BindAction(SetTargetedEnemyShipAction, ETriggerEvent::Triggered, this, &APlayerShip::SetTargetedEnemyShip);
+		EnhancedInputComponent->BindAction(FireMissleAction, ETriggerEvent::Triggered, this, &APlayerShip::FireMissle);
 	}
 }
 
@@ -536,6 +539,10 @@ void APlayerShip::SetTargetedEnemyShip() {
 			break;
 		}
 	}
+}
+
+void APlayerShip::FireMissle() {
+	Development::LogMessage("FireMissle WAS CALLED");
 }
 
 void APlayerShip::Accelerate() {
