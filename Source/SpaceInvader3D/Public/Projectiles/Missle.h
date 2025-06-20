@@ -51,6 +51,9 @@ private:
 	UPROPERTY()
 	float RotationSpeed;
 
+	UPROPERTY()
+	int32 Damage;
+
 public:
 
 	// Setters and getters

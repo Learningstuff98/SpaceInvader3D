@@ -109,4 +109,5 @@ public:
 	// Setters
 	FORCEINLINE void SetPlayerShip(const TObjectPtr<class APlayerShip> Ship) { PlayerShip = Ship; }
 	void SetMissleLockOnUIBoxVisibility(const bool& Value);
+	FORCEINLINE void TakeDamage(const int32& Damage) { Health -= Damage; }
 };

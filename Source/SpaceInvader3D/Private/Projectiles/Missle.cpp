@@ -11,6 +11,7 @@ AMissle::AMissle() {
 	RotationSpeed = 1.f;
 	InitialLifeSpan = 5.f;
 	Target = nullptr;
+	Damage = 500;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	SetRootComponent(Mesh);
@@ -56,6 +57,7 @@ FRotator AMissle::FindTargetLookAtRotation() {
 
 void AMissle::ExplodeOnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
+		if (this) EnemyShip->TakeDamage(Damage);
 		Destroy();
 	}
 }
