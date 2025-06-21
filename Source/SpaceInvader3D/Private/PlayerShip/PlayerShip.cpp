@@ -22,6 +22,7 @@
 #include "Statics/ShipStatics.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Perception/PawnSensingComponent.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -35,8 +36,8 @@ APlayerShip::APlayerShip() {
 	MinSpeed = 3300.0f;
 	CurrentSpeed = MinSpeed;
 	TargetedEnemyShip = nullptr;
-	PotentiallyLockedOnEnemyShip = nullptr;
 	LockedOnEnemyShip = nullptr;
+	LockedEnemyShipNullOutTimerFinished = true;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -143,10 +144,8 @@ APlayerShip::APlayerShip() {
 	EnemyShipDirectionArrow->bHiddenInGame = false;
 	EnemyShipDirectionArrow->SetArrowSize(4.0f);
 
-	MissleLockOnDetectionCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Missle Lock On Detection Capsule"));
-	MissleLockOnDetectionCapsule->SetupAttachment(GetRootComponent());
-
-	LockingOnBeepingSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Locking On Beeping Sound"));
+	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Pawn Sensing Component"));
+	PawnSensingComponent->bOnlySensePlayers = false;
 
 	LockedOnBeepingSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Locked On Beeping Sound"));
 
@@ -160,8 +159,8 @@ void APlayerShip::BeginPlay() {
 	PlayerShipOverlay = SetOverlay();
 	SetHealthBarPercent();
 	SetupEnemyShipDetectionFunctionality();
-	SetupEnemyShipLockOnFunctionality();
 	TurnHeadLightsOff();
+	SetupPawnSensing();
 }
 
 void APlayerShip::Tick(float DeltaTime) {
@@ -177,7 +176,9 @@ void APlayerShip::Tick(float DeltaTime) {
 	HandleEnemyShipDirectionArrowVisibility();
 	UpdateEnemyShipDirectionArrowRotation();
 	HandleTargetedEnemyShipStatus();
+	HandleLockedEnemyShipStatus();
 	HandleLockOnBeepSounds();
+	HandleLockedEnemyShipNullOutTimer();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -303,49 +304,41 @@ void APlayerShip::SetupEnemyShipDetectionFunctionality() {
 	}
 }
 
-void APlayerShip::SetupEnemyShipLockOnFunctionality() {
-	if (MissleLockOnDetectionCapsule) {
-		MissleLockOnDetectionCapsule->OnComponentBeginOverlap.AddDynamic(this, &APlayerShip::HandleLockingOnToEnemyShips);
-		MissleLockOnDetectionCapsule->OnComponentEndOverlap.AddDynamic(this, &APlayerShip::HandleLosingLockedEnemyShips);
+void APlayerShip::SetupPawnSensing() {
+	if (PawnSensingComponent) {
+		PawnSensingComponent->OnSeePawn.AddDynamic(this, &APlayerShip::HandleLockingOntoEnemyShips);
 	}
 }
 
-void APlayerShip::HandleLockingOnToEnemyShips(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
-	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
-		PotentiallyLockedOnEnemyShip = EnemyShip;
-		if (PotentiallyLockedOnEnemyShip) {
-			GetWorldTimerManager().SetTimer(LockOnTimer, this, &APlayerShip::LockOnToEnemyShip, 1.0f);
+void APlayerShip::HandleLockingOntoEnemyShips(APawn* SeenPawn) {
+	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(SeenPawn)) {
+		if (!LockedOnEnemyShip) LockedOnEnemyShip = EnemyShip;
+		if (LockedOnEnemyShip) {
+			LockedOnEnemyShip->SetPlayerShip(this);
+			LockedOnEnemyShip->SetMissleLockOnUIBoxVisibility(true);
 		}
 	}
 }
 
-void APlayerShip::HandleLosingLockedEnemyShips(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
-	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
-		if(LockedOnEnemyShip) LockedOnEnemyShip->SetMissleLockOnUIBoxVisibility(false);
-		PotentiallyLockedOnEnemyShip = nullptr;
-		LockedOnEnemyShip = nullptr;
-		GetWorldTimerManager().ClearTimer(LockOnTimer);
+void APlayerShip::HandleLockedEnemyShipNullOutTimer() {
+	if (LockedEnemyShipNullOutTimerFinished) {
+		GetWorldTimerManager().ClearTimer(LockedEnemyShipNullOutTimer);
+		GetWorldTimerManager().SetTimer(LockedEnemyShipNullOutTimer, this, &APlayerShip::NullOutLockedEnemyShip, 0.8f);
+		LockedEnemyShipNullOutTimerFinished = false;
 	}
 }
 
-void APlayerShip::LockOnToEnemyShip() {
-	LockedOnEnemyShip = PotentiallyLockedOnEnemyShip;
-	LockedOnEnemyShip->SetPlayerShip(this);
-	LockedOnEnemyShip->SetMissleLockOnUIBoxVisibility(true);
+void APlayerShip::NullOutLockedEnemyShip() {
+	LockedOnEnemyShip = nullptr;
+	LockedEnemyShipNullOutTimerFinished = true;
 }
 
 void APlayerShip::HandleLockOnBeepSounds() {
-	if (LockedOnBeepingSound && LockingOnBeepingSound) {
-		if (!LockedOnEnemyShip && !PotentiallyLockedOnEnemyShip) {
-			LockingOnBeepingSound->SetVolumeMultiplier(0.0f);
-			LockedOnBeepingSound->SetVolumeMultiplier(0.0f);
-		}
-		if (!LockedOnEnemyShip && PotentiallyLockedOnEnemyShip) {
-			LockingOnBeepingSound->SetVolumeMultiplier(1.0f);
-		}
+	if (LockedOnBeepingSound) {
 		if (LockedOnEnemyShip) {
 			LockedOnBeepingSound->SetVolumeMultiplier(1.0f);
-			LockingOnBeepingSound->SetVolumeMultiplier(0.0f);
+		} else {
+			LockedOnBeepingSound->SetVolumeMultiplier(0.0f);
 		}
 	}
 }
@@ -384,6 +377,12 @@ void APlayerShip::HandleEnemyShipDirectionArrowVisibility() {
 void APlayerShip::HandleTargetedEnemyShipStatus() {
 	if (!IsValid(TargetedEnemyShip)) {
 		TargetedEnemyShip = nullptr;
+	}
+}
+
+void APlayerShip::HandleLockedEnemyShipStatus() {
+	if (!IsValid(LockedOnEnemyShip)) {
+		LockedOnEnemyShip = nullptr;
 	}
 }
 

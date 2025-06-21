@@ -53,10 +53,7 @@ private:
 	void LoseEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UFUNCTION()
-	void HandleLockingOnToEnemyShips(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void HandleLosingLockedEnemyShips(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	void HandleLockingOntoEnemyShips(APawn* SeenPawn);
 
 	// Functions
 
@@ -87,9 +84,11 @@ private:
 	void UpdateEnemyShipDirectionArrowRotation();
 	void HandleEnemyShipDirectionArrowVisibility();
 	void HandleTargetedEnemyShipStatus();
-	void SetupEnemyShipLockOnFunctionality();
-	void LockOnToEnemyShip();
+	void HandleLockedEnemyShipStatus();
 	void HandleLockOnBeepSounds();
+	void SetupPawnSensing();
+	void HandleLockedEnemyShipNullOutTimer();
+	void NullOutLockedEnemyShip();
 	 
 	// Component Variables
 
@@ -160,16 +159,13 @@ private:
 	TObjectPtr<class UArrowComponent> EnemyShipDirectionArrow;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UCapsuleComponent> MissleLockOnDetectionCapsule;
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UAudioComponent> LockingOnBeepingSound;
-
-	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UAudioComponent> LockedOnBeepingSound;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UArrowComponent> MissleSpawnLocation;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UPawnSensingComponent> PawnSensingComponent;
 
 	// Enhanced Input Varaibles
 
@@ -267,19 +263,16 @@ private:
 	UPROPERTY()
 	float CurrentSpeed;
 
-	FTimerHandle LockOnTimer;
+	FTimerHandle LockedEnemyShipNullOutTimer;
 
 	UPROPERTY()
-	bool LockOnTimerFinished;
+	bool LockedEnemyShipNullOutTimerFinished;
 
 	UPROPERTY(EditAnywhere, Category = Enemies)
 	TObjectPtr<class AEnemyShip> TargetedEnemyShip;
 
 	UPROPERTY(EditAnywhere, Category = Enemies)
 	TArray<TObjectPtr<class AEnemyShip>> DetectedEnemyShips;
-
-	UPROPERTY(EditAnywhere, Category = Enemies)
-	TObjectPtr<class AEnemyShip> PotentiallyLockedOnEnemyShip;
 
 	UPROPERTY(EditAnywhere, Category = Enemies)
 	TObjectPtr<class AEnemyShip> LockedOnEnemyShip;

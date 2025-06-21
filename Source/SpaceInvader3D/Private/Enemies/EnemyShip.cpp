@@ -14,6 +14,7 @@ AEnemyShip::AEnemyShip() {
 	PrimaryActorTick.bCanEverTick = true;
 	DetectedPlayerShip = nullptr;
 	DetectedPlayerShipNullOutTimerFinished = true;
+	HideLockedOnUIBoxTimerFinished = true;
 	TurnSpeed = 0.7f;
 	NewPatrolTargetIndex = 0;
 	CurrentPatrolTargetIndex = 0;
@@ -56,6 +57,7 @@ void AEnemyShip::Tick(float DeltaTime) {
 	HandleDetectedPlayerShipNullOutTimer();
 	HandleExploding();
 	UpdateMissleLockOnUIBoxRotation();
+	HandleHidingLockedOnUIBox();
 }
 
 void AEnemyShip::HandleChasingRotation() {
@@ -167,6 +169,19 @@ void AEnemyShip::UpdateMissleLockOnUIBoxRotation() {
 			)
 		);
 	}
+}
+
+void AEnemyShip::HandleHidingLockedOnUIBox() {
+	if (HideLockedOnUIBoxTimerFinished) {
+		GetWorldTimerManager().ClearTimer(HideLockedOnUIBoxTimer);
+		GetWorldTimerManager().SetTimer(HideLockedOnUIBoxTimer, this, &AEnemyShip::HideLockedOnUIBox, 0.4f);
+		HideLockedOnUIBoxTimerFinished = false;
+	}
+}
+
+void AEnemyShip::HideLockedOnUIBox() {
+	SetMissleLockOnUIBoxVisibility(false);
+	HideLockedOnUIBoxTimerFinished = true;
 }
 
 void AEnemyShip::SetMissleLockOnUIBoxVisibility(const bool& Value) {

@@ -47,6 +47,8 @@ private:
 	void Explode();
 	void SetupTakingHitsFunctionality();
 	void UpdateMissleLockOnUIBoxRotation();
+	void HandleHidingLockedOnUIBox();
+	void HideLockedOnUIBox();
 
 	// Components
 
@@ -104,6 +106,11 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<class APlayerShip> PlayerShip;
+
+	FTimerHandle HideLockedOnUIBoxTimer;
+
+	UPROPERTY()
+	bool HideLockedOnUIBoxTimerFinished;
 
 public:
 	// Setters
