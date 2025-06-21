@@ -314,7 +314,7 @@ void APlayerShip::HandleLockingOnToEnemyShips(UPrimitiveComponent* OverlappedCom
 	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
 		PotentiallyLockedOnEnemyShip = EnemyShip;
 		if (PotentiallyLockedOnEnemyShip) {
-			GetWorldTimerManager().SetTimer(LockOnTimer, this, &APlayerShip::LockOnToEnemyShip, 2.0f);
+			GetWorldTimerManager().SetTimer(LockOnTimer, this, &APlayerShip::LockOnToEnemyShip, 1.0f);
 		}
 	}
 }

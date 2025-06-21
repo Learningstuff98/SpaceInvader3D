@@ -31,6 +31,7 @@ private:
 	void Move();
 	void UpdateRotation();
 	FRotator FindTargetLookAtRotation();
+	void SpawnExplodingEffect();
 
 	// Components
 
@@ -53,6 +54,9 @@ private:
 
 	UPROPERTY()
 	int32 Damage;
+
+	UPROPERTY(EditAnywhere, Category = Explosion)
+	TSubclassOf<class AMissileExplodingEffect> MissileExplodingEffectBlueprintClass;
 
 public:
 
