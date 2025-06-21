@@ -32,6 +32,7 @@ private:
 	void UpdateRotation();
 	FRotator FindTargetLookAtRotation();
 	void SpawnExplodingEffect();
+	void PlayFiringSound();
 
 	// Components
 
@@ -57,6 +58,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Explosion)
 	TSubclassOf<class AMissileExplodingEffect> MissileExplodingEffectBlueprintClass;
+
+	UPROPERTY(EditAnywhere, Category = Sound)
+	TObjectPtr<class USoundBase> FiringSound;
 
 public:
 

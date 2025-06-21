@@ -23,6 +23,7 @@ AMissle::AMissle() {
 
 void AMissle::BeginPlay() {
 	Super::BeginPlay();
+	PlayFiringSound();
 	Mesh->OnComponentBeginOverlap.AddDynamic(this, &AMissle::ExplodeOnHit);
 }
 
@@ -74,6 +75,16 @@ void AMissle::SpawnExplodingEffect() {
 			MissileExplodingEffectBlueprintClass,
 			GetActorLocation(),
 			GetActorRotation()
+		);
+	}
+}
+
+void AMissle::PlayFiringSound() {
+	if (FiringSound) {
+		UGameplayStatics::PlaySoundAtLocation(
+			this,
+			FiringSound,
+			GetActorLocation()
 		);
 	}
 }
