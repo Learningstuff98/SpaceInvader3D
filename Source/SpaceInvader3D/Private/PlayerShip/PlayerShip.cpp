@@ -21,7 +21,6 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Statics/ShipStatics.h"
 #include "Components/BoxComponent.h"
-#include "Components/CapsuleComponent.h"
 #include "Perception/PawnSensingComponent.h"
 
 APlayerShip::APlayerShip() {
@@ -177,7 +176,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	UpdateEnemyShipDirectionArrowRotation();
 	HandleTargetedEnemyShipStatus();
 	HandleLockedOnEnemyShipStatus();
-	HandleLockOnBeepSounds();
+	HandleLockOnBeepSound();
 	HandleLockedOnEnemyShipNullOutTimer();
 }
 
@@ -333,7 +332,7 @@ void APlayerShip::NullOutLockedOnEnemyShip() {
 	LockedOnEnemyShipNullOutTimerFinished = true;
 }
 
-void APlayerShip::HandleLockOnBeepSounds() {
+void APlayerShip::HandleLockOnBeepSound() {
 	if (LockedOnBeepingSound) {
 		if (LockedOnEnemyShip) {
 			LockedOnBeepingSound->SetVolumeMultiplier(1.0f);
@@ -547,7 +546,7 @@ void APlayerShip::FireMissle() {
 				MissleSpawnLocation->GetComponentLocation(),
 				MissleSpawnLocation->GetComponentRotation()
 			);
-			Missle->SetTarget(LockedOnEnemyShip);
+			if(Missle) Missle->SetTarget(LockedOnEnemyShip);
 		}
 	}
 }

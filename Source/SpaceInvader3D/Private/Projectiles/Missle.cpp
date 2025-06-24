@@ -24,7 +24,7 @@ AMissle::AMissle() {
 void AMissle::BeginPlay() {
 	Super::BeginPlay();
 	PlayFiringSound();
-	Mesh->OnComponentBeginOverlap.AddDynamic(this, &AMissle::ExplodeOnHit);
+	SetupOverlappingFunctionality();
 }
 
 void AMissle::Tick(float DeltaTime) {
@@ -86,5 +86,11 @@ void AMissle::PlayFiringSound() {
 			FiringSound,
 			GetActorLocation()
 		);
+	}
+}
+
+void AMissle::SetupOverlappingFunctionality() {
+	if (Mesh) {
+		Mesh->OnComponentBeginOverlap.AddDynamic(this, &AMissle::ExplodeOnHit);
 	}
 }

@@ -85,7 +85,7 @@ private:
 	void HandleEnemyShipDirectionArrowVisibility();
 	void HandleTargetedEnemyShipStatus();
 	void HandleLockedOnEnemyShipStatus();
-	void HandleLockOnBeepSounds();
+	void HandleLockOnBeepSound();
 	void SetupPawnSensing();
 	void HandleLockedOnEnemyShipNullOutTimer();
 	void NullOutLockedOnEnemyShip();

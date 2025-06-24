@@ -33,6 +33,7 @@ private:
 	FRotator FindTargetLookAtRotation();
 	void SpawnExplodingEffect();
 	void PlayFiringSound();
+	void SetupOverlappingFunctionality();
 
 	// Components
 
