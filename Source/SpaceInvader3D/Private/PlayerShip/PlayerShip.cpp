@@ -37,7 +37,7 @@ APlayerShip::APlayerShip() {
 	CurrentSpeed = MinSpeed;
 	TargetedEnemyShip = nullptr;
 	LockedOnEnemyShip = nullptr;
-	LockedEnemyShipNullOutTimerFinished = true;
+	LockedOnEnemyShipNullOutTimerFinished = true;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -176,9 +176,9 @@ void APlayerShip::Tick(float DeltaTime) {
 	HandleEnemyShipDirectionArrowVisibility();
 	UpdateEnemyShipDirectionArrowRotation();
 	HandleTargetedEnemyShipStatus();
-	HandleLockedEnemyShipStatus();
+	HandleLockedOnEnemyShipStatus();
 	HandleLockOnBeepSounds();
-	HandleLockedEnemyShipNullOutTimer();
+	HandleLockedOnEnemyShipNullOutTimer();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -320,17 +320,17 @@ void APlayerShip::HandleLockingOntoEnemyShips(APawn* SeenPawn) {
 	}
 }
 
-void APlayerShip::HandleLockedEnemyShipNullOutTimer() {
-	if (LockedEnemyShipNullOutTimerFinished) {
-		GetWorldTimerManager().ClearTimer(LockedEnemyShipNullOutTimer);
-		GetWorldTimerManager().SetTimer(LockedEnemyShipNullOutTimer, this, &APlayerShip::NullOutLockedEnemyShip, 0.8f);
-		LockedEnemyShipNullOutTimerFinished = false;
+void APlayerShip::HandleLockedOnEnemyShipNullOutTimer() {
+	if (LockedOnEnemyShipNullOutTimerFinished) {
+		GetWorldTimerManager().ClearTimer(LockedOnEnemyShipNullOutTimer);
+		GetWorldTimerManager().SetTimer(LockedOnEnemyShipNullOutTimer, this, &APlayerShip::NullOutLockedOnEnemyShip, 0.8f);
+		LockedOnEnemyShipNullOutTimerFinished = false;
 	}
 }
 
-void APlayerShip::NullOutLockedEnemyShip() {
+void APlayerShip::NullOutLockedOnEnemyShip() {
 	LockedOnEnemyShip = nullptr;
-	LockedEnemyShipNullOutTimerFinished = true;
+	LockedOnEnemyShipNullOutTimerFinished = true;
 }
 
 void APlayerShip::HandleLockOnBeepSounds() {
@@ -380,7 +380,7 @@ void APlayerShip::HandleTargetedEnemyShipStatus() {
 	}
 }
 
-void APlayerShip::HandleLockedEnemyShipStatus() {
+void APlayerShip::HandleLockedOnEnemyShipStatus() {
 	if (!IsValid(LockedOnEnemyShip)) {
 		LockedOnEnemyShip = nullptr;
 	}

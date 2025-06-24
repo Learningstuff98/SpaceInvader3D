@@ -84,11 +84,11 @@ private:
 	void UpdateEnemyShipDirectionArrowRotation();
 	void HandleEnemyShipDirectionArrowVisibility();
 	void HandleTargetedEnemyShipStatus();
-	void HandleLockedEnemyShipStatus();
+	void HandleLockedOnEnemyShipStatus();
 	void HandleLockOnBeepSounds();
 	void SetupPawnSensing();
-	void HandleLockedEnemyShipNullOutTimer();
-	void NullOutLockedEnemyShip();
+	void HandleLockedOnEnemyShipNullOutTimer();
+	void NullOutLockedOnEnemyShip();
 	 
 	// Component Variables
 
@@ -263,10 +263,10 @@ private:
 	UPROPERTY()
 	float CurrentSpeed;
 
-	FTimerHandle LockedEnemyShipNullOutTimer;
+	FTimerHandle LockedOnEnemyShipNullOutTimer;
 
 	UPROPERTY()
-	bool LockedEnemyShipNullOutTimerFinished;
+	bool LockedOnEnemyShipNullOutTimerFinished;
 
 	UPROPERTY(EditAnywhere, Category = Enemies)
 	TObjectPtr<class AEnemyShip> TargetedEnemyShip;
