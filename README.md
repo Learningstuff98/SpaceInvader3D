@@ -61,7 +61,13 @@ https://github.com/user-attachments/assets/19d0fadb-f5f2-40f0-806f-f6919e58b229
 
 6/27/2025
 
-Enemy ships can be locked onto and blown up with enemy tracking missiles.
+Added enemy tracking missiles.
+
+The player ship can lock onto enemy ships by getting within range and pointing roughly at them.
+This causes a red outline box to appear to show the player which target they locked onto.
+
+Missiles have to be reloaded before firing again. Reload progress is shown with a purple progress
+bar.
 
 [Link to PR#28](https://github.com/Learningstuff98/SpaceInvader3D/pull/28/files)
 
