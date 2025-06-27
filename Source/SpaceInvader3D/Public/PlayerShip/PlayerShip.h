@@ -271,6 +271,9 @@ private:
 	UPROPERTY()
 	float MissileReloadTime;
 
+	UPROPERTY()
+	float MissileReloadProgress;
+
 	FTimerHandle MissileReloadTimer;
 
 	UPROPERTY()

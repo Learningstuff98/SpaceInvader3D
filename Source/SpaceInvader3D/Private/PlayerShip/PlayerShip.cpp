@@ -39,7 +39,8 @@ APlayerShip::APlayerShip() {
 	LockedOnEnemyShipNullOutTimerFinished = true;
 	MissileReloadTimerFinished = true;
 	MissileIsLoaded = true;
-	MissileReloadTime = 1.f;
+	MissileReloadTime = 2.5f;
+	MissileReloadProgress = 1.f;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -355,16 +356,14 @@ void APlayerShip::ReloadMissile() {
 
 void APlayerShip::SetMissileReloadingProgressBar() {
 	if (PlayerShipOverlay) {
-		if (MissileIsLoaded) {
-			PlayerShipOverlay->SetMissileReloadingProgressBar(0.f);
-		} else {
-			PlayerShipOverlay->SetMissileReloadingProgressBar(GetRemainingMissileReloadTimeAsPercent());
-		}
+		PlayerShipOverlay->SetMissileReloadingProgressBar(
+			MissileReloadProgress - GetRemainingMissileReloadTimeAsPercent()
+		);
 	}
 }
 
 float APlayerShip::GetRemainingMissileReloadTimeAsPercent() {
-	return  GetWorldTimerManager().GetTimerRemaining(MissileReloadTimer) / MissileReloadTime;
+	return GetWorldTimerManager().GetTimerRemaining(MissileReloadTimer) / MissileReloadTime;
 }
 
 void APlayerShip::HandleLockOnBeepSound() {
