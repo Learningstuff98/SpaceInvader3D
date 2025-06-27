@@ -27,7 +27,7 @@ private:
 public:
 
 	// Setters
-	void SetMissileReloadingProgressBar(const float& Percent);
+	void SetMissileReloadingProgress(const float& Percent);
 	void SetHealthBarPercent(const float& Percent);
 	void SetHeadLightText(const bool& HeadLightsAreOn);
 };

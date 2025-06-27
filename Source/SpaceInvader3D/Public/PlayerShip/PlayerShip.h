@@ -92,7 +92,7 @@ private:
 	bool CanFireMissile();
 	void SetMissileReloadTimer();
 	void ReloadMissile();
-	void SetMissileReloadingProgressBar();
+	void SetMissileReloadingProgress();
 	float GetRemainingMissileReloadTimeAsPercent();
 	 
 	// Component Variables

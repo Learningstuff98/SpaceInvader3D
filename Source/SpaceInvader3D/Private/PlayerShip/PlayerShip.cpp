@@ -182,7 +182,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	HandleLockedOnEnemyShipStatus();
 	HandleLockOnBeepSound();
 	HandleLockedOnEnemyShipNullOutTimer();
-	SetMissileReloadingProgressBar();
+	SetMissileReloadingProgress();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -354,9 +354,9 @@ void APlayerShip::ReloadMissile() {
 	MissileReloadTimerFinished = true;
 }
 
-void APlayerShip::SetMissileReloadingProgressBar() {
+void APlayerShip::SetMissileReloadingProgress() {
 	if (PlayerShipOverlay) {
-		PlayerShipOverlay->SetMissileReloadingProgressBar(
+		PlayerShipOverlay->SetMissileReloadingProgress(
 			MissileReloadProgress - GetRemainingMissileReloadTimeAsPercent()
 		);
 	}

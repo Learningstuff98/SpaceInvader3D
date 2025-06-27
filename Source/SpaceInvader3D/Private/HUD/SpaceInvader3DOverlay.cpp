@@ -4,7 +4,7 @@
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 
-void USpaceInvader3DOverlay::SetMissileReloadingProgressBar(const float& Percent) {
+void USpaceInvader3DOverlay::SetMissileReloadingProgress(const float& Percent) {
 	if (MissileReloadingProgressBar) MissileReloadingProgressBar->SetPercent(Percent);
 }
 
