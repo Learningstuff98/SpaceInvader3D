@@ -90,7 +90,5 @@ void AMissle::PlayFiringSound() {
 }
 
 void AMissle::SetupOverlappingFunctionality() {
-	if (Mesh) {
-		Mesh->OnComponentBeginOverlap.AddDynamic(this, &AMissle::ExplodeOnHit);
-	}
+	if (Mesh) Mesh->OnComponentBeginOverlap.AddDynamic(this, &AMissle::ExplodeOnHit);
 }

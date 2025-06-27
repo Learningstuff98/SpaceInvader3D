@@ -37,6 +37,9 @@ APlayerShip::APlayerShip() {
 	TargetedEnemyShip = nullptr;
 	LockedOnEnemyShip = nullptr;
 	LockedOnEnemyShipNullOutTimerFinished = true;
+	MissileReloadTimerFinished = true;
+	MissileIsLoaded = true;
+	MissileReloadTime = 1.f;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -178,6 +181,7 @@ void APlayerShip::Tick(float DeltaTime) {
 	HandleLockedOnEnemyShipStatus();
 	HandleLockOnBeepSound();
 	HandleLockedOnEnemyShipNullOutTimer();
+	SetMissileReloadingProgressBar();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -332,6 +336,37 @@ void APlayerShip::NullOutLockedOnEnemyShip() {
 	LockedOnEnemyShipNullOutTimerFinished = true;
 }
 
+bool APlayerShip::CanFireMissile() {
+	return LockedOnEnemyShip && MissileIsLoaded;
+}
+
+void APlayerShip::SetMissileReloadTimer() {
+	if (MissileReloadTimerFinished) {
+		GetWorldTimerManager().ClearTimer(MissileReloadTimer);
+		GetWorldTimerManager().SetTimer(MissileReloadTimer, this, &APlayerShip::ReloadMissile, MissileReloadTime);
+		MissileReloadTimerFinished = false;
+	}
+}
+
+void APlayerShip::ReloadMissile() {
+	MissileIsLoaded = true;
+	MissileReloadTimerFinished = true;
+}
+
+void APlayerShip::SetMissileReloadingProgressBar() {
+	if (PlayerShipOverlay) {
+		if (MissileIsLoaded) {
+			PlayerShipOverlay->SetMissileReloadingProgressBar(0.f);
+		} else {
+			PlayerShipOverlay->SetMissileReloadingProgressBar(GetRemainingMissileReloadTimeAsPercent());
+		}
+	}
+}
+
+float APlayerShip::GetRemainingMissileReloadTimeAsPercent() {
+	return  GetWorldTimerManager().GetTimerRemaining(MissileReloadTimer) / MissileReloadTime;
+}
+
 void APlayerShip::HandleLockOnBeepSound() {
 	if (LockedOnBeepingSound) {
 		if (LockedOnEnemyShip) {
@@ -442,9 +477,7 @@ void APlayerShip::ZeroOutCurrentControlSpeed() {
 }
 
 void APlayerShip::SetMovementComponentMaxSpeed() {
-	if (Movement) {
-		Movement->MaxSpeed = CurrentSpeed;
-	}
+	if (Movement) Movement->MaxSpeed = CurrentSpeed;
 }
 
 void APlayerShip::UpdatePlayerShipRotation(const float& DeltaTime) {
@@ -539,7 +572,7 @@ void APlayerShip::SetTargetedEnemyShip() {
 }
 
 void APlayerShip::FireMissle() {
-	if (LockedOnEnemyShip && MissleSpawnLocation) {
+	if (CanFireMissile() && MissleSpawnLocation) {
 		if (const TObjectPtr<UWorld> World = GetWorld()) {
 			const TObjectPtr<AMissle> Missle = World->SpawnActor<AMissle>(
 				MissleBlueprintClass,
@@ -547,6 +580,8 @@ void APlayerShip::FireMissle() {
 				MissleSpawnLocation->GetComponentRotation()
 			);
 			if(Missle) Missle->SetTarget(LockedOnEnemyShip);
+			MissileIsLoaded = false;
+			SetMissileReloadTimer();
 		}
 	}
 }

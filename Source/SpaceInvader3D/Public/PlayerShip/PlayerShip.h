@@ -89,6 +89,11 @@ private:
 	void SetupPawnSensing();
 	void HandleLockedOnEnemyShipNullOutTimer();
 	void NullOutLockedOnEnemyShip();
+	bool CanFireMissile();
+	void SetMissileReloadTimer();
+	void ReloadMissile();
+	void SetMissileReloadingProgressBar();
+	float GetRemainingMissileReloadTimeAsPercent();
 	 
 	// Component Variables
 
@@ -262,6 +267,17 @@ private:
 
 	UPROPERTY()
 	float CurrentSpeed;
+
+	UPROPERTY()
+	float MissileReloadTime;
+
+	FTimerHandle MissileReloadTimer;
+
+	UPROPERTY()
+	bool MissileReloadTimerFinished;
+
+	UPROPERTY()
+	bool MissileIsLoaded;
 
 	FTimerHandle LockedOnEnemyShipNullOutTimer;
 

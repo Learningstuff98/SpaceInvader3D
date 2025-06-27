@@ -4,10 +4,12 @@
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 
+void USpaceInvader3DOverlay::SetMissileReloadingProgressBar(const float& Percent) {
+	if (MissileReloadingProgressBar) MissileReloadingProgressBar->SetPercent(Percent);
+}
+
 void USpaceInvader3DOverlay::SetHealthBarPercent(const float& Percent) {
-	if (HealthProgressBar) {
-		HealthProgressBar->SetPercent(Percent);
-	}
+	if (HealthProgressBar) HealthProgressBar->SetPercent(Percent);
 }
 
 void USpaceInvader3DOverlay::SetHeadLightText(const bool& HeadLightsAreOn) {

@@ -21,9 +21,13 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UTextBlock> HeadLightText;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UProgressBar> MissileReloadingProgressBar;
+
 public:
 
 	// Setters
+	void SetMissileReloadingProgressBar(const float& Percent);
 	void SetHealthBarPercent(const float& Percent);
 	void SetHeadLightText(const bool& HeadLightsAreOn);
 };
