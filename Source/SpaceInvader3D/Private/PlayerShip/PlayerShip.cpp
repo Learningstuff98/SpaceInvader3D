@@ -10,6 +10,7 @@
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Projectiles/BlasterShot.h"
+#include "Projectiles/Missle.h"
 #include "Attributes/PlayerShipAttributes.h"
 #include "HUD/SpaceInvader3DHUD.h"
 #include "HUD/SpaceInvader3DOverlay.h"
@@ -20,6 +21,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Statics/ShipStatics.h"
 #include "Components/BoxComponent.h"
+#include "Perception/PawnSensingComponent.h"
 
 APlayerShip::APlayerShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -33,6 +35,11 @@ APlayerShip::APlayerShip() {
 	MinSpeed = 3300.0f;
 	CurrentSpeed = MinSpeed;
 	TargetedEnemyShip = nullptr;
+	LockedOnEnemyShip = nullptr;
+	LockedOnEnemyShipNullOutTimerFinished = true;
+	MissileReloadTimerFinished = true;
+	MissileIsLoaded = true;
+	MissileReloadTime = 2.5f;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -138,6 +145,14 @@ APlayerShip::APlayerShip() {
 	EnemyShipDirectionArrow->SetupAttachment(GetRootComponent());
 	EnemyShipDirectionArrow->bHiddenInGame = false;
 	EnemyShipDirectionArrow->SetArrowSize(4.0f);
+
+	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Pawn Sensing Component"));
+	PawnSensingComponent->bOnlySensePlayers = false;
+
+	LockedOnBeepingSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Locked On Beeping Sound"));
+
+	MissleSpawnLocation = CreateDefaultSubobject<UArrowComponent>(TEXT("Missle Spawn Location"));
+	MissleSpawnLocation->SetupAttachment(GetRootComponent());
 }
 
 void APlayerShip::BeginPlay() {
@@ -147,6 +162,7 @@ void APlayerShip::BeginPlay() {
 	SetHealthBarPercent();
 	SetupEnemyShipDetectionFunctionality();
 	TurnHeadLightsOff();
+	SetupPawnSensing();
 }
 
 void APlayerShip::Tick(float DeltaTime) {
@@ -162,6 +178,10 @@ void APlayerShip::Tick(float DeltaTime) {
 	HandleEnemyShipDirectionArrowVisibility();
 	UpdateEnemyShipDirectionArrowRotation();
 	HandleTargetedEnemyShipStatus();
+	HandleLockedOnEnemyShipStatus();
+	HandleLockOnBeepSound();
+	HandleLockedOnEnemyShipNullOutTimer();
+	SetMissileReloadingProgress();
 }
 
 void APlayerShip::SetupMappingContext() {
@@ -184,6 +204,7 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(RollRightAction, ETriggerEvent::Triggered, this, &APlayerShip::RollRight);
 		EnhancedInputComponent->BindAction(ToggleHeadlightsAction, ETriggerEvent::Triggered, this, &APlayerShip::ToggleHeadlights);
 		EnhancedInputComponent->BindAction(SetTargetedEnemyShipAction, ETriggerEvent::Triggered, this, &APlayerShip::SetTargetedEnemyShip);
+		EnhancedInputComponent->BindAction(FireMissleAction, ETriggerEvent::Triggered, this, &APlayerShip::FireMissle);
 	}
 }
 
@@ -208,7 +229,7 @@ void APlayerShip::Fire() {
 TObjectPtr<ABlasterShot> APlayerShip::SpawnBlasterShot() {
 	const TObjectPtr<UArrowComponent> BarrelToFireFrom = DeterminWhichBarrelToFireFrom();
 	TObjectPtr<ABlasterShot> BlasterShot {};
-	if (TObjectPtr<UWorld> World = GetWorld()) {
+	if (const TObjectPtr<UWorld> World = GetWorld()) {
 		BlasterShot = World->SpawnActor<ABlasterShot>(
 			BlasterShotBlueprintClass,
 			BarrelToFireFrom->GetComponentLocation(),
@@ -286,6 +307,80 @@ void APlayerShip::SetupEnemyShipDetectionFunctionality() {
 	}
 }
 
+void APlayerShip::SetupPawnSensing() {
+	if (PawnSensingComponent) {
+		PawnSensingComponent->OnSeePawn.AddDynamic(this, &APlayerShip::HandleLockingOntoEnemyShips);
+	}
+}
+
+void APlayerShip::HandleLockingOntoEnemyShips(APawn* SeenPawn) {
+	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(SeenPawn)) {
+		if (!LockedOnEnemyShip) LockedOnEnemyShip = EnemyShip;
+		if (LockedOnEnemyShip) {
+			LockedOnEnemyShip->SetPlayerShip(this);
+			LockedOnEnemyShip->SetMissleLockOnUIBoxVisibility(true);
+		}
+	}
+}
+
+void APlayerShip::HandleLockedOnEnemyShipNullOutTimer() {
+	if (LockedOnEnemyShipNullOutTimerFinished) {
+		GetWorldTimerManager().ClearTimer(LockedOnEnemyShipNullOutTimer);
+		GetWorldTimerManager().SetTimer(LockedOnEnemyShipNullOutTimer, this, &APlayerShip::NullOutLockedOnEnemyShip, 0.8f);
+		LockedOnEnemyShipNullOutTimerFinished = false;
+	}
+}
+
+void APlayerShip::NullOutLockedOnEnemyShip() {
+	LockedOnEnemyShip = nullptr;
+	LockedOnEnemyShipNullOutTimerFinished = true;
+}
+
+bool APlayerShip::CanFireMissile() {
+	return LockedOnEnemyShip && MissileIsLoaded;
+}
+
+void APlayerShip::SetMissileReloadTimer() {
+	if (MissileReloadTimerFinished) {
+		GetWorldTimerManager().ClearTimer(MissileReloadTimer);
+		GetWorldTimerManager().SetTimer(MissileReloadTimer, this, &APlayerShip::ReloadMissile, MissileReloadTime);
+		MissileReloadTimerFinished = false;
+	}
+}
+
+void APlayerShip::ReloadMissile() {
+	MissileIsLoaded = true;
+	MissileReloadTimerFinished = true;
+}
+
+void APlayerShip::SetMissileReloadingProgress() {
+	if (PlayerShipOverlay) {
+		const float MissileReloadProgress = 1.f;
+		PlayerShipOverlay->SetMissileReloadingProgress(
+			MissileReloadProgress - GetRemainingMissileReloadTimeAsPercent()
+		);
+	}
+}
+
+float APlayerShip::GetRemainingMissileReloadTimeAsPercent() {
+	return GetWorldTimerManager().GetTimerRemaining(MissileReloadTimer) / MissileReloadTime;
+}
+
+void APlayerShip::HandleLockOnBeepSound() {
+	if (LockedOnBeepingSound) {
+		if (LockedOnEnemyShip) {
+			LockedOnBeepingSound->SetVolumeMultiplier(1.0f);
+		} else {
+			LockedOnBeepingSound->SetVolumeMultiplier(0.0f);
+		}
+	}
+}
+
+FVector APlayerShip::GetCameraLocation() {
+	if (Camera) return Camera->GetComponentLocation();
+	return GetActorLocation();
+}
+
 void APlayerShip::ExitViewModeAfterExploding() {
 	InViewMode = false;
 	GetController()->SetControlRotation(CameraResetTarget->GetComponentRotation());
@@ -315,6 +410,12 @@ void APlayerShip::HandleEnemyShipDirectionArrowVisibility() {
 void APlayerShip::HandleTargetedEnemyShipStatus() {
 	if (!IsValid(TargetedEnemyShip)) {
 		TargetedEnemyShip = nullptr;
+	}
+}
+
+void APlayerShip::HandleLockedOnEnemyShipStatus() {
+	if (!IsValid(LockedOnEnemyShip)) {
+		LockedOnEnemyShip = nullptr;
 	}
 }
 
@@ -375,9 +476,7 @@ void APlayerShip::ZeroOutCurrentControlSpeed() {
 }
 
 void APlayerShip::SetMovementComponentMaxSpeed() {
-	if (Movement) {
-		Movement->MaxSpeed = CurrentSpeed;
-	}
+	if (Movement) Movement->MaxSpeed = CurrentSpeed;
 }
 
 void APlayerShip::UpdatePlayerShipRotation(const float& DeltaTime) {
@@ -467,6 +566,21 @@ void APlayerShip::SetTargetedEnemyShip() {
 		if (TargetedEnemyShip != EnemyShip) {
 			TargetedEnemyShip = EnemyShip;
 			break;
+		}
+	}
+}
+
+void APlayerShip::FireMissle() {
+	if (CanFireMissile() && MissleSpawnLocation) {
+		if (const TObjectPtr<UWorld> World = GetWorld()) {
+			const TObjectPtr<AMissle> Missle = World->SpawnActor<AMissle>(
+				MissleBlueprintClass,
+				MissleSpawnLocation->GetComponentLocation(),
+				MissleSpawnLocation->GetComponentRotation()
+			);
+			if(Missle) Missle->SetTarget(LockedOnEnemyShip);
+			MissileIsLoaded = false;
+			SetMissileReloadTimer();
 		}
 	}
 }

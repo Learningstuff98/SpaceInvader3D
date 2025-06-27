@@ -42,6 +42,7 @@ private:
 	void RollRight();
 	void ToggleHeadlights();
 	void SetTargetedEnemyShip();
+	void FireMissle();
 
 	// Delegate Callbacks
 
@@ -50,6 +51,9 @@ private:
 
 	UFUNCTION()
 	void LoseEnemyShip(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+	void HandleLockingOntoEnemyShips(APawn* SeenPawn);
 
 	// Functions
 
@@ -80,6 +84,16 @@ private:
 	void UpdateEnemyShipDirectionArrowRotation();
 	void HandleEnemyShipDirectionArrowVisibility();
 	void HandleTargetedEnemyShipStatus();
+	void HandleLockedOnEnemyShipStatus();
+	void HandleLockOnBeepSound();
+	void SetupPawnSensing();
+	void HandleLockedOnEnemyShipNullOutTimer();
+	void NullOutLockedOnEnemyShip();
+	bool CanFireMissile();
+	void SetMissileReloadTimer();
+	void ReloadMissile();
+	void SetMissileReloadingProgress();
+	float GetRemainingMissileReloadTimeAsPercent();
 	 
 	// Component Variables
 
@@ -149,6 +163,15 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UArrowComponent> EnemyShipDirectionArrow;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UAudioComponent> LockedOnBeepingSound;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UArrowComponent> MissleSpawnLocation;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UPawnSensingComponent> PawnSensingComponent;
+
 	// Enhanced Input Varaibles
 
 	UPROPERTY(EditAnywhere, Category = Input)
@@ -184,6 +207,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<class UInputAction> SetTargetedEnemyShipAction;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<class UInputAction> FireMissleAction;
+
 	// Other
 
 	UPROPERTY()
@@ -209,8 +235,11 @@ private:
 	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<class USoundBase> ToggleHeadLightSound;
 
-	UPROPERTY(EditAnywhere, Category = Blaster)
+	UPROPERTY(EditAnywhere, Category = Projectiles)
 	TSubclassOf<class ABlasterShot> BlasterShotBlueprintClass;
+
+	UPROPERTY(EditAnywhere, Category = Projectiles)
+	TSubclassOf<class AMissle> MissleBlueprintClass;
 
 	UPROPERTY(EditAnywhere, Category = Pieces)
 	TSubclassOf<class AShipPieces> ShipPiecesBlueprintClass;
@@ -239,9 +268,32 @@ private:
 	UPROPERTY()
 	float CurrentSpeed;
 
+	UPROPERTY()
+	float MissileReloadTime;
+
+	FTimerHandle MissileReloadTimer;
+
+	UPROPERTY()
+	bool MissileReloadTimerFinished;
+
+	UPROPERTY()
+	bool MissileIsLoaded;
+
+	FTimerHandle LockedOnEnemyShipNullOutTimer;
+
+	UPROPERTY()
+	bool LockedOnEnemyShipNullOutTimerFinished;
+
 	UPROPERTY(EditAnywhere, Category = Enemies)
 	TObjectPtr<class AEnemyShip> TargetedEnemyShip;
 
 	UPROPERTY(EditAnywhere, Category = Enemies)
 	TArray<TObjectPtr<class AEnemyShip>> DetectedEnemyShips;
+
+	UPROPERTY(EditAnywhere, Category = Enemies)
+	TObjectPtr<class AEnemyShip> LockedOnEnemyShip;
+
+public:
+    // Getters and setters
+	FVector GetCameraLocation();
 };
