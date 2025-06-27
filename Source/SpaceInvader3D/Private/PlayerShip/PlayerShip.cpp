@@ -40,7 +40,6 @@ APlayerShip::APlayerShip() {
 	MissileReloadTimerFinished = true;
 	MissileIsLoaded = true;
 	MissileReloadTime = 2.5f;
-	MissileReloadProgress = 1.f;
 
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMeshComponent"));
 	SetRootComponent(ShipMeshComponent);
@@ -356,6 +355,7 @@ void APlayerShip::ReloadMissile() {
 
 void APlayerShip::SetMissileReloadingProgress() {
 	if (PlayerShipOverlay) {
+		const float MissileReloadProgress = 1.f;
 		PlayerShipOverlay->SetMissileReloadingProgress(
 			MissileReloadProgress - GetRemainingMissileReloadTimeAsPercent()
 		);
