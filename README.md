@@ -69,7 +69,7 @@ This causes a red outline box to appear to show the player which target they loc
 Missiles have to be reloaded before firing again. Reload progress is shown with a purple progress
 bar.
 
-[Link to PR#28](https://github.com/Learningstuff98/SpaceInvader3D/pull/28/files)
+[Link to PR #28](https://github.com/Learningstuff98/SpaceInvader3D/pull/28/files)
 
 https://github.com/user-attachments/assets/fea0ab75-4261-4377-b4dc-4ef58ec654f8
 
