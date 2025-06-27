@@ -58,3 +58,14 @@ Enemy ships can be blown up! Hooray!
 
 https://github.com/user-attachments/assets/19d0fadb-f5f2-40f0-806f-f6919e58b229
 
+
+6/27/2025
+
+Enemy ships can be locked onto and blown up with enemy tracking missiles.
+
+[Link to PR#28](https://github.com/Learningstuff98/SpaceInvader3D/pull/28/files)
+
+https://github.com/user-attachments/assets/fea0ab75-4261-4377-b4dc-4ef58ec654f8
+
+
+
