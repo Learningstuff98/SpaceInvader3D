@@ -67,6 +67,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UBoxComponent> MissleLockOnUIBox;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect;
+
 	// Other
 
 	UPROPERTY()

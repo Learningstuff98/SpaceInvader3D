@@ -9,6 +9,7 @@
 #include "Components/BoxComponent.h"
 #include "PlayerShip/PlayerShip.h"
 #include "Camera/CameraComponent.h"
+#include "NiagaraComponent.h"
 
 AEnemyShip::AEnemyShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -41,6 +42,9 @@ AEnemyShip::AEnemyShip() {
 	MissleLockOnUIBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Missle Lock On UI Box"));
 	MissleLockOnUIBox->SetupAttachment(GetRootComponent());
 	MissleLockOnUIBox->bHiddenInGame = false;
+
+	EngineThrusterEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect"));
+	EngineThrusterEffect->SetupAttachment(GetRootComponent());
 }
 
 void AEnemyShip::BeginPlay() {
