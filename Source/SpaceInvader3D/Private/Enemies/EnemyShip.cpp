@@ -10,6 +10,7 @@
 #include "PlayerShip/PlayerShip.h"
 #include "Camera/CameraComponent.h"
 #include "NiagaraComponent.h"
+#include "Statics/ShipStatics.h"
 
 AEnemyShip::AEnemyShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -20,6 +21,7 @@ AEnemyShip::AEnemyShip() {
 	NewPatrolTargetIndex = 0;
 	CurrentPatrolTargetIndex = 0;
 	Health = 500;
+	PlayEngineSoundTimerFinished = true;
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ship Mesh"));
 	SetRootComponent(ShipMesh);
@@ -62,6 +64,7 @@ void AEnemyShip::Tick(float DeltaTime) {
 	HandleExploding();
 	UpdateMissleLockOnUIBoxRotation();
 	HandleHidingLockedOnUIBox();
+	HandleEngineSound();
 }
 
 void AEnemyShip::HandleChasingRotation() {
@@ -186,6 +189,19 @@ void AEnemyShip::HandleHidingLockedOnUIBox() {
 void AEnemyShip::HideLockedOnUIBox() {
 	SetMissleLockOnUIBoxVisibility(false);
 	HideLockedOnUIBoxTimerFinished = true;
+}
+
+void AEnemyShip::HandleEngineSound() {
+	if (PlayEngineSoundTimerFinished) {
+		GetWorldTimerManager().ClearTimer(PlayEngineSoundTimer);
+		GetWorldTimerManager().SetTimer(PlayEngineSoundTimer, this, &AEnemyShip::PlayEngineSound, 0.5f);
+		PlayEngineSoundTimerFinished = false;
+	}
+}
+
+void AEnemyShip::PlayEngineSound() {
+	ShipStatics::PlaySound(EngineSound, this);
+	PlayEngineSoundTimerFinished = true;
 }
 
 void AEnemyShip::SetMissleLockOnUIBoxVisibility(const bool& Value) {
