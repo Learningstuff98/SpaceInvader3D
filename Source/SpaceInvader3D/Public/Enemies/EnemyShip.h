@@ -49,6 +49,8 @@ private:
 	void UpdateMissleLockOnUIBoxRotation();
 	void HandleHidingLockedOnUIBox();
 	void HideLockedOnUIBox();
+	void HandleEngineSound();
+	void PlayEngineSound();
 
 	// Components
 
@@ -66,6 +68,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UBoxComponent> MissleLockOnUIBox;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect;
 
 	// Other
 
@@ -111,6 +116,14 @@ private:
 
 	UPROPERTY()
 	bool HideLockedOnUIBoxTimerFinished;
+
+	UPROPERTY(EditAnywhere, Category = Sound)
+	TObjectPtr<class USoundBase> EngineSound;
+
+	FTimerHandle PlayEngineSoundTimer;
+
+	UPROPERTY();
+	bool PlayEngineSoundTimerFinished;
 
 public:
 	// Setters
