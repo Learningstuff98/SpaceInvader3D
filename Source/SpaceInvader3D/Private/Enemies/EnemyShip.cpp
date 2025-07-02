@@ -52,7 +52,6 @@ AEnemyShip::AEnemyShip() {
 void AEnemyShip::BeginPlay() {
 	Super::BeginPlay();
 	SetupPlayerShipDetection();
-	SetupTakingHitsFunctionality();
 	SetMissleLockOnUIBoxVisibility(false);
 }
 
@@ -128,22 +127,6 @@ void AEnemyShip::SetDetectedPlayerShip(APawn* SeenPawn) {
 	if (SeenPawn) {
 		DetectedPlayerShip = SeenPawn;
 	}
-}
-
-void AEnemyShip::SetupTakingHitsFunctionality() {
-	if (ShipMesh) ShipMesh->OnComponentHit.AddDynamic(this, &AEnemyShip::TakeHit);
-}
-
-void AEnemyShip::TakeHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
-	if (const TObjectPtr<ABlasterShot> BlasterShot = Cast<ABlasterShot>(OtherActor)) {
-		TakeBlasterShotHit(BlasterShot);
-	}
-}
-
-void AEnemyShip::TakeBlasterShotHit(const TObjectPtr<ABlasterShot> BlasterShot) {
-	BlasterShot->SpawnImpactBurst();
-	Health -= BlasterShot->Damage;
-	BlasterShot->Destroy();
 }
 
 void AEnemyShip::HandleExploding() {

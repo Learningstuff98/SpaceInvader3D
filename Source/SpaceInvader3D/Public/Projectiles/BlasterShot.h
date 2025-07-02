@@ -19,7 +19,6 @@ public:
 	// Functions
 
 	void FireInDirection(const FVector& ShootDirection);
-	void SpawnImpactBurst();
 
 	// Variables
 
@@ -30,6 +29,19 @@ private:
 	// <AActor>
 	virtual void BeginPlay() override;
 	// </AActor>
+
+	// Delegate Callbacks
+
+	UFUNCTION()
+	void DeliverHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	// Functions
+
+	void SetupHitFunctionality();
+	void HitEnemyShip(const TObjectPtr<class AEnemyShip> EnemyShip);
+	void HitAsteroid();
+	void SpawnImpactBurst();
+	void PlayImpactSound();
 
 	// Component Variables
 
@@ -46,4 +58,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Niagara)
 	TObjectPtr<class UNiagaraSystem> ImpactBurst;
+
+	UPROPERTY(EditAnywhere, Category = Sound)
+	TObjectPtr<class USoundBase> ImpactSound;
 };

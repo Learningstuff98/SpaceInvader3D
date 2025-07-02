@@ -30,9 +30,6 @@ private:
 	UFUNCTION()
 	void SetDetectedPlayerShip(APawn* SeenPawn);
 
-	UFUNCTION()
-	void TakeHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
 	// Functions
 
 	void SetupPlayerShipDetection();
@@ -42,10 +39,8 @@ private:
 	FRotator GetPatrolTargetLookAtRotation();
 	void HandleDetectedPlayerShipNullOutTimer();
 	void NullOutDetectedPlayerShip();
-	void TakeBlasterShotHit(const TObjectPtr<class ABlasterShot> BlasterShot);
 	void HandleExploding();
 	void Explode();
-	void SetupTakingHitsFunctionality();
 	void UpdateMissleLockOnUIBoxRotation();
 	void HandleHidingLockedOnUIBox();
 	void HideLockedOnUIBox();
