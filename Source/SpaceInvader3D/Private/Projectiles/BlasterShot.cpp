@@ -34,6 +34,7 @@ ABlasterShot::ABlasterShot() {
 
 void ABlasterShot::BeginPlay() {
 	Super::BeginPlay();
+	PlaySound(FiringSound);
 	SetupHitFunctionality();
 }
 
@@ -60,7 +61,7 @@ void ABlasterShot::HitEnemyShip(const TObjectPtr<AEnemyShip> EnemyShip) {
 	if (this) {
 		SpawnImpactBurst();
 		EnemyShip->TakeDamage(Damage);
-		PlayImpactSound();
+		PlaySound(ImpactSound);
 	}
 	Destroy();
 }
@@ -68,7 +69,7 @@ void ABlasterShot::HitEnemyShip(const TObjectPtr<AEnemyShip> EnemyShip) {
 void ABlasterShot::HitAsteroid() {
 	if (this) {
 		SpawnImpactBurst();
-		PlayImpactSound();
+		PlaySound(ImpactSound);
 	}
 	Destroy();
 }
@@ -84,11 +85,11 @@ void ABlasterShot::SpawnImpactBurst() {
 	}
 }
 
-void ABlasterShot::PlayImpactSound() {
-	if (ImpactSound) {
+void ABlasterShot::PlaySound(const TObjectPtr<USoundBase> Sound) {
+	if (Sound) {
 		UGameplayStatics::PlaySoundAtLocation(
 			this,
-			ImpactSound,
+			Sound,
 			GetActorLocation()
 		);
 	}

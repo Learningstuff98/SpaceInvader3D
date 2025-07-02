@@ -41,7 +41,7 @@ private:
 	void HitEnemyShip(const TObjectPtr<class AEnemyShip> EnemyShip);
 	void HitAsteroid();
 	void SpawnImpactBurst();
-	void PlayImpactSound();
+	void PlaySound(const TObjectPtr<USoundBase> Sound);
 
 	// Component Variables
 
@@ -61,4 +61,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<class USoundBase> ImpactSound;
+
+	UPROPERTY(EditAnywhere, Category = Sound)
+	TObjectPtr<class USoundBase> FiringSound;
 };

@@ -223,7 +223,6 @@ void APlayerShip::Fire() {
 		BlasterShot->FireInDirection(GetActorRotation().Vector());
 	}
 	FireCooldownTimerFinished = true;
-	if(BlasterSound) ShipStatics::PlaySound(BlasterSound, this);
 }
 
 TObjectPtr<ABlasterShot> APlayerShip::SpawnBlasterShot() {
