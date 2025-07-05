@@ -227,9 +227,6 @@ private:
 	bool FireCooldownTimerFinished;
 
 	UPROPERTY(EditAnywhere, Category = Sound)
-	TObjectPtr<class USoundBase> BlasterSound;
-
-	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<class USoundBase> ExplodingSound;
 
 	UPROPERTY(EditAnywhere, Category = Sound)

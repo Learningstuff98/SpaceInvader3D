@@ -30,9 +30,7 @@ private:
 
 	// Functions
 
-	void PlayImpactSound();
 	void HandlePlayerShipImpact(const TObjectPtr<class APlayerShip> PlayerShip);
-	void HandleBlasterShotImpact(const TObjectPtr<class ABlasterShot> BlasterShot);
 	void Rotate(const float& DeltaTime);
 	double GetNewRotationRoll(const FRotator& OldRotation, const float& DeltaTime);
 	void SetupCollisionFunctionality();
@@ -46,9 +44,6 @@ private:
 	TObjectPtr<class UStaticMeshComponent> AsteroidMeshComponent;
 
 	// Other Variables
-
-	UPROPERTY(EditAnywhere, Category = Sound)
-	TObjectPtr<class USoundBase> BlasterShotImpactSound;
 
 	UPROPERTY(EditAnywhere, Category = "Rotational Drift")
 	double RotationalDrift;

@@ -3,6 +3,12 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Enemies/EnemyShip.h"
+#include "Statics/ShipStatics.h"
+#include "Asteroids/Asteroid.h"
+#include "Kismet/GameplayStatics.h"
+#include "PlayerShip/PlayerShip.h"
+#include "Attributes/PlayerShipAttributes.h"
 
 ABlasterShot::ABlasterShot() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -30,6 +36,52 @@ ABlasterShot::ABlasterShot() {
 
 void ABlasterShot::BeginPlay() {
 	Super::BeginPlay();
+	PlaySound(FiringSound);
+	SetupHitFunctionality();
+}
+
+void ABlasterShot::Tick(float DeltaTime) {
+	Super::Tick(DeltaTime);
+}
+
+void ABlasterShot::SetupHitFunctionality() {
+	if (BlasterShotSphere) BlasterShotSphere->OnComponentHit.AddDynamic(this, &ABlasterShot::DeliverHit);
+}
+
+void ABlasterShot::DeliverHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
+	if (OtherActor) {
+		if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
+			HitEnemyShip(EnemyShip);
+		}
+		if (const TObjectPtr<APlayerShip> PlayerShip = Cast<APlayerShip>(OtherActor)) {
+			if (this) {
+				SpawnImpactBurst();
+				PlayerShip->PlayerShipAttributes->TakeDamage(Damage);
+				PlaySound(ImpactSound);
+			}
+			Destroy();
+		}
+		if (const TObjectPtr<AAsteroid> Asteroid = Cast<AAsteroid>(OtherActor)) {
+			HitAsteroid();
+		}
+	}
+}
+
+void ABlasterShot::HitEnemyShip(const TObjectPtr<AEnemyShip> EnemyShip) {
+	if (this) {
+		SpawnImpactBurst();
+		EnemyShip->TakeDamage(Damage);
+		PlaySound(ImpactSound);
+	}
+	Destroy();
+}
+
+void ABlasterShot::HitAsteroid() {
+	if (this) {
+		SpawnImpactBurst();
+		PlaySound(ImpactSound);
+	}
+	Destroy();
 }
 
 void ABlasterShot::SpawnImpactBurst() {
@@ -43,8 +95,14 @@ void ABlasterShot::SpawnImpactBurst() {
 	}
 }
 
-void ABlasterShot::Tick(float DeltaTime) {
-	Super::Tick(DeltaTime);
+void ABlasterShot::PlaySound(const TObjectPtr<USoundBase> Sound) {
+	if (Sound) {
+		UGameplayStatics::PlaySoundAtLocation(
+			this,
+			Sound,
+			GetActorLocation()
+		);
+	}
 }
 
 void ABlasterShot::FireInDirection(const FVector& ShootDirection) {

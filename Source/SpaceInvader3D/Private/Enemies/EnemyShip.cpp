@@ -11,17 +11,24 @@
 #include "Camera/CameraComponent.h"
 #include "NiagaraComponent.h"
 #include "Statics/ShipStatics.h"
+#include "Components/ArrowComponent.h"
+
+#include "Development/Development.h"
 
 AEnemyShip::AEnemyShip() {
 	PrimaryActorTick.bCanEverTick = true;
 	DetectedPlayerShip = nullptr;
 	DetectedPlayerShipNullOutTimerFinished = true;
 	HideLockedOnUIBoxTimerFinished = true;
-	TurnSpeed = 0.7f;
+	TurnSpeed = 3.0f;
 	NewPatrolTargetIndex = 0;
 	CurrentPatrolTargetIndex = 0;
 	Health = 500;
 	PlayEngineSoundTimerFinished = true;
+	AimedAtPlayerShip = nullptr;
+	NullOutAimedAtPlayerShipTimerFinished = true;
+	BlasterShotReloadTimerFinished = true;
+	RightBarrelHasFired = false;
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ship Mesh"));
 	SetRootComponent(ShipMesh);
@@ -35,6 +42,9 @@ AEnemyShip::AEnemyShip() {
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Pawn Sensing Component"));
 	PawnSensingComponent->SetPeripheralVisionAngle(70.0f);
 
+	AimingSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Aiming Sensing Component"));
+	AimingSensingComponent->SetPeripheralVisionAngle(8.0f);
+
 	PawnMovementComponent = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Pawn Movement Component"));
 	PawnMovementComponent->MaxSpeed = 5000.0f;
 
@@ -47,12 +57,17 @@ AEnemyShip::AEnemyShip() {
 
 	EngineThrusterEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect"));
 	EngineThrusterEffect->SetupAttachment(GetRootComponent());
+
+	LeftGunBarrel = CreateDefaultSubobject<UArrowComponent>(TEXT("Left Gun Barrel"));
+	LeftGunBarrel->SetupAttachment(GetRootComponent());
+
+	RightGunBarrel = CreateDefaultSubobject<UArrowComponent>(TEXT("Right Gun Barrel"));
+	RightGunBarrel->SetupAttachment(GetRootComponent());
 }
 
 void AEnemyShip::BeginPlay() {
 	Super::BeginPlay();
 	SetupPlayerShipDetection();
-	SetupTakingHitsFunctionality();
 	SetMissleLockOnUIBoxVisibility(false);
 }
 
@@ -65,6 +80,8 @@ void AEnemyShip::Tick(float DeltaTime) {
 	UpdateMissleLockOnUIBoxRotation();
 	HandleHidingLockedOnUIBox();
 	HandleEngineSound();
+	HandleFiringBlasterShots();
+	HandleNullingOutAimedAtPlayerShip();
 }
 
 void AEnemyShip::HandleChasingRotation() {
@@ -122,28 +139,17 @@ void AEnemyShip::SetupPlayerShipDetection() {
 	if (PawnSensingComponent) {
 		PawnSensingComponent->OnSeePawn.AddDynamic(this, &AEnemyShip::SetDetectedPlayerShip);
 	}
+	if (AimingSensingComponent) {
+		AimingSensingComponent->OnSeePawn.AddDynamic(this, &AEnemyShip::SetAimedAtPlayerShip);
+	}
 }
 
 void AEnemyShip::SetDetectedPlayerShip(APawn* SeenPawn) {
-	if (SeenPawn) {
-		DetectedPlayerShip = SeenPawn;
-	}
+	if (SeenPawn) DetectedPlayerShip = SeenPawn;
 }
 
-void AEnemyShip::SetupTakingHitsFunctionality() {
-	if (ShipMesh) ShipMesh->OnComponentHit.AddDynamic(this, &AEnemyShip::TakeHit);
-}
-
-void AEnemyShip::TakeHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
-	if (const TObjectPtr<ABlasterShot> BlasterShot = Cast<ABlasterShot>(OtherActor)) {
-		TakeBlasterShotHit(BlasterShot);
-	}
-}
-
-void AEnemyShip::TakeBlasterShotHit(const TObjectPtr<ABlasterShot> BlasterShot) {
-	BlasterShot->SpawnImpactBurst();
-	Health -= BlasterShot->Damage;
-	BlasterShot->Destroy();
+void AEnemyShip::SetAimedAtPlayerShip(APawn* SeenPawn) {
+	if (SeenPawn) AimedAtPlayerShip = SeenPawn;
 }
 
 void AEnemyShip::HandleExploding() {
@@ -202,6 +208,52 @@ void AEnemyShip::HandleEngineSound() {
 void AEnemyShip::PlayEngineSound() {
 	ShipStatics::PlaySound(EngineSound, this);
 	PlayEngineSoundTimerFinished = true;
+}
+
+void AEnemyShip::HandleNullingOutAimedAtPlayerShip() {
+	if (NullOutAimedAtPlayerShipTimerFinished) {
+		GetWorldTimerManager().ClearTimer(NullOutAimedAtPlayerShipTimer);
+		GetWorldTimerManager().SetTimer(NullOutAimedAtPlayerShipTimer, this, &AEnemyShip::NullOutAimedAtPlayerShip, 0.3f);
+		NullOutAimedAtPlayerShipTimerFinished = false;
+	}
+}
+
+void AEnemyShip::NullOutAimedAtPlayerShip() {
+	AimedAtPlayerShip = nullptr;
+	NullOutAimedAtPlayerShipTimerFinished = true;
+}
+
+void AEnemyShip::HandleFiringBlasterShots() {
+	if (BlasterShotReloadTimerFinished) {
+		GetWorldTimerManager().ClearTimer(BlasterShotReloadTimer);
+		GetWorldTimerManager().SetTimer(BlasterShotReloadTimer, this, &AEnemyShip::FireBlasterShot, 0.1f);
+		BlasterShotReloadTimerFinished = false;
+	}
+}
+
+void AEnemyShip::FireBlasterShot() {
+	if (AimedAtPlayerShip) {
+		if (const TObjectPtr<UWorld> World = GetWorld()) {
+			const TObjectPtr<UArrowComponent> BarrelToFireFrom = DeterminWhichBarrelToFireFrom();
+			TObjectPtr<ABlasterShot> BlasterShot = World->SpawnActor<ABlasterShot>(
+				BlasterShotBlueprintClass,
+				BarrelToFireFrom->GetComponentLocation(),
+				BarrelToFireFrom->GetComponentRotation()
+			);
+			BlasterShot->FireInDirection(BarrelToFireFrom->GetComponentRotation().Vector());
+		}
+	}
+	BlasterShotReloadTimerFinished = true;
+}
+
+TObjectPtr<UArrowComponent> AEnemyShip::DeterminWhichBarrelToFireFrom() {
+	if (RightBarrelHasFired) {
+		RightBarrelHasFired = false;
+		return LeftGunBarrel;
+	} else {
+		RightBarrelHasFired = true;
+		return RightGunBarrel;
+	}
 }
 
 void AEnemyShip::SetMissleLockOnUIBoxVisibility(const bool& Value) {

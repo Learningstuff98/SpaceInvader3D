@@ -3,7 +3,6 @@
 #include "Components/SphereComponent.h"
 #include "PlayerShip/PlayerShip.h"
 #include "Attributes/PlayerShipAttributes.h"
-#include "Kismet/GameplayStatics.h"
 #include "Projectiles/BlasterShot.h"
 
 AAsteroid::AAsteroid() {
@@ -41,30 +40,13 @@ void AAsteroid::OnMeshHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 		if (const TObjectPtr<APlayerShip> PlayerShip = Cast<APlayerShip>(OtherActor)) {
 			HandlePlayerShipImpact(PlayerShip);
 		}
-		if (const TObjectPtr<ABlasterShot> BlasterShot = Cast<ABlasterShot>(OtherActor)) {
-			HandleBlasterShotImpact(BlasterShot);
-		}
 	}
-}
-
-void AAsteroid::HandleBlasterShotImpact(const TObjectPtr<ABlasterShot> BlasterShot) {
-	BlasterShot->SpawnImpactBurst();
-	BlasterShot->Destroy();
-	PlayImpactSound();
 }
 
 void AAsteroid::HandlePlayerShipImpact(const TObjectPtr<APlayerShip> PlayerShip) {
 	if (PlayerShip->PlayerShipAttributes) {
 		PlayerShip->PlayerShipAttributes->ApplyCollisionDamage();
 	}
-}
-
-void AAsteroid::PlayImpactSound() {
-	UGameplayStatics::PlaySoundAtLocation(
-		this,
-		BlasterShotImpactSound,
-		GetActorLocation()
-	);
 }
 
 void AAsteroid::Rotate(const float& DeltaTime) {

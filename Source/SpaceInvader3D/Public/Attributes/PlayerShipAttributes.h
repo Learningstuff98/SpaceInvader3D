@@ -40,6 +40,7 @@ private:
 
 public:
 	// Public setters and getters
+	void TakeDamage(const int32& Damage);
 	float GetHealthPercent();
 	FORCEINLINE bool GetIsDead() const { return IsDead; }
 };
