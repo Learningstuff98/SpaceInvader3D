@@ -20,7 +20,7 @@ AEnemyShip::AEnemyShip() {
 	DetectedPlayerShip = nullptr;
 	DetectedPlayerShipNullOutTimerFinished = true;
 	HideLockedOnUIBoxTimerFinished = true;
-	TurnSpeed = 3.f;
+	TurnSpeed = 3.0f;
 	NewPatrolTargetIndex = 0;
 	CurrentPatrolTargetIndex = 0;
 	Health = 500;
@@ -43,7 +43,7 @@ AEnemyShip::AEnemyShip() {
 	PawnSensingComponent->SetPeripheralVisionAngle(70.0f);
 
 	AimingSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Aiming Sensing Component"));
-	AimingSensingComponent->SetPeripheralVisionAngle(10.0f);
+	AimingSensingComponent->SetPeripheralVisionAngle(8.0f);
 
 	PawnMovementComponent = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Pawn Movement Component"));
 	PawnMovementComponent->MaxSpeed = 5000.0f;
@@ -226,7 +226,7 @@ void AEnemyShip::NullOutAimedAtPlayerShip() {
 void AEnemyShip::HandleFiringBlasterShots() {
 	if (BlasterShotReloadTimerFinished) {
 		GetWorldTimerManager().ClearTimer(BlasterShotReloadTimer);
-		GetWorldTimerManager().SetTimer(BlasterShotReloadTimer, this, &AEnemyShip::FireBlasterShot, 0.2f);
+		GetWorldTimerManager().SetTimer(BlasterShotReloadTimer, this, &AEnemyShip::FireBlasterShot, 0.1f);
 		BlasterShotReloadTimerFinished = false;
 	}
 }
