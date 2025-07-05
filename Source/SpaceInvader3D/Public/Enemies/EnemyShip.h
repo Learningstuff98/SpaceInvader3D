@@ -30,6 +30,9 @@ private:
 	UFUNCTION()
 	void SetDetectedPlayerShip(APawn* SeenPawn);
 
+	UFUNCTION()
+	void SetAimedAtPlayerShip(APawn* SeenPawn);
+
 	// Functions
 
 	void SetupPlayerShipDetection();
@@ -46,14 +49,22 @@ private:
 	void HideLockedOnUIBox();
 	void HandleEngineSound();
 	void PlayEngineSound();
+	void HandleNullingOutAimedAtPlayerShip();
+	void NullOutAimedAtPlayerShip();
 
 	// Components
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UStaticMeshComponent> ShipMesh;
 
+	// For spotting the player ship
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UPawnSensingComponent> PawnSensingComponent;
+
+	// For determining if the enemy ship is aiming close enough to the player ship
+	// to start firing
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UPawnSensingComponent> AimingSensingComponent;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UFloatingPawnMovement> PawnMovementComponent;
@@ -119,6 +130,14 @@ private:
 
 	UPROPERTY();
 	bool PlayEngineSoundTimerFinished;
+
+	UPROPERTY()
+	APawn* AimedAtPlayerShip;
+
+	FTimerHandle NullOutAimedAtPlayerShipTimer;
+
+	UPROPERTY()
+	bool NullOutAimedAtPlayerShipTimerFinished;
 
 public:
 	// Setters
