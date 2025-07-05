@@ -7,6 +7,8 @@
 #include "Statics/ShipStatics.h"
 #include "Asteroids/Asteroid.h"
 #include "Kismet/GameplayStatics.h"
+#include "PlayerShip/PlayerShip.h"
+#include "Attributes/PlayerShipAttributes.h"
 
 ABlasterShot::ABlasterShot() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -50,6 +52,14 @@ void ABlasterShot::DeliverHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
 	if (OtherActor) {
 		if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
 			HitEnemyShip(EnemyShip);
+		}
+		if (const TObjectPtr<APlayerShip> PlayerShip = Cast<APlayerShip>(OtherActor)) {
+			if (this) {
+				SpawnImpactBurst();
+				PlayerShip->PlayerShipAttributes->TakeDamage(Damage);
+				PlaySound(ImpactSound);
+			}
+			Destroy();
 		}
 		if (const TObjectPtr<AAsteroid> Asteroid = Cast<AAsteroid>(OtherActor)) {
 			HitAsteroid();

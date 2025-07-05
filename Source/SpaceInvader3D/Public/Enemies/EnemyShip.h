@@ -51,6 +51,9 @@ private:
 	void PlayEngineSound();
 	void HandleNullingOutAimedAtPlayerShip();
 	void NullOutAimedAtPlayerShip();
+	void HandleFiringBlasterShots();
+	void FireBlasterShot();
+	TObjectPtr<class UArrowComponent> DeterminWhichBarrelToFireFrom();
 
 	// Components
 
@@ -77,6 +80,12 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UArrowComponent> LeftGunBarrel;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UArrowComponent> RightGunBarrel;
 
 	// Other
 
@@ -138,6 +147,17 @@ private:
 
 	UPROPERTY()
 	bool NullOutAimedAtPlayerShipTimerFinished;
+
+	FTimerHandle BlasterShotReloadTimer;
+
+	UPROPERTY()
+	bool BlasterShotReloadTimerFinished;
+
+	UPROPERTY(EditAnywhere, Category = Projectiles)
+	TSubclassOf<class ABlasterShot> BlasterShotBlueprintClass;
+
+	UPROPERTY()
+	bool RightBarrelHasFired;
 
 public:
 	// Setters

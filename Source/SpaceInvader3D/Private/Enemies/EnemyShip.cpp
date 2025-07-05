@@ -11,6 +11,7 @@
 #include "Camera/CameraComponent.h"
 #include "NiagaraComponent.h"
 #include "Statics/ShipStatics.h"
+#include "Components/ArrowComponent.h"
 
 #include "Development/Development.h"
 
@@ -19,13 +20,15 @@ AEnemyShip::AEnemyShip() {
 	DetectedPlayerShip = nullptr;
 	DetectedPlayerShipNullOutTimerFinished = true;
 	HideLockedOnUIBoxTimerFinished = true;
-	TurnSpeed = 0.7f;
+	TurnSpeed = 3.f;
 	NewPatrolTargetIndex = 0;
 	CurrentPatrolTargetIndex = 0;
 	Health = 500;
 	PlayEngineSoundTimerFinished = true;
 	AimedAtPlayerShip = nullptr;
 	NullOutAimedAtPlayerShipTimerFinished = true;
+	BlasterShotReloadTimerFinished = true;
+	RightBarrelHasFired = false;
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ship Mesh"));
 	SetRootComponent(ShipMesh);
@@ -54,6 +57,12 @@ AEnemyShip::AEnemyShip() {
 
 	EngineThrusterEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Engine Thruster Effect"));
 	EngineThrusterEffect->SetupAttachment(GetRootComponent());
+
+	LeftGunBarrel = CreateDefaultSubobject<UArrowComponent>(TEXT("Left Gun Barrel"));
+	LeftGunBarrel->SetupAttachment(GetRootComponent());
+
+	RightGunBarrel = CreateDefaultSubobject<UArrowComponent>(TEXT("Right Gun Barrel"));
+	RightGunBarrel->SetupAttachment(GetRootComponent());
 }
 
 void AEnemyShip::BeginPlay() {
@@ -71,11 +80,7 @@ void AEnemyShip::Tick(float DeltaTime) {
 	UpdateMissleLockOnUIBoxRotation();
 	HandleHidingLockedOnUIBox();
 	HandleEngineSound();
-
-	if (AimedAtPlayerShip) {
-		Development::LogMessage("FIRE");
-	}
-
+	HandleFiringBlasterShots();
 	HandleNullingOutAimedAtPlayerShip();
 }
 
@@ -216,6 +221,39 @@ void AEnemyShip::HandleNullingOutAimedAtPlayerShip() {
 void AEnemyShip::NullOutAimedAtPlayerShip() {
 	AimedAtPlayerShip = nullptr;
 	NullOutAimedAtPlayerShipTimerFinished = true;
+}
+
+void AEnemyShip::HandleFiringBlasterShots() {
+	if (BlasterShotReloadTimerFinished) {
+		GetWorldTimerManager().ClearTimer(BlasterShotReloadTimer);
+		GetWorldTimerManager().SetTimer(BlasterShotReloadTimer, this, &AEnemyShip::FireBlasterShot, 0.2f);
+		BlasterShotReloadTimerFinished = false;
+	}
+}
+
+void AEnemyShip::FireBlasterShot() {
+	if (AimedAtPlayerShip) {
+		if (const TObjectPtr<UWorld> World = GetWorld()) {
+			const TObjectPtr<UArrowComponent> BarrelToFireFrom = DeterminWhichBarrelToFireFrom();
+			TObjectPtr<ABlasterShot> BlasterShot = World->SpawnActor<ABlasterShot>(
+				BlasterShotBlueprintClass,
+				BarrelToFireFrom->GetComponentLocation(),
+				BarrelToFireFrom->GetComponentRotation()
+			);
+			BlasterShot->FireInDirection(BarrelToFireFrom->GetComponentRotation().Vector());
+		}
+	}
+	BlasterShotReloadTimerFinished = true;
+}
+
+TObjectPtr<UArrowComponent> AEnemyShip::DeterminWhichBarrelToFireFrom() {
+	if (RightBarrelHasFired) {
+		RightBarrelHasFired = false;
+		return LeftGunBarrel;
+	} else {
+		RightBarrelHasFired = true;
+		return RightGunBarrel;
+	}
 }
 
 void AEnemyShip::SetMissleLockOnUIBoxVisibility(const bool& Value) {
