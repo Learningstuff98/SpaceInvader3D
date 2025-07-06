@@ -54,6 +54,7 @@ private:
 	void HandleFiringBlasterShots();
 	void FireBlasterShot();
 	TObjectPtr<class UArrowComponent> DeterminWhichBarrelToFireFrom();
+	TObjectPtr<class ABlasterShot> SpawnBlasterShot(TObjectPtr<class UArrowComponent> BarrelToFireFrom);
 
 	// Components
 

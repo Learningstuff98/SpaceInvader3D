@@ -233,13 +233,8 @@ void AEnemyShip::HandleFiringBlasterShots() {
 
 void AEnemyShip::FireBlasterShot() {
 	if (AimedAtPlayerShip) {
-		if (const TObjectPtr<UWorld> World = GetWorld()) {
-			const TObjectPtr<UArrowComponent> BarrelToFireFrom = DeterminWhichBarrelToFireFrom();
-			TObjectPtr<ABlasterShot> BlasterShot = World->SpawnActor<ABlasterShot>(
-				BlasterShotBlueprintClass,
-				BarrelToFireFrom->GetComponentLocation(),
-				BarrelToFireFrom->GetComponentRotation()
-			);
+		const TObjectPtr<UArrowComponent> BarrelToFireFrom = DeterminWhichBarrelToFireFrom();
+		if (const TObjectPtr<ABlasterShot> BlasterShot = SpawnBlasterShot(BarrelToFireFrom)) {
 			BlasterShot->FireInDirection(BarrelToFireFrom->GetComponentRotation().Vector());
 		}
 	}
@@ -254,6 +249,18 @@ TObjectPtr<UArrowComponent> AEnemyShip::DeterminWhichBarrelToFireFrom() {
 		RightBarrelHasFired = true;
 		return RightGunBarrel;
 	}
+}
+
+TObjectPtr<ABlasterShot> AEnemyShip::SpawnBlasterShot(TObjectPtr<UArrowComponent> BarrelToFireFrom) {
+	TObjectPtr<ABlasterShot> BlasterShot {};
+	if (const TObjectPtr<UWorld> World = GetWorld()) {
+		BlasterShot = World->SpawnActor<ABlasterShot>(
+			BlasterShotBlueprintClass,
+			BarrelToFireFrom->GetComponentLocation(),
+			BarrelToFireFrom->GetComponentRotation()
+		);
+	}
+	return BlasterShot;
 }
 
 void AEnemyShip::SetMissleLockOnUIBoxVisibility(const bool& Value) {

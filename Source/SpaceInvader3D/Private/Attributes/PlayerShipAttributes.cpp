@@ -24,7 +24,7 @@ void UPlayerShipAttributes::ApplyCollisionDamage() {
 
 void UPlayerShipAttributes::TakeDamage(const int32& Damage) {
 	Health -= Damage;
-	if (Health <= 0) IsDead = true;
+	//if (Health <= 0) IsDead = true;
 }
 
 float UPlayerShipAttributes::GetHealthPercent() {
