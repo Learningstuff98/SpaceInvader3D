@@ -39,6 +39,7 @@ private:
 
 	void SetupHitFunctionality();
 	void HitEnemyShip(const TObjectPtr<class AEnemyShip> EnemyShip);
+	void HitPlayerShip(const TObjectPtr<class APlayerShip> PlayerShip);
 	void HitAsteroid();
 	void SpawnImpactBurst();
 	void PlaySound(const TObjectPtr<USoundBase> Sound);

@@ -54,12 +54,7 @@ void ABlasterShot::DeliverHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
 			HitEnemyShip(EnemyShip);
 		}
 		if (const TObjectPtr<APlayerShip> PlayerShip = Cast<APlayerShip>(OtherActor)) {
-			if (this) {
-				SpawnImpactBurst();
-				PlayerShip->PlayerShipAttributes->TakeDamage(Damage);
-				PlaySound(ImpactSound);
-			}
-			Destroy();
+			HitPlayerShip(PlayerShip);
 		}
 		if (const TObjectPtr<AAsteroid> Asteroid = Cast<AAsteroid>(OtherActor)) {
 			HitAsteroid();
@@ -71,6 +66,15 @@ void ABlasterShot::HitEnemyShip(const TObjectPtr<AEnemyShip> EnemyShip) {
 	if (this) {
 		SpawnImpactBurst();
 		EnemyShip->TakeDamage(Damage);
+		PlaySound(ImpactSound);
+	}
+	Destroy();
+}
+
+void ABlasterShot::HitPlayerShip(const TObjectPtr< APlayerShip> PlayerShip) {
+	if (this) {
+		SpawnImpactBurst();
+		PlayerShip->PlayerShipAttributes->TakeDamage(Damage);
 		PlaySound(ImpactSound);
 	}
 	Destroy();
