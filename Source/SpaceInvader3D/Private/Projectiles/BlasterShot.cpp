@@ -1,5 +1,4 @@
 #include "Projectiles/BlasterShot.h"
-#include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Enemies/EnemyShip.h"
@@ -15,26 +14,18 @@ ABlasterShot::ABlasterShot() {
 	InitialLifeSpan = 3.5f;
 	Damage = 100;
 
-	BlasterShotSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Blaster Shot Sphere"));
-	SetRootComponent(BlasterShotSphere);
-	BlasterShotSphere->SetSphereRadius(15.f);
-	BlasterShotSphere->SetNotifyRigidBodyCollision(true);
-	BlasterShotSphere->SetCollisionProfileName(FName("Custom"));
-	BlasterShotSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	BlasterShotSphere->SetCollisionObjectType(ECollisionChannel::ECC_Destructible);
-	BlasterShotSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	BlasterShotSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
-	BlasterShotSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+	BlasterShotVisualEffect = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Blaster Shot Visual Effect"));
+	SetRootComponent(BlasterShotVisualEffect);
+	BlasterShotVisualEffect->SetNotifyRigidBodyCollision(true);
+	BlasterShotVisualEffect->SetCollisionProfileName(FName("Custom"));
+	BlasterShotVisualEffect->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	BlasterShotVisualEffect->SetCollisionObjectType(ECollisionChannel::ECC_Destructible);
+	BlasterShotVisualEffect->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	BlasterShotVisualEffect->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
+	BlasterShotVisualEffect->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
 
 	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
 	Movement->ProjectileGravityScale = 0.0f;
-
-	BlasterShotVisualEffect = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Blaster Shot Visual Effect"));
-	BlasterShotVisualEffect->SetupAttachment(GetRootComponent());
-	BlasterShotVisualEffect->SetCollisionProfileName(FName("Custom"));
-	BlasterShotVisualEffect->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	BlasterShotVisualEffect->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-
 }
 
 void ABlasterShot::BeginPlay() {
@@ -48,7 +39,9 @@ void ABlasterShot::Tick(float DeltaTime) {
 }
 
 void ABlasterShot::SetupHitFunctionality() {
-	if (BlasterShotSphere) BlasterShotSphere->OnComponentHit.AddDynamic(this, &ABlasterShot::DeliverHit);
+	if (BlasterShotVisualEffect) {
+		BlasterShotVisualEffect->OnComponentHit.AddDynamic(this, &ABlasterShot::DeliverHit);
+	}
 }
 
 void ABlasterShot::DeliverHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
