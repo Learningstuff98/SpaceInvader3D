@@ -13,8 +13,6 @@
 #include "Statics/ShipStatics.h"
 #include "Components/ArrowComponent.h"
 
-#include "Development/Development.h"
-
 AEnemyShip::AEnemyShip() {
 	PrimaryActorTick.bCanEverTick = true;
 	DetectedPlayerShip = nullptr;
@@ -226,7 +224,7 @@ void AEnemyShip::NullOutAimedAtPlayerShip() {
 void AEnemyShip::HandleFiringBlasterShots() {
 	if (BlasterShotReloadTimerFinished) {
 		GetWorldTimerManager().ClearTimer(BlasterShotReloadTimer);
-		GetWorldTimerManager().SetTimer(BlasterShotReloadTimer, this, &AEnemyShip::FireBlasterShot, 0.1f);
+		GetWorldTimerManager().SetTimer(BlasterShotReloadTimer, this, &AEnemyShip::FireBlasterShot, 0.15f);
 		BlasterShotReloadTimerFinished = false;
 	}
 }

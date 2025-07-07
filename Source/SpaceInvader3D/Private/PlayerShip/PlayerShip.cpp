@@ -213,7 +213,7 @@ void APlayerShip::HandleFireTimer() {
 	if (!PlayerShipAttributes->GetIsDead()) {
 		if (FireCooldownTimerFinished) {
 			GetWorldTimerManager().ClearTimer(FireCooldownTimer);
-			GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.15f);
+			GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.1f);
 			FireCooldownTimerFinished = false;
 		}
     }

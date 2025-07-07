@@ -52,7 +52,7 @@ private:
 	TObjectPtr<class UProjectileMovementComponent> Movement;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UNiagaraComponent> BlasterShotEffect;
+	TObjectPtr<class UStaticMeshComponent> BlasterShotVisualEffect;
 
 	// Varibles
 

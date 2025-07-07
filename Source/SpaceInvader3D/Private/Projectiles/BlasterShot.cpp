@@ -1,7 +1,6 @@
 #include "Projectiles/BlasterShot.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Enemies/EnemyShip.h"
 #include "Statics/ShipStatics.h"
@@ -9,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "PlayerShip/PlayerShip.h"
 #include "Attributes/PlayerShipAttributes.h"
+#include "Components/StaticMeshComponent.h"
 
 ABlasterShot::ABlasterShot() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -30,8 +30,12 @@ ABlasterShot::ABlasterShot() {
 	Movement->ProjectileGravityScale = 0.0f;
 	Movement->InitialSpeed = 200000.0f;
 
-	BlasterShotEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Blaster Shot Effect"));
-	BlasterShotEffect->SetupAttachment(GetRootComponent());
+	BlasterShotVisualEffect = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Blaster Shot Visual Effect"));
+	BlasterShotVisualEffect->SetupAttachment(GetRootComponent());
+	BlasterShotVisualEffect->SetCollisionProfileName(FName("Custom"));
+	BlasterShotVisualEffect->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	BlasterShotVisualEffect->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+
 }
 
 void ABlasterShot::BeginPlay() {
