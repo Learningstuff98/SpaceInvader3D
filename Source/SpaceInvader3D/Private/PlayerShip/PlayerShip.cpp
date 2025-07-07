@@ -221,6 +221,7 @@ void APlayerShip::HandleFireTimer() {
 
 void APlayerShip::Fire() {
 	if (const TObjectPtr<ABlasterShot> BlasterShot = SpawnBlasterShot()) {
+		BlasterShot->SetMovementSpeed(80000.0f);
 		BlasterShot->FireInDirection(GetActorRotation().Vector());
 	}
 	FireCooldownTimerFinished = true;

@@ -64,4 +64,8 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Sound)
 	TObjectPtr<class USoundBase> FiringSound;
+
+public:
+	// Setters and getters
+	void SetMovementSpeed(const float& Speed);
 };

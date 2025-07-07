@@ -12,7 +12,7 @@
 
 ABlasterShot::ABlasterShot() {
 	PrimaryActorTick.bCanEverTick = true;
-	InitialLifeSpan = 2.f;
+	InitialLifeSpan = 3.5f;
 	Damage = 100;
 
 	BlasterShotSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Blaster Shot Sphere"));
@@ -28,7 +28,6 @@ ABlasterShot::ABlasterShot() {
 
 	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
 	Movement->ProjectileGravityScale = 0.0f;
-	Movement->InitialSpeed = 200000.0f;
 
 	BlasterShotVisualEffect = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Blaster Shot Visual Effect"));
 	BlasterShotVisualEffect->SetupAttachment(GetRootComponent());
@@ -107,6 +106,10 @@ void ABlasterShot::PlaySound(const TObjectPtr<USoundBase> Sound) {
 			GetActorLocation()
 		);
 	}
+}
+
+void ABlasterShot::SetMovementSpeed(const float& Speed) {
+	if (Movement) Movement->InitialSpeed = Speed;
 }
 
 void ABlasterShot::FireInDirection(const FVector& ShootDirection) {

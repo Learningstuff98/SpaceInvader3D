@@ -233,6 +233,7 @@ void AEnemyShip::FireBlasterShot() {
 	if (AimedAtPlayerShip) {
 		const TObjectPtr<UArrowComponent> BarrelToFireFrom = DeterminWhichBarrelToFireFrom();
 		if (const TObjectPtr<ABlasterShot> BlasterShot = SpawnBlasterShot(BarrelToFireFrom)) {
+			BlasterShot->SetMovementSpeed(50000.0f);
 			BlasterShot->FireInDirection(BarrelToFireFrom->GetComponentRotation().Vector());
 		}
 	}
