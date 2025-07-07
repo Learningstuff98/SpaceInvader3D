@@ -71,7 +71,7 @@ void ABlasterShot::HitEnemyShip(const TObjectPtr<AEnemyShip> EnemyShip) {
 	Destroy();
 }
 
-void ABlasterShot::HitPlayerShip(const TObjectPtr< APlayerShip> PlayerShip) {
+void ABlasterShot::HitPlayerShip(const TObjectPtr<APlayerShip> PlayerShip) {
 	if (this) {
 		SpawnImpactBurst();
 		PlayerShip->PlayerShipAttributes->TakeDamage(Damage);
