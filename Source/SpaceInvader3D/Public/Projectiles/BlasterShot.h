@@ -51,6 +51,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UProjectileMovementComponent> Movement;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class USceneComponent> ImpactBurstSpawnLocation;
+
 	// Varibles
 
 	UPROPERTY(EditAnywhere, Category = Niagara)

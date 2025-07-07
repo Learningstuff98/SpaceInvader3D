@@ -8,6 +8,7 @@
 #include "PlayerShip/PlayerShip.h"
 #include "Attributes/PlayerShipAttributes.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/SceneComponent.h"
 
 ABlasterShot::ABlasterShot() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -26,6 +27,9 @@ ABlasterShot::ABlasterShot() {
 
 	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
 	Movement->ProjectileGravityScale = 0.0f;
+
+	ImpactBurstSpawnLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Impact Burst Spawn Location"));
+	ImpactBurstSpawnLocation->SetupAttachment(GetRootComponent());
 }
 
 void ABlasterShot::BeginPlay() {
@@ -81,12 +85,12 @@ void ABlasterShot::HitAsteroid() {
 }
 
 void ABlasterShot::SpawnImpactBurst() {
-	if (ImpactBurst) {
+	if (ImpactBurst && ImpactBurstSpawnLocation) {
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 			this,
 			ImpactBurst,
-			GetActorLocation(),
-			GetActorRotation()
+			ImpactBurstSpawnLocation->GetComponentLocation(),
+			ImpactBurstSpawnLocation->GetComponentRotation()
 		);
 	}
 }
