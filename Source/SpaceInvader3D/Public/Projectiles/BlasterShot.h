@@ -19,7 +19,6 @@ public:
 	// Functions
 
 	void FireInDirection(const FVector& ShootDirection);
-	void SpawnImpactBurst();
 
 	// Variables
 
@@ -31,19 +30,43 @@ private:
 	virtual void BeginPlay() override;
 	// </AActor>
 
+	// Delegate Callbacks
+
+	UFUNCTION()
+	void DeliverHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	// Functions
+
+	void SetupHitFunctionality();
+	void HitEnemyShip(const TObjectPtr<class AEnemyShip> EnemyShip);
+	void HitPlayerShip(const TObjectPtr<class APlayerShip> PlayerShip);
+	void HitAsteroid();
+	void SpawnImpactBurst();
+	void PlaySound(const TObjectPtr<USoundBase> Sound);
+
 	// Component Variables
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class USphereComponent> BlasterShotSphere;
+	TObjectPtr<class UStaticMeshComponent> BlasterShotVisualEffect;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UProjectileMovementComponent> Movement;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UNiagaraComponent> BlasterShotEffect;
+	TObjectPtr<class USceneComponent> ImpactBurstSpawnLocation;
 
 	// Varibles
 
 	UPROPERTY(EditAnywhere, Category = Niagara)
 	TObjectPtr<class UNiagaraSystem> ImpactBurst;
+
+	UPROPERTY(EditAnywhere, Category = Sound)
+	TObjectPtr<class USoundBase> ImpactSound;
+
+	UPROPERTY(EditAnywhere, Category = Sound)
+	TObjectPtr<class USoundBase> FiringSound;
+
+public:
+	// Setters and getters
+	void SetMovementSpeed(const float& Speed);
 };

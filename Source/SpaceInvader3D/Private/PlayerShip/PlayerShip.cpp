@@ -49,6 +49,7 @@ APlayerShip::APlayerShip() {
 	ShipMeshComponent->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
 	ShipMeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	ShipMeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
+	ShipMeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Destructible, ECollisionResponse::ECR_Block);
 	
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(GetRootComponent());
@@ -212,7 +213,7 @@ void APlayerShip::HandleFireTimer() {
 	if (!PlayerShipAttributes->GetIsDead()) {
 		if (FireCooldownTimerFinished) {
 			GetWorldTimerManager().ClearTimer(FireCooldownTimer);
-			GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.15f);
+			GetWorldTimerManager().SetTimer(FireCooldownTimer, this, &APlayerShip::Fire, 0.1f);
 			FireCooldownTimerFinished = false;
 		}
     }
@@ -220,10 +221,10 @@ void APlayerShip::HandleFireTimer() {
 
 void APlayerShip::Fire() {
 	if (const TObjectPtr<ABlasterShot> BlasterShot = SpawnBlasterShot()) {
+		BlasterShot->SetMovementSpeed(80000.0f);
 		BlasterShot->FireInDirection(GetActorRotation().Vector());
 	}
 	FireCooldownTimerFinished = true;
-	if(BlasterSound) ShipStatics::PlaySound(BlasterSound, this);
 }
 
 TObjectPtr<ABlasterShot> APlayerShip::SpawnBlasterShot() {

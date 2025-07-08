@@ -31,7 +31,7 @@ private:
 	void SetDetectedPlayerShip(APawn* SeenPawn);
 
 	UFUNCTION()
-	void TakeHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	void SetAimedAtPlayerShip(APawn* SeenPawn);
 
 	// Functions
 
@@ -42,23 +42,34 @@ private:
 	FRotator GetPatrolTargetLookAtRotation();
 	void HandleDetectedPlayerShipNullOutTimer();
 	void NullOutDetectedPlayerShip();
-	void TakeBlasterShotHit(const TObjectPtr<class ABlasterShot> BlasterShot);
 	void HandleExploding();
 	void Explode();
-	void SetupTakingHitsFunctionality();
 	void UpdateMissleLockOnUIBoxRotation();
 	void HandleHidingLockedOnUIBox();
 	void HideLockedOnUIBox();
 	void HandleEngineSound();
 	void PlayEngineSound();
+	void HandleNullingOutAimedAtPlayerShip();
+	void NullOutAimedAtPlayerShip();
+	void HandleFiringBlasterShots();
+	void FireBlasterShot();
+	TObjectPtr<class UArrowComponent> DeterminWhichBarrelToFireFrom();
+	TObjectPtr<class ABlasterShot> SpawnBlasterShot(TObjectPtr<class UArrowComponent> BarrelToFireFrom);
+	void HandleGoingBackToPatrolling();
 
 	// Components
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UStaticMeshComponent> ShipMesh;
 
+	// For spotting the player ship
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UPawnSensingComponent> PawnSensingComponent;
+
+	// For determining if the enemy ship is aiming close enough to the player ship
+	// to start firing
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UPawnSensingComponent> AimingSensingComponent;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UFloatingPawnMovement> PawnMovementComponent;
@@ -71,6 +82,12 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UNiagaraComponent> EngineThrusterEffect;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UArrowComponent> LeftGunBarrel;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UArrowComponent> RightGunBarrel;
 
 	// Other
 
@@ -124,6 +141,25 @@ private:
 
 	UPROPERTY();
 	bool PlayEngineSoundTimerFinished;
+
+	UPROPERTY()
+	APawn* AimedAtPlayerShip;
+
+	FTimerHandle NullOutAimedAtPlayerShipTimer;
+
+	UPROPERTY()
+	bool NullOutAimedAtPlayerShipTimerFinished;
+
+	FTimerHandle BlasterShotReloadTimer;
+
+	UPROPERTY()
+	bool BlasterShotReloadTimerFinished;
+
+	UPROPERTY(EditAnywhere, Category = Projectiles)
+	TSubclassOf<class ABlasterShot> BlasterShotBlueprintClass;
+
+	UPROPERTY()
+	bool RightBarrelHasFired;
 
 public:
 	// Setters
