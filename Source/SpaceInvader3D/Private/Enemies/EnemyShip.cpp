@@ -19,7 +19,7 @@ AEnemyShip::AEnemyShip() {
 	DetectedPlayerShip = nullptr;
 	DetectedPlayerShipNullOutTimerFinished = true;
 	HideLockedOnUIBoxTimerFinished = true;
-	TurnSpeed = 0.7f;
+	TurnSpeed = 3.0f;
 	NewPatrolTargetIndex = 0;
 	CurrentPatrolTargetIndex = 0;
 	Health = 500;
