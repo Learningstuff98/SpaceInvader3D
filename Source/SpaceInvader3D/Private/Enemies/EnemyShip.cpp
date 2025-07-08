@@ -8,6 +8,7 @@
 #include "Statics/ShipStatics.h"
 #include "Components/BoxComponent.h"
 #include "PlayerShip/PlayerShip.h"
+#include "Attributes/PlayerShipAttributes.h"
 #include "Camera/CameraComponent.h"
 #include "NiagaraComponent.h"
 #include "Statics/ShipStatics.h"
@@ -18,7 +19,7 @@ AEnemyShip::AEnemyShip() {
 	DetectedPlayerShip = nullptr;
 	DetectedPlayerShipNullOutTimerFinished = true;
 	HideLockedOnUIBoxTimerFinished = true;
-	TurnSpeed = 3.0f;
+	TurnSpeed = 0.7f;
 	NewPatrolTargetIndex = 0;
 	CurrentPatrolTargetIndex = 0;
 	Health = 500;
@@ -80,6 +81,7 @@ void AEnemyShip::Tick(float DeltaTime) {
 	HandleEngineSound();
 	HandleFiringBlasterShots();
 	HandleNullingOutAimedAtPlayerShip();
+	HandleGoingBackToPatrolling();
 }
 
 void AEnemyShip::HandleChasingRotation() {
@@ -143,11 +145,23 @@ void AEnemyShip::SetupPlayerShipDetection() {
 }
 
 void AEnemyShip::SetDetectedPlayerShip(APawn* SeenPawn) {
-	if (SeenPawn) DetectedPlayerShip = SeenPawn;
+	if (SeenPawn) {
+		if (const TObjectPtr<APlayerShip> PossiblyDeadPlayerShip = Cast<APlayerShip>(SeenPawn)) {
+			if (!PossiblyDeadPlayerShip->PlayerShipAttributes->GetIsDead()) {
+				DetectedPlayerShip = SeenPawn;
+			}
+		}
+	}
 }
 
 void AEnemyShip::SetAimedAtPlayerShip(APawn* SeenPawn) {
-	if (SeenPawn) AimedAtPlayerShip = SeenPawn;
+	if (SeenPawn) {
+		if (const TObjectPtr<APlayerShip> PossiblyDeadPlayerShip = Cast<APlayerShip>(SeenPawn)) {
+			if (!PossiblyDeadPlayerShip->PlayerShipAttributes->GetIsDead()) {
+				AimedAtPlayerShip = SeenPawn;
+			}
+		}
+	}
 }
 
 void AEnemyShip::HandleExploding() {
@@ -260,6 +274,17 @@ TObjectPtr<ABlasterShot> AEnemyShip::SpawnBlasterShot(TObjectPtr<UArrowComponent
 		);
 	}
 	return BlasterShot;
+}
+
+void AEnemyShip::HandleGoingBackToPatrolling() {
+	if (DetectedPlayerShip) {
+		if (const TObjectPtr<APlayerShip> PossiblyDeadPlayerShip = Cast<APlayerShip>(DetectedPlayerShip)) {
+			if (PossiblyDeadPlayerShip->PlayerShipAttributes->GetIsDead()) {
+				DetectedPlayerShip = nullptr;
+				AimedAtPlayerShip = nullptr;
+			}
+		}
+	}
 }
 
 void AEnemyShip::SetMissleLockOnUIBoxVisibility(const bool& Value) {
