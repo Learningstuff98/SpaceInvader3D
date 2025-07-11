@@ -8,7 +8,7 @@ APatrolTarget::APatrolTarget() {
 
 	EnemyShipDetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Enemy Ship Detection Sphere"));
 	SetRootComponent(EnemyShipDetectionSphere);
-	EnemyShipDetectionSphere->SetSphereRadius(2000.0f);
+	EnemyShipDetectionSphere->SetSphereRadius(1000.0f);
 }
 
 void APatrolTarget::BeginPlay() {
@@ -20,14 +20,16 @@ void APatrolTarget::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 }
 
-void APatrolTarget::TellEnemyShipToFindANewPatrolTarget(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
-	if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
-		EnemyShip->GetRandomPatrolTargetIndex();
-	}
-}
-
 void APatrolTarget::SetupSphereInteractionsFunctionality() {
 	if (EnemyShipDetectionSphere) {
 		EnemyShipDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &APatrolTarget::TellEnemyShipToFindANewPatrolTarget);
+	}
+}
+
+void APatrolTarget::TellEnemyShipToFindANewPatrolTarget(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+	if (const TObjectPtr<UStaticMeshComponent> ShipMesh = Cast<UStaticMeshComponent>(OtherComp)) {
+		if (const TObjectPtr<AEnemyShip> EnemyShip = Cast<AEnemyShip>(OtherActor)) {
+			EnemyShip->GetRandomPatrolTargetIndex();
+		}
 	}
 }
