@@ -15,6 +15,7 @@
 #include "Components/ArrowComponent.h"
 #include "Components/SphereComponent.h"
 #include "Development/Development.h"
+#include "GameStates/SpaceInvaderGameState.h"
 
 AEnemyShip::AEnemyShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -75,6 +76,9 @@ void AEnemyShip::BeginPlay() {
 	SetupPlayerShipDetection();
 	SetMissleLockOnUIBoxVisibility(false);
 	SetupPatrolTargetDetection();
+	SetGameState();
+	SetGameStateEnemyShipCount(1);
+	Development::LogNumber(GameState->GetEnemyShipCount());
 }
 
 void AEnemyShip::Tick(float DeltaTime) {
@@ -174,7 +178,11 @@ void AEnemyShip::SetAimedAtPlayerShip(APawn* SeenPawn) {
 
 void AEnemyShip::HandleExploding() {
 	if (Health <= 0) {
-		Explode();
+		if (this) {
+			Explode();
+			SetGameStateEnemyShipCount(-1);
+		}
+		Development::LogNumber(GameState->GetEnemyShipCount());
 		Destroy();
 	}
 }
@@ -326,6 +334,22 @@ void AEnemyShip::HandleDiscardingPatrolTargetDetectionSphere() {
 	if (PatrolTargetDetectionSphere->GetUnscaledSphereRadius() >= 2000000.f) {
 		PatrolTargetDetectionSphere->DestroyComponent();
 		PatrolTargetDetectionSphere = nullptr;
+	}
+}
+
+void AEnemyShip::SetGameState() {
+	if (const TObjectPtr<UWorld> World = GetWorld()) {
+		if (const TObjectPtr<ASpaceInvaderGameState> SpaceInvaderGameState = World->GetGameState<ASpaceInvaderGameState>()) {
+			GameState = SpaceInvaderGameState;
+		}
+	}
+}
+
+void AEnemyShip::SetGameStateEnemyShipCount(const int32& AdjustmentAmount) {
+	if (GameState) {
+		GameState->SetEnemyShipCount(
+			GameState->GetEnemyShipCount() + AdjustmentAmount
+		);
 	}
 }
 

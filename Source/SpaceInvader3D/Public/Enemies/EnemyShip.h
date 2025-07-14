@@ -63,6 +63,8 @@ private:
 	void HandlePatrolTargetDetectionSphere();
 	void PerformPatrolTargetDetectionSpherePing();
 	void HandleDiscardingPatrolTargetDetectionSphere();
+	void SetGameState();
+	void SetGameStateEnemyShipCount(const int32& AdjustmentAmount);
 
 	// Components
 
@@ -170,6 +172,9 @@ private:
 
 	UPROPERTY()
 	bool RightBarrelHasFired;
+
+	UPROPERTY()
+	TObjectPtr<class ASpaceInvaderGameState> GameState;
 
 public:
 	// Setters
