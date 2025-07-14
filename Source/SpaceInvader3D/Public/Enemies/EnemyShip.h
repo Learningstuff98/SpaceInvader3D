@@ -33,6 +33,9 @@ private:
 	UFUNCTION()
 	void SetAimedAtPlayerShip(APawn* SeenPawn);
 
+	UFUNCTION()
+	void AddPatrolTarget(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 	// Functions
 
 	void SetupPlayerShipDetection();
@@ -56,6 +59,10 @@ private:
 	TObjectPtr<class UArrowComponent> DeterminWhichBarrelToFireFrom();
 	TObjectPtr<class ABlasterShot> SpawnBlasterShot(TObjectPtr<class UArrowComponent> BarrelToFireFrom);
 	void HandleGoingBackToPatrolling();
+	void SetupPatrolTargetDetection();
+	void HandlePatrolTargetDetectionSphere();
+	void PerformPatrolTargetDetectionSpherePing();
+	void HandleDiscardingPatrolTargetDetectionSphere();
 
 	// Components
 
@@ -88,6 +95,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UArrowComponent> RightGunBarrel;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class USphereComponent> PatrolTargetDetectionSphere;
 
 	// Other
 

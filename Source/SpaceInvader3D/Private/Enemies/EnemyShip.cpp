@@ -13,6 +13,8 @@
 #include "NiagaraComponent.h"
 #include "Statics/ShipStatics.h"
 #include "Components/ArrowComponent.h"
+#include "Components/SphereComponent.h"
+#include "Development/Development.h"
 
 AEnemyShip::AEnemyShip() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -62,12 +64,17 @@ AEnemyShip::AEnemyShip() {
 
 	RightGunBarrel = CreateDefaultSubobject<UArrowComponent>(TEXT("Right Gun Barrel"));
 	RightGunBarrel->SetupAttachment(GetRootComponent());
+
+	PatrolTargetDetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Patrol Target Detection Sphere"));
+	PatrolTargetDetectionSphere->SetupAttachment(GetRootComponent());
+	PatrolTargetDetectionSphere->SetSphereRadius(100.0f);
 }
 
 void AEnemyShip::BeginPlay() {
 	Super::BeginPlay();
 	SetupPlayerShipDetection();
 	SetMissleLockOnUIBoxVisibility(false);
+	SetupPatrolTargetDetection();
 }
 
 void AEnemyShip::Tick(float DeltaTime) {
@@ -82,6 +89,7 @@ void AEnemyShip::Tick(float DeltaTime) {
 	HandleFiringBlasterShots();
 	HandleNullingOutAimedAtPlayerShip();
 	HandleGoingBackToPatrolling();
+	HandlePatrolTargetDetectionSphere();
 }
 
 void AEnemyShip::HandleChasingRotation() {
@@ -284,6 +292,40 @@ void AEnemyShip::HandleGoingBackToPatrolling() {
 				AimedAtPlayerShip = nullptr;
 			}
 		}
+	}
+}
+
+void AEnemyShip::SetupPatrolTargetDetection() {
+	if (PatrolTargetDetectionSphere) {
+		PatrolTargetDetectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyShip::AddPatrolTarget);
+	}
+}
+
+void AEnemyShip::AddPatrolTarget(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	if (OtherActor) {
+		if (const TObjectPtr<APatrolTarget> PatrolTarget = Cast<APatrolTarget>(OtherActor)) {
+			PatrolTargets.Add(PatrolTarget);
+		}
+	}
+}
+
+void AEnemyShip::HandlePatrolTargetDetectionSphere() {
+	if (PatrolTargetDetectionSphere) {
+		PerformPatrolTargetDetectionSpherePing();
+		HandleDiscardingPatrolTargetDetectionSphere();
+	}
+}
+
+void AEnemyShip::PerformPatrolTargetDetectionSpherePing() {
+	PatrolTargetDetectionSphere->SetSphereRadius(
+		PatrolTargetDetectionSphere->GetUnscaledSphereRadius() + 1000000.f
+	);
+}
+
+void AEnemyShip::HandleDiscardingPatrolTargetDetectionSphere() {
+	if (PatrolTargetDetectionSphere->GetUnscaledSphereRadius() >= 2000000.f) {
+		PatrolTargetDetectionSphere->DestroyComponent();
+		PatrolTargetDetectionSphere = nullptr;
 	}
 }
 
