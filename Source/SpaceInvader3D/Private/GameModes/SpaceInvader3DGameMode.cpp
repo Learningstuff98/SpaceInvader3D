@@ -1,4 +1,5 @@
 #include "GameModes/SpaceInvader3DGameMode.h"
+#include "GameStates/SpaceInvaderGameState.h"
 #include "Development/Development.h"
 #include "Components/SphereComponent.h"
 #include "PatrolTargets/PatrolTarget.h"
@@ -13,16 +14,26 @@ ASpaceInvader3DGameMode::ASpaceInvader3DGameMode() {
 void ASpaceInvader3DGameMode::BeginPlay() {
 	Super::BeginPlay();
 	SetupDetectionSphereOverlapFunctionality();
+	SetSpaceInvaderGameState();
 }
 
 void ASpaceInvader3DGameMode::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 	HandleDetectionSphere();
+	Development::LogNumber(SpaceInvaderGameState->GetEnemyShipCount());
 }
 
 void ASpaceInvader3DGameMode::SetupDetectionSphereOverlapFunctionality() {
 	if (DetectionSphere) {
 		DetectionSphere->OnComponentBeginOverlap.AddDynamic(this, &ASpaceInvader3DGameMode::HandleDetectionSphereOverlaps);
+	}
+}
+
+void ASpaceInvader3DGameMode::SetSpaceInvaderGameState() {
+	if (const TObjectPtr<UWorld> World = GetWorld()) {
+		if (const TObjectPtr<ASpaceInvaderGameState> CustomGameState = World->GetGameState<ASpaceInvaderGameState>()) {
+			SpaceInvaderGameState = CustomGameState;
+		}
 	}
 }
 

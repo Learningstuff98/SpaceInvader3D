@@ -32,6 +32,7 @@ private:
 	void PerformDetectionSpherePing();
 	void HandleDiscardingDetectionSphere();
 	void SetupDetectionSphereOverlapFunctionality();
+	void SetSpaceInvaderGameState();
 
 	// Components
 
@@ -42,4 +43,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Patrol Targets")
 	TArray<TObjectPtr<class APatrolTarget>> PatrolTargets;
+
+	UPROPERTY()
+	TObjectPtr<class ASpaceInvaderGameState> SpaceInvaderGameState;
 };

@@ -78,7 +78,6 @@ void AEnemyShip::BeginPlay() {
 	SetupPatrolTargetDetection();
 	SetGameState();
 	SetGameStateEnemyShipCount(1);
-	Development::LogNumber(GameState->GetEnemyShipCount());
 }
 
 void AEnemyShip::Tick(float DeltaTime) {
@@ -182,7 +181,6 @@ void AEnemyShip::HandleExploding() {
 			Explode();
 			SetGameStateEnemyShipCount(-1);
 		}
-		Development::LogNumber(GameState->GetEnemyShipCount());
 		Destroy();
 	}
 }
