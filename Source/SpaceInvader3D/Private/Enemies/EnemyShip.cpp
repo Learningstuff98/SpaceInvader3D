@@ -76,7 +76,6 @@ void AEnemyShip::BeginPlay() {
 	SetupPlayerShipDetection();
 	SetMissleLockOnUIBoxVisibility(false);
 	SetupPatrolTargetDetection();
-	SetGameState();
 	SetGameStateEnemyShipCount(1);
 }
 
@@ -335,19 +334,13 @@ void AEnemyShip::HandleDiscardingPatrolTargetDetectionSphere() {
 	}
 }
 
-void AEnemyShip::SetGameState() {
+void AEnemyShip::SetGameStateEnemyShipCount(const int32& AdjustmentAmount) {
 	if (const TObjectPtr<UWorld> World = GetWorld()) {
 		if (const TObjectPtr<ASpaceInvaderGameState> SpaceInvaderGameState = World->GetGameState<ASpaceInvaderGameState>()) {
-			GameState = SpaceInvaderGameState;
+			SpaceInvaderGameState->SetEnemyShipCount(
+				SpaceInvaderGameState->GetEnemyShipCount() + AdjustmentAmount
+			);
 		}
-	}
-}
-
-void AEnemyShip::SetGameStateEnemyShipCount(const int32& AdjustmentAmount) {
-	if (GameState) {
-		GameState->SetEnemyShipCount(
-			GameState->GetEnemyShipCount() + AdjustmentAmount
-		);
 	}
 }
 
