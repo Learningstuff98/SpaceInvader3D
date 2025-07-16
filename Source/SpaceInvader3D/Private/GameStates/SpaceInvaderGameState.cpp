@@ -2,6 +2,7 @@
 #include "Components/SphereComponent.h"
 #include "PatrolTargets/PatrolTarget.h"
 #include "Development/Development.h"
+#include "Enemies/EnemyShipSpawnPoint.h"
 
 ASpaceInvaderGameState::ASpaceInvaderGameState() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -30,6 +31,9 @@ void ASpaceInvaderGameState::HandleDetectionSphereOverlaps(UPrimitiveComponent* 
 	if (OtherActor) {
 		if (const TObjectPtr<APatrolTarget> PatrolTarget = Cast<APatrolTarget>(OtherActor)) {
 			PatrolTargets.Add(PatrolTarget);
+		}
+		if (const TObjectPtr<AEnemyShipSpawnPoint> EnemyShipSpawnPoint = Cast<AEnemyShipSpawnPoint>(OtherActor)) {
+			Development::LogMessage("SPAWN POINT WAS FOUND");
 		}
 	}
 }
