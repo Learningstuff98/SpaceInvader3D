@@ -43,6 +43,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Patrol Targets")
 	TArray<TObjectPtr<class APatrolTarget>> PatrolTargets;
 
+	UPROPERTY(EditAnywhere, Category = "Spawn Points")
+	TArray<TObjectPtr<class AEnemyShipSpawnPoint>> EnemyShipSpawnPoints;
+
 	UPROPERTY()
 	int32 EnemyShipCount;
 

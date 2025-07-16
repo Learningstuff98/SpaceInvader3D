@@ -33,7 +33,7 @@ void ASpaceInvaderGameState::HandleDetectionSphereOverlaps(UPrimitiveComponent* 
 			PatrolTargets.Add(PatrolTarget);
 		}
 		if (const TObjectPtr<AEnemyShipSpawnPoint> EnemyShipSpawnPoint = Cast<AEnemyShipSpawnPoint>(OtherActor)) {
-			Development::LogMessage("SPAWN POINT WAS FOUND");
+			EnemyShipSpawnPoints.Add(EnemyShipSpawnPoint);
 		}
 	}
 }
