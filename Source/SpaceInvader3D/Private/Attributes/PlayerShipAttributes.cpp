@@ -3,8 +3,8 @@
 UPlayerShipAttributes::UPlayerShipAttributes() {
 	PrimaryComponentTick.bCanEverTick = true;
 	IsDead = false;
-	Health = 500.0f;
-	MaxHealth = 500.0f;
+	Health = 2000.0f;
+	MaxHealth = 2000.0f;
 }
 
 void UPlayerShipAttributes::BeginPlay() {
@@ -22,7 +22,7 @@ void UPlayerShipAttributes::ApplyCollisionDamage() {
 
 void UPlayerShipAttributes::TakeDamage(const int32& Damage) {
 	Health -= Damage;
-	//if (Health <= 0) IsDead = true;
+	if (Health <= 0) IsDead = true;
 }
 
 float UPlayerShipAttributes::GetHealthPercent() {
