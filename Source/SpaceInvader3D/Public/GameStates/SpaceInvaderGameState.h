@@ -32,6 +32,8 @@ private:
 	void HandleDetectionSphere();
 	void PerformDetectionSpherePing();
 	void HandleDiscardingDetectionSphere();
+	void HandleSpawningEnemyShips();
+	TObjectPtr<class AEnemyShipSpawnPoint> GetRandomSpawnPoint();
 
 	// Components
 
@@ -45,6 +47,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Spawn Points")
 	TArray<TObjectPtr<class AEnemyShipSpawnPoint>> EnemyShipSpawnPoints;
+
+	UPROPERTY(EditAnywhere, Category = Enemies)
+	TSubclassOf<class AEnemyShip> EnemyShipBlueprintClass;
 
 	UPROPERTY()
 	int32 EnemyShipCount;

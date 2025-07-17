@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Attributes/PlayerShipAttributes.h"
 
 UPlayerShipAttributes::UPlayerShipAttributes() {
@@ -24,7 +22,7 @@ void UPlayerShipAttributes::ApplyCollisionDamage() {
 
 void UPlayerShipAttributes::TakeDamage(const int32& Damage) {
 	Health -= Damage;
-	if (Health <= 0) IsDead = true;
+	//if (Health <= 0) IsDead = true;
 }
 
 float UPlayerShipAttributes::GetHealthPercent() {

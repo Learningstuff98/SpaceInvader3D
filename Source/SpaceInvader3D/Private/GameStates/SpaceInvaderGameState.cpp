@@ -3,9 +3,11 @@
 #include "PatrolTargets/PatrolTarget.h"
 #include "Development/Development.h"
 #include "Enemies/EnemyShipSpawnPoint.h"
+#include "Enemies/EnemyShip.h"
 
 ASpaceInvaderGameState::ASpaceInvaderGameState() {
 	PrimaryActorTick.bCanEverTick = true;
+	EnemyShipCount = 0;
 
 	DetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Detection Sphere"));
 	DetectionSphere->SetupAttachment(GetRootComponent());
@@ -19,6 +21,7 @@ void ASpaceInvaderGameState::BeginPlay() {
 void ASpaceInvaderGameState::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 	HandleDetectionSphere();
+	HandleSpawningEnemyShips();
 }
 
 void ASpaceInvaderGameState::SetupDetectionSphereOverlapFunctionality() {
@@ -56,4 +59,23 @@ void ASpaceInvaderGameState::HandleDiscardingDetectionSphere() {
 		DetectionSphere->DestroyComponent();
 		DetectionSphere = nullptr;
 	}
+}
+
+void ASpaceInvaderGameState::HandleSpawningEnemyShips() {
+	if (EnemyShipCount < 3 && EnemyShipSpawnPoints.Num() >= 3) {
+		if (const TObjectPtr<UWorld> World = GetWorld()) {
+			if (const TObjectPtr<AEnemyShipSpawnPoint> EnemyShipSpawnPoint = GetRandomSpawnPoint()) {
+				const TObjectPtr<AEnemyShip> EnemyShip = World->SpawnActor<AEnemyShip>(
+					EnemyShipBlueprintClass,
+					EnemyShipSpawnPoint->GetActorLocation(),
+					EnemyShipSpawnPoint->GetActorRotation()
+				);
+				EnemyShip->SpawnDefaultController();
+			}
+		}
+	}
+}
+
+TObjectPtr<AEnemyShipSpawnPoint> ASpaceInvaderGameState::GetRandomSpawnPoint() {
+	return EnemyShipSpawnPoints[FMath::RandRange(0, EnemyShipSpawnPoints.Num() - 1)];
 }
