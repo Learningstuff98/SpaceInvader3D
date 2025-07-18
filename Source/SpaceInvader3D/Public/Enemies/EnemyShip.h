@@ -63,6 +63,7 @@ private:
 	void HandlePatrolTargetDetectionSphere();
 	void PerformPatrolTargetDetectionSpherePing();
 	void HandleDiscardingPatrolTargetDetectionSphere();
+	void SetGameStateEnemyShipCount(const int32& AdjustmentAmount);
 
 	// Components
 
